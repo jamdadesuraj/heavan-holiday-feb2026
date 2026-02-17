@@ -9,8 +9,29 @@ export const contactOfficeApi = createApi({
   endpoints: (builder) => ({
     getAllOffices: builder.query({
       query: () => "/",
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.data.map(({ _id }) => ({
+                type: "Office",
+                id: _id,
+              })),
+              { type: "Office", id: "LIST" },
+            ]
+          : [{ type: "Office", id: "LIST" }],
+    }),
+    getOfficeById: builder.query({
+      query: (id) => `/${id}`,
+      providesTags: (result, error, id) => [{ type: "Office", id }],
+    }),
+    checkOfficeStatus: builder.query({
+      query: (id) => `/${id}/status`,
     }),
   }),
 });
 
-export const { useGetAllOfficesQuery } = contactOfficeApi;
+export const {
+  useGetAllOfficesQuery,
+  useGetOfficeByIdQuery,
+  useCheckOfficeStatusQuery,
+} = contactOfficeApi;

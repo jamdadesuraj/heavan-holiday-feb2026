@@ -51,6 +51,8 @@ import { applicationApi } from "./becomeSalesPartner/applicationProcessApi";
 import { commentApi } from "./commentApi/commentApi";
 import { authApi } from "./authApi/authApi";
 import { bookingApi } from "./bookingApi/bookingApi";
+import { brandsSectionApi } from "./corporate-travel/corporate-travelApi";
+import { settingsApi } from "./settings/settingsApi";
 export const store = configureStore({
   reducer: {
     [aboutusApi.reducerPath]: aboutusApi.reducer,
@@ -108,6 +110,8 @@ export const store = configureStore({
     [commentApi.reducerPath]: commentApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [bookingApi.reducerPath]: bookingApi.reducer,
+    [brandsSectionApi.reducerPath]: brandsSectionApi.reducer,
+    [settingsApi.reducerPath]: settingsApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -164,5 +168,7 @@ export const store = configureStore({
       .concat(applicationApi.middleware)
       .concat(commentApi.middleware)
       .concat(authApi.middleware)
-      .concat(bookingApi.middleware),
+      .concat(bookingApi.middleware)
+      .concat(brandsSectionApi.middleware)
+      .concat(settingsApi.middleware),
 });

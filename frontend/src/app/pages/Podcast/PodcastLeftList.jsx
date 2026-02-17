@@ -4,7 +4,7 @@ import { useState } from "react";
 import { FaPlay } from "react-icons/fa";
 import { useGetPodcastsQuery } from "../../../../store/podcasts/podcastApi";
 
-const PodcastLeftList = () => {
+const PodcastLeftList = ({ searchQuery = "" }) => {
   const [selectedPodcast, setSelectedPodcast] = useState(null);
 
   const {
@@ -51,10 +51,20 @@ const PodcastLeftList = () => {
     );
   }
 
-  // Filter only active podcasts
-  const podcasts = (podcastData?.data || []).filter(
-    (podcast) => podcast.status === "active",
-  );
+  // Filter active podcasts then apply search
+  const podcasts = (podcastData?.data || [])
+    .filter((podcast) => podcast.status === "active")
+    .filter((podcast) =>
+      searchQuery.trim() === ""
+        ? true
+        : podcast.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          podcast.description
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          podcast.episodesList.some((ep) =>
+            ep.title.toLowerCase().includes(searchQuery.toLowerCase()),
+          ),
+    );
 
   // Format date
   const formatDate = (dateString) => {
@@ -79,9 +89,7 @@ const PodcastLeftList = () => {
     const hours = Math.floor(totalMinutes / 60);
     const mins = totalMinutes % 60;
 
-    if (hours > 0) {
-      return `${hours} Hrs ${mins} Mins`;
-    }
+    if (hours > 0) return `${hours} Hrs ${mins} Mins`;
     return `${mins} Mins`;
   };
 
@@ -93,8 +101,22 @@ const PodcastLeftList = () => {
   return (
     <>
       <div className="lg:col-span-2 space-y-8">
+        {/* No results state */}
+        {podcasts.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <p className="text-gray-500 text-base font-medium">
+              No podcasts found for{" "}
+              <span className="text-blue-600 font-semibold">
+                "{searchQuery}"
+              </span>
+            </p>
+            <p className="text-gray-400 text-sm mt-1">
+              Try searching with a different keyword.
+            </p>
+          </div>
+        )}
+
         {podcasts.map((podcast) => {
-          // Filter active episodes only
           const activeEpisodes = podcast.episodesList.filter(
             (ep) => ep.status === "active",
           );
@@ -143,12 +165,11 @@ const PodcastLeftList = () => {
                       </button>
                     </p>
                   </div>
+
                   {/* Episodes */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {activeEpisodes.slice(0, 4).map((ep) => (
                       <Link href={`/podcast/${podcast._id}`} key={ep._id}>
-                        {" "}
-                        {/* Use podcast._id */}
                         <div className="flex items-start gap-2 cursor-pointer">
                           <FaPlay className="text-yellow-400 mt-1 shrink-0" />
                           <div>
@@ -174,14 +195,12 @@ const PodcastLeftList = () => {
       {selectedPodcast && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
-            {/* Close Button */}
             <button
               onClick={() => setSelectedPodcast(null)}
               className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
             >
               ✕
             </button>
-
             <h2 className="text-lg font-bold mb-4">{selectedPodcast.title}</h2>
             <div
               className="text-sm text-gray-700 leading-relaxed"

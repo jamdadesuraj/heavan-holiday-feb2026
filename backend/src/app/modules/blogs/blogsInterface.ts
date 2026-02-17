@@ -9,7 +9,6 @@ export interface CategoryDocument extends Document {
 
 export interface BlogPostDocument extends Document {
   title: string;
-
   date: number;
   readTime: string;
   hero: string;
@@ -17,4 +16,9 @@ export interface BlogPostDocument extends Document {
   category: mongoose.Types.ObjectId | string;
   content: string;
   status: 'draft' | 'published' | 'archived';
+  comments: {
+    commentBody: string;
+    created_at: Date;
+    status: 'active' | 'inactive';
+  }[];
 }

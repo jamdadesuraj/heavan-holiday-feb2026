@@ -354,3 +354,53 @@ export const deleteCategory = async (
     next(error);
   }
 };
+
+export const addComment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    // Check if user is logged in
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      next(new appError('Please login to post a comment', 401));
+      return;
+    }
+
+    const { id } = req.params; // blog post id
+    const { commentBody } = req.body;
+
+    // Validate comment body
+    if (!commentBody || commentBody.trim() === '') {
+      next(new appError('Comment body is required', 400));
+      return;
+    }
+
+    // Check if blog exists
+    const blog = await BlogPost.findById(id);
+    if (!blog) {
+      next(new appError('Blog post not found', 404));
+      return;
+    }
+
+    // Add comment
+    blog.comments.push({
+      commentBody: commentBody.trim(),
+      created_at: new Date(),
+      status: 'active',
+    });
+
+    await blog.save();
+
+    res.status(201).json({
+      success: true,
+      statusCode: 201,
+      message: 'Comment added successfully',
+      data: blog.comments[blog.comments.length - 1],
+    });
+    return;
+  } catch (error) {
+    next(error);
+  }
+};

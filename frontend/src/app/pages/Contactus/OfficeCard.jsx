@@ -93,7 +93,9 @@ const OfficeCard = () => {
             </div>
             <div className="flex gap-2">
               <Link
-                href="https://maps.app.goo.gl/tSDNvytmsdvB8YmJA"
+                href={
+                  office.mapUrl || "https://maps.app.goo.gl/tSDNvytmsdvB8YmJA"
+                }
                 target="_blank"
                 className="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full hover:bg-gray-200 cursor-pointer"
               >
@@ -122,10 +124,17 @@ const OfficeCard = () => {
             dangerouslySetInnerHTML={{ __html: office.address || "" }}
           ></p>
 
+          {/* Email */}
+          {office.email && (
+            <p className="text-gray-600 text-xs">
+              <span className="font-semibold">Email:</span> {office.email}
+            </p>
+          )}
+
           {/* Bottom Row */}
           <div className="flex flex-wrap items-center gap-4 mt-4">
             <Link
-              href="/contact-us/office-details"
+              href={`/contact-us/office-details?id=${office._id}`}
               className="bg-red-700 hover:bg-red-500 text-white px-4 py-2 rounded-md text-xs font-medium"
             >
               Office Details
@@ -142,7 +151,7 @@ const OfficeCard = () => {
 
       {/* 🔹 Share Modal */}
       {selectedOffice && (
-        <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-lg p-6 w-80 relative">
             {/* Close Btn */}
             <button
@@ -192,6 +201,15 @@ const OfficeCard = () => {
             <div className="flex gap-3 mt-4">
               <button
                 disabled={!consent}
+                onClick={() => {
+                  if (consent && phone) {
+                    const message = `Office: ${selectedOffice.city}\nAddress: ${selectedOffice.address.replace(/<[^>]*>/g, "")}\nPhone: ${selectedOffice.phone}\nEmail: ${selectedOffice.email}`;
+                    window.open(
+                      `https://wa.me/${phone}?text=${encodeURIComponent(message)}`,
+                      "_blank",
+                    );
+                  }
+                }}
                 className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium ${
                   consent
                     ? "bg-green-500 text-white hover:bg-green-600"
@@ -204,6 +222,12 @@ const OfficeCard = () => {
 
               <button
                 disabled={!consent}
+                onClick={() => {
+                  if (consent && phone) {
+                    const message = `Office: ${selectedOffice.city}\nAddress: ${selectedOffice.address.replace(/<[^>]*>/g, "")}\nPhone: ${selectedOffice.phone}\nEmail: ${selectedOffice.email}`;
+                    window.location.href = `sms:${phone}?body=${encodeURIComponent(message)}`;
+                  }
+                }}
                 className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium ${
                   consent
                     ? "bg-red-700 text-white hover:bg-yellow-500"

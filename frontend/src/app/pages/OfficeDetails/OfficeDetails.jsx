@@ -7,10 +7,28 @@ import TourReview from "@/app/components/TourReview";
 import HolidayDestinations from "./HolidayDestinations";
 import ContactForm from "./ContactForm";
 import { useCreateEnquiryMutation } from "store/enquiryApi/enquiryApi";
+import {
+  useGetOfficeByIdQuery,
+  useCheckOfficeStatusQuery,
+} from "../../../../store/contact-office/contactOfficeApi";
+import { useSearchParams } from "next/navigation";
 
 const OfficeDetails = () => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const searchParams = useSearchParams();
+  const officeId = searchParams.get("id");
+
+  // Fetch office data
+  const { data: officeData, isLoading: isLoadingOffice } =
+    useGetOfficeByIdQuery(officeId, {
+      skip: !officeId,
+    });
+
+  // Fetch office status
+  const { data: statusData } = useCheckOfficeStatusQuery(officeId, {
+    skip: !officeId,
+  });
 
   const [createEnquiry, { isLoading: isSubmitting }] =
     useCreateEnquiryMutation();
@@ -27,15 +45,92 @@ const OfficeDetails = () => {
     { label: "Contact Us", href: null },
   ];
 
-  const hours = [
-    { day: "Mon", time: "10:00 AM - 07:00 PM" },
-    { day: "Tue", time: "10:00 AM - 07:00 PM" },
-    { day: "Wed", time: "10:00 AM - 07:00 PM" },
-    { day: "Thu", time: "10:00 AM - 07:00 PM" },
-    { day: "Fri", time: "10:00 AM - 07:00 PM" },
-    { day: "Sat", time: "10:00 AM - 07:00 PM", highlight: true },
-    { day: "Sun", time: "Closed" },
-  ];
+  const office = officeData?.data;
+  const officeStatus = statusData?.isOpen ? "OPEN" : "CLOSED";
+
+  // Format office times for display
+  const formatOfficeTimes = (officeTimes) => {
+    if (!officeTimes || officeTimes.length === 0) {
+      return [
+        { day: "Mon", time: "10:00 AM - 07:00 PM" },
+        { day: "Tue", time: "10:00 AM - 07:00 PM" },
+        { day: "Wed", time: "10:00 AM - 07:00 PM" },
+        { day: "Thu", time: "10:00 AM - 07:00 PM" },
+        { day: "Fri", time: "10:00 AM - 07:00 PM" },
+        { day: "Sat", time: "10:00 AM - 07:00 PM", highlight: true },
+        { day: "Sun", time: "Closed" },
+      ];
+    }
+
+    const dayMap = {
+      monday: "Mon",
+      tuesday: "Tue",
+      wednesday: "Wed",
+      thursday: "Thu",
+      friday: "Fri",
+      saturday: "Sat",
+      sunday: "Sun",
+    };
+
+    return officeTimes.map((time) => ({
+      day: dayMap[time.day],
+      time: time.isOpen
+        ? `${formatTime(time.openTime)} - ${formatTime(time.closeTime)}`
+        : "Closed",
+      highlight: time.day === getCurrentDay(),
+    }));
+  };
+
+  const formatTime = (time24) => {
+    if (!time24) return "";
+    const [hours, minutes] = time24.split(":");
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const hour12 = hour % 12 || 12;
+    return `${hour12}:${minutes} ${ampm}`;
+  };
+
+  const getCurrentDay = () => {
+    const days = [
+      "sunday",
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+    ];
+    return days[new Date().getDay()];
+  };
+
+  const getTodayHours = () => {
+    if (!office?.officeTimes) return "Sat 10:00 AM - 07:00 PM";
+    const today = office.officeTimes.find((t) => t.day === getCurrentDay());
+    if (!today) return "Not Available";
+    if (!today.isOpen) return "Closed";
+    const dayMap = {
+      monday: "Mon",
+      tuesday: "Tue",
+      wednesday: "Wed",
+      thursday: "Thu",
+      friday: "Fri",
+      saturday: "Sat",
+      sunday: "Sun",
+    };
+    return `${dayMap[today.day]} ${formatTime(today.openTime)} - ${formatTime(today.closeTime)}`;
+  };
+
+  const hours = office
+    ? formatOfficeTimes(office.officeTimes)
+    : [
+        { day: "Mon", time: "10:00 AM - 07:00 PM" },
+        { day: "Tue", time: "10:00 AM - 07:00 PM" },
+        { day: "Wed", time: "10:00 AM - 07:00 PM" },
+        { day: "Thu", time: "10:00 AM - 07:00 PM" },
+        { day: "Fri", time: "10:00 AM - 07:00 PM" },
+        { day: "Sat", time: "10:00 AM - 07:00 PM", highlight: true },
+        { day: "Sun", time: "Closed" },
+      ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -73,6 +168,14 @@ const OfficeDetails = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  if (isLoadingOffice) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-900"></div>
+      </div>
+    );
+  }
+
   return (
     <>
       <Breadcrumb items={breadcrumbItems} />
@@ -89,9 +192,11 @@ const OfficeDetails = () => {
 
               {/* Title */}
               <h2 className="text-2xl font-bold mt-3 flex items-center">
-                <span>Puducherry</span>
-                <span className="border-l-2 border-gray-300 pl-2 ml-2 text-red-600 font-semibold text-lg">
-                  CLOSED
+                <span>{office?.city || "Puducherry"}</span>
+                <span
+                  className={`border-l-2 border-gray-300 pl-2 ml-2 font-semibold text-lg ${officeStatus === "OPEN" ? "text-green-600" : "text-red-600"}`}
+                >
+                  {officeStatus}
                 </span>
               </h2>
 
@@ -105,11 +210,15 @@ const OfficeDetails = () => {
               <div className="mt-5 space-y-3 text-gray-800">
                 <div className="flex items-center gap-2">
                   <Phone size={18} className="text-gray-600" />
-                  <span className="font-medium">+91 8655755288</span>
+                  <span className="font-medium">
+                    {office?.phone || "+91 8655755288"}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Mail size={18} className="text-gray-600" />
-                  <span className="font-medium">travel@heavenHoliday.com</span>
+                  <span className="font-medium">
+                    {office?.email || "travel@heavenHoliday.com"}
+                  </span>
                 </div>
               </div>
 
@@ -120,7 +229,7 @@ const OfficeDetails = () => {
                   onClick={() => setOpen(!open)}
                   className="flex items-center gap-1 text-gray-900 font-medium cursor-pointer"
                 >
-                  Working Hours: Sat 10:00 AM - 07:00 PM
+                  Working Hours: {getTodayHours()}
                   <ChevronDown size={16} />
                 </button>
 

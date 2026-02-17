@@ -24,7 +24,7 @@ import { paymentRouter } from '../modules/payment/payment.routes';
 import { wishlistRouter } from '../modules/wishlist/wishlist.routes';
 import { aboutRouter } from '../modules/about/about.routes';
 import { footerWidgetRouter } from '../modules/footer-widget/footer-widget.routes';
-import { generalSettingsRouter } from '../modules/general-settings/general-settings.routes';
+
 import { productCategoryRouter } from '../modules/Product-category/product-category.routes';
 import { subscriptionRouter } from '../modules/subscription/subscription.routes';
 import { subscriptionIncludeRouter } from '../modules/subscription-include/subscription-include.routes';
@@ -84,6 +84,8 @@ import { becomePartnerFormRouter } from '../modules/becomePartnerForm/formRoutes
 import { commentRouter } from '../modules/comments/commentRoutes';
 import { IncludedRouter } from '../modules/toursIncluded/toursIncludedRoutes';
 import { bookingRouter } from '../modules/bookPackage/bookingRoutes';
+import { brandsRouter } from '../modules/brands/brandsRoutes';
+import { generalSettingsRouter } from '../modules/general-settings/general-settings.routes';
 const router = Router();
 const moduleRoutes = [
   {
@@ -129,11 +131,6 @@ const moduleRoutes = [
   {
     path: '/footer-widgets',
     route: footerWidgetRouter,
-  },
-
-  {
-    path: '/general-settings',
-    route: generalSettingsRouter,
   },
 
   {
@@ -450,6 +447,14 @@ const moduleRoutes = [
   {
     path: '/booking',
     route: bookingRouter,
+  },
+  {
+    path: '/brands',
+    route: brandsRouter,
+  },
+  {
+    path: '/settings',
+    route: generalSettingsRouter,
   },
 ];
 

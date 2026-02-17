@@ -54,7 +54,7 @@ const BrandsSectionSchema = new Schema<IBrandsSection>(
     heading: {
       type: String,
       required: [true, 'Heading is required'],
-      default: 'Veena World has proudly served 350+ corporates to date...',
+      default: 'Heaven holiday has proudly served 350+ corporates to date...',
     },
 
     brands: [BrandSchema],

@@ -13,15 +13,20 @@ import {
   ArrowRightCircle,
 } from "lucide-react";
 import Link from "next/link";
+import { useGetSettingsQuery } from "store/settings/settingsApi";
 
 const PhoneDropdown = () => {
+  const { data, isLoading, error } = useGetSettingsQuery(undefined);
+  const settings = data?.data;
+
   const numbers = [
-    "1800 22 7979",
-    "1800 313 5555",
-    "+91 22 2101 7979",
-    "+91 22 2101 6969",
-    "+91 915 200 4511",
-  ];
+    settings?.tollFree1,
+    settings?.tollFree2,
+    settings?.callUs1,
+    settings?.callUs2,
+    settings?.nriWithinIndia,
+    settings?.nriOutsideIndia,
+  ].filter(Boolean);
 
   const [index, setIndex] = useState(0);
   const [showPhoneInfo, setShowPhoneInfo] = useState(false);
@@ -29,6 +34,7 @@ const PhoneDropdown = () => {
 
   // Auto cycle numbers
   useEffect(() => {
+    if (numbers.length === 0) return;
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % numbers.length);
     }, 4000);
@@ -43,6 +49,18 @@ const PhoneDropdown = () => {
   const handleMouseLeave = () => {
     timeoutRef.current = setTimeout(() => setShowPhoneInfo(false), 400);
   };
+
+  const formatTime = (time) => {
+    if (!time) return "";
+    const [hourStr] = time.split(":");
+    const hour = parseInt(hourStr, 10);
+    return hour >= 12
+      ? `${hour === 12 ? 12 : hour - 12}PM`
+      : `${hour === 0 ? 12 : hour}AM`;
+  };
+
+  if (isLoading) return <p>isLoading</p>;
+  if (error) return <p>error</p>;
 
   return (
     <div
@@ -88,16 +106,16 @@ const PhoneDropdown = () => {
             </p>
             <div className="flex flex-col gap-1">
               <Link
-                href="tel:1800227979"
+                href={`tel:${settings?.tollFree1?.replace(/\s/g, "")}`}
                 className="font-bold text-black hover:text-blue-900"
               >
-                1800 22 7979
+                {settings?.tollFree1}
               </Link>
               <Link
-                href="tel:18003135555"
+                href={`tel:${settings?.tollFree2?.replace(/\s/g, "")}`}
                 className="font-bold text-black hover:text-blue-900"
               >
-                1800 313 5555
+                {settings?.tollFree2}
               </Link>
             </div>
           </div>
@@ -108,16 +126,16 @@ const PhoneDropdown = () => {
             </p>
             <div className="flex flex-col gap-1">
               <Link
-                href="tel:+91 22 2101 7979"
+                href={`tel:${settings?.callUs1?.replace(/\s/g, "")}`}
                 className="font-bold text-black hover:text-blue-900"
               >
-                +91 22 2101 7979
+                {settings?.callUs1}
               </Link>
               <Link
-                href="tel:+91 22 2101 6969"
+                href={`tel:${settings?.callUs2?.replace(/\s/g, "")}`}
                 className="font-bold text-black hover:text-blue-900"
               >
-                +91 22 2101 6969
+                {settings?.callUs2}
               </Link>
             </div>
           </div>
@@ -130,19 +148,19 @@ const PhoneDropdown = () => {
             <p className="text-xs mx-3 text-black">
               Within India:{" "}
               <Link
-                href="tel:+91 915 200 4511"
+                href={`tel:${settings?.nriWithinIndia?.replace(/\s/g, "")}`}
                 className="font-bold text-sm text-black hover:text-blue-900"
               >
-                +91 915 200 4511
+                {settings?.nriWithinIndia}
               </Link>
             </p>
             <p className="text-xs mx-3 text-black">
               Outside India:{" "}
               <Link
-                href="tel:+91 887 997 2221"
+                href={`tel:${settings?.nriOutsideIndia?.replace(/\s/g, "")}`}
                 className="font-bold text-sm text-black hover:text-blue-900"
               >
-                +91 887 997 2221
+                {settings?.nriOutsideIndia}
               </Link>
             </p>
           </div>
@@ -151,17 +169,20 @@ const PhoneDropdown = () => {
             <Clock className="w-4 h-4 text-gray-500" />
             <p>
               Business hours:{" "}
-              <span className="font-bold text-gray-800">10AM - 7PM</span>
+              <span className="font-bold text-gray-800">
+                {formatTime(settings?.businessHoursFrom)} -{" "}
+                {formatTime(settings?.businessHoursTo)}
+              </span>
             </p>
           </div>
 
           <div className="flex items-center gap-2">
             <Mail className="w-4 h-4 text-gray-500" />
             <a
-              href="mailto:travel@heavenHoliday.com"
+              href={`mailto:${settings?.supportEmail}`}
               className="text-blue-600 font-medium hover:underline hover:text-blue-900"
             >
-              travel@heavenHoliday.com
+              {settings?.supportEmail}
             </a>
           </div>
 
@@ -170,7 +191,7 @@ const PhoneDropdown = () => {
               href="/contact-us"
               className="flex items-center gap-2 text-blue-600 font-bold hover:underline"
             >
-              Nearest Heaven Holiday office{" "}
+              Nearest {settings?.companyName} office{" "}
               <span>
                 <ArrowRightCircle />
               </span>

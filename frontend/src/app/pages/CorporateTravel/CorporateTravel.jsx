@@ -5,11 +5,65 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
+import { Phone, MapPin } from "lucide-react";
 import Breadcrumb from "@/app/components/Breadcum";
 import { FiPhone } from "react-icons/fi";
 import Image from "next/image";
-
+import { useGetOfferBannerQuery } from "store/offer-banner/offer-bannerApi";
+import { useCreateEnquiryMutation } from "store/enquiryApi/enquiryApi";
+import { useState } from "react";
 const CorporateTravel = () => {
+  const {
+    data: banner,
+    isLoading: bannerLoading,
+    error: bannerError,
+  } = useGetOfferBannerQuery();
+
+  const [createEnquiry, { isLoading: isSubmitting }] =
+    useCreateEnquiryMutation();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    mono: "",
+    email: "",
+    message: "",
+    modeOfCommunication: "call",
+    destinations: "-",
+  });
+  if (bannerLoading) {
+    return <p>loading</p>;
+  }
+  if (bannerError) {
+    return <p>error</p>;
+  }
+
+  const banners = banner?.data[0]?.banners?.filter((item) => {
+    return item.status == "active";
+  });
+  console.log("banners active", banners);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await createEnquiry(formData).unwrap();
+      alert("Enquiry submitted successfully!");
+      setFormData({
+        name: "",
+        mono: "",
+        email: "",
+        message: "",
+        modeOfCommunication: "call",
+        destinations: "-",
+      });
+    } catch (err) {
+      console.error("Failed to submit enquiry:", err);
+      alert("Failed to submit enquiry. Please try again.");
+    }
+  };
   return (
     <>
       <Breadcrumb
@@ -26,70 +80,88 @@ const CorporateTravel = () => {
           modules={[Autoplay, Navigation]}
           autoplay={{ delay: 4000, disableOnInteraction: false }}
           navigation
-          loop
+          loop={banners?.length > 1}
+          slidesPerView={1}
+          spaceBetween={0}
+          speed={800}
           className="w-full h-full"
         >
-          {[
-            "/assets/img/corporate-travel/1.webp",
-            "/assets/img/corporate-travel/2.avif",
-          ].map((img, index) => (
-            <SwiperSlide key={index}>
-              <div className="relative w-full h-full">
-                <Image
-                  src={img}
-                  alt={`Corporate Slide ${index + 1}`}
-                  fill
-                  priority
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-black/40"></div>
-              </div>
-            </SwiperSlide>
-          ))}
+          {banners &&
+            banners.map((img, index) => (
+              <SwiperSlide key={index}>
+                <div className="relative w-full h-full">
+                  <Image
+                    src={img.image}
+                    alt={`Corporate Slide ${index + 1}`}
+                    fill
+                    priority
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/40"></div>
+                </div>
+              </SwiperSlide>
+            ))}
         </Swiper>
 
         {/* ===== Fixed Form on Top Right ===== */}
         <div className="absolute top-10 right-10 bg-white shadow-2xl rounded-xl p-6 md:p-8 w-[90%] md:w-[380px] z-20">
-          <form className="space-y-4">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-              Request a Call Back
-            </h2>
-
-            <input
-              type="text"
-              placeholder="Full Name*"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            />
-
-            <input
-              type="email"
-              placeholder="Email ID*"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            />
-
-            {/* Phone Input with Flag */}
-            <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
-              <div className="flex items-center gap-1 px-2">
-                <span className="text-sm text-gray-700">+91</span>
-              </div>
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            <div>
               <input
-                type="tel"
-                placeholder="Phone Number"
-                className="w-full px-3 py-2 text-sm focus:outline-none"
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                placeholder="Full Name"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-yellow-500"
+                required
               />
             </div>
 
-            <textarea
-              placeholder="Tell us more"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm h-24 resize-none focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            ></textarea>
+            <div className="flex items-center border border-gray-300 rounded-md px-3 py-2">
+              <span className="text-gray-600 pr-3 border-r border-gray-300">
+                +91
+              </span>
+              <input
+                type="text"
+                name="mono"
+                value={formData.mono}
+                onChange={handleInputChange}
+                placeholder="Phone Number"
+                className="flex-1 pl-3 outline-none text-sm"
+                required
+              />
+            </div>
+
+            <div>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="Email Address"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-yellow-500"
+              />
+            </div>
+
+            <div>
+              <textarea
+                name="message"
+                value={formData.message}
+                onChange={handleInputChange}
+                placeholder="Tell us everything that's on your mind."
+                rows={3}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm resize-none focus:outline-none focus:ring-1 focus:ring-yellow-500"
+              ></textarea>
+            </div>
 
             <button
               type="submit"
-              className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-3 rounded-md flex items-center justify-center gap-2 transition-all"
+              disabled={isSubmitting}
+              className="w-full flex items-center justify-center gap-2 bg-yellow-400 text-gray-800 font-semibold py-2 rounded-md hover:bg-yellow-500 transition"
             >
-              <FiPhone className="text-lg" />
-              Request Call Back
+              <Phone size={16} />{" "}
+              {isSubmitting ? "Submitting..." : "Request Call Back"}
             </button>
           </form>
         </div>

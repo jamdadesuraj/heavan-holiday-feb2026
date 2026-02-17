@@ -7,17 +7,27 @@ import Link from "next/link";
 import FooterTopBtn from "./FooterTopBtn";
 import TopBookingAds from "./TopBookingAds";
 import { useCreateEnquiryMutation } from "store/enquiryApi/enquiryApi";
-
+import { useGetSettingsQuery } from "store/settings/settingsApi";
 const Footer = () => {
+  const {
+    data: settings,
+    isLoading: settingsLoading,
+    error: settingsError,
+  } = useGetSettingsQuery();
+  const [createEnquiry, { isLoading, isSuccess, isError }] =
+    useCreateEnquiryMutation();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     mono: "",
     destinations: "",
   });
-
-  const [createEnquiry, { isLoading, isSuccess, isError }] =
-    useCreateEnquiryMutation();
+  if (settingsLoading) {
+    return <p>error</p>;
+  }
+  if (settingsError) {
+    return <p>error</p>;
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -118,29 +128,8 @@ const Footer = () => {
           <div className=" mt-10">
             <div className="bg-white p-2 rounded-md flex items-center justify-center gap-6">
               <Image
-                src="/assets/img/f1.avif"
+                src={settings?.data?.companyLogo || ""}
                 alt="IATA"
-                width={60}
-                height={10}
-                className="w-10 h-10 object-contain"
-              />
-              <Image
-                src="/assets/img/f2.avif"
-                alt="TAFI"
-                width={60}
-                height={10}
-                className="w-10 h-10 object-contain"
-              />
-              <Image
-                src="/assets/img/f3.avif"
-                alt="Tourism"
-                width={60}
-                height={10}
-                className="w-10 h-10 object-contain"
-              />
-              <Image
-                src="/assets/img/f4.avif"
-                alt="Tourism"
                 width={60}
                 height={10}
                 className="w-10 h-10 object-contain"
@@ -302,7 +291,7 @@ const Footer = () => {
             </li> */}
             <li>
               <Link href="/travel-planners" className="hover:text-yellow-400">
-                Travel Planners
+                {settings?.data?.travelPlannerLabel || ""}
               </Link>
             </li>
           </ul>
@@ -312,17 +301,10 @@ const Footer = () => {
       {/* Disclaimer */}
       <div className="max-w-7xl mx-auto px-6 mt-6 text-xs text-gray-400">
         <p className="mb-4 border-t border-b  border-gray-700 py-5 text-gray-50">
-          *Caution: Beware of Fake Promotions or Offers *Please do not believe
-          or engage with any promotional emails, SMS or Web-link which ask you
-          to click on a link and fill in your details. All Heaven Holiday
-          authorized email communications are delivered from domain
-          @heavenHolidaycom or @heavenHolidayin or SMS from VNAWLD or 741324.
-          *Veena World bears no liability or responsibility whatsoever for any
-          communication which is fraudulent or misleading in nature and not
-          received from registered domain.
+          *Caution: {settings?.data?.cautionText || ""}
         </p>
         <p className=" pt-4 pb-5">
-          © 2025 Heaven Holiday Hospitality Pvt Ltd. All Rights Reserved.
+          {settings?.data?.copyrightText || ""}
           <Link
             href="/privacy-policy"
             className="ml-4 hover:text-yellow-400 cursor-pointer"

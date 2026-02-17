@@ -321,6 +321,12 @@ export const MENU_ITEMS: MenuItemType[] = [
     icon: "tabler:info-square",
     url: "/pages/contact-office/contact-info",
   },
+  {
+    key: "corporate-travel",
+    label: "Corporate Travel",
+    icon: "tabler:info-square",
+    url: "/pages/corporate-travel",
+  },
 
   // Services & Info
   {
@@ -371,6 +377,12 @@ export const MENU_ITEMS: MenuItemType[] = [
     label: "Terms & Conditions",
     icon: "tabler:file-text",
     url: "/pages/terms&conditions",
+  },
+  {
+    key: "General-settings",
+    label: "General Settings",
+    icon: "tabler:file-text",
+    url: "/pages/settings",
   },
   // {
   //   key: "calendar",

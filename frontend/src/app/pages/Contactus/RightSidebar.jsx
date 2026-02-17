@@ -7,6 +7,7 @@ import { useGetContactFeaturesQuery } from "../../../../store/contact-office/con
 import { useGetContactDetailsQuery } from "../../../../store/aboutUsApi/contactApi";
 import { useGetTourManagerDirectoryQuery } from "../../../../store/toursManagement/tourManagersApi";
 import { useCreateEnquiryMutation } from "../../../../store/enquiryApi/enquiryApi";
+import { useGetSettingsQuery } from "store/settings/settingsApi";
 
 const RightSidebar = () => {
   const featureImage = [
@@ -50,6 +51,12 @@ const RightSidebar = () => {
     error: contactDetailsError,
   } = useGetContactDetailsQuery();
 
+  const {
+    data: settings,
+    isLoading: settingsLoading,
+    error: settingsError,
+  } = useGetSettingsQuery();
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -86,7 +93,8 @@ const RightSidebar = () => {
     isPackagesLoading ||
     tourManagementTeamLoading ||
     isContactFeaturesLoading ||
-    isContactDetailsLoading
+    isContactDetailsLoading ||
+    settingsLoading
   ) {
     return (
       <section className="py-12 bg-white">
@@ -102,7 +110,8 @@ const RightSidebar = () => {
     packagesError ||
     tourManagementTeamError ||
     contactFeaturesError ||
-    contactDetailsError
+    contactDetailsError ||
+    settingsError
   ) {
     return (
       <section className="py-12 bg-white">
@@ -194,10 +203,10 @@ const RightSidebar = () => {
             <span>
               <span className="font-semibold">For Foreign Nationals:</span>{" "}
               <Link
-                href={`tel:+91${contactDetails?.data?.callUs?.phoneNumbers[0] || ""}`}
+                href={`tel:+91${settings?.data?.nriOutsideIndia || ""}`}
                 className="text-blue-600 font-bold"
               >
-                +91 {contactDetails?.data?.callUs?.phoneNumbers[0] || ""}
+                +91 {settings?.data?.nriOutsideIndia || ""}
               </Link>
             </span>
           </p>
@@ -362,10 +371,13 @@ const RightSidebar = () => {
               className="w-4 h-4"
             />
             <span className="font-semibold text-green-400">
-              +91 {contactDetails?.data?.callUs?.phoneNumbers[0] || ""}
+              +91 {settings?.data?.nriOutsideIndia || ""}
             </span>
           </div>
-          <p className="font-bold">10AM to 7PM</p>
+          <p className="font-bold">
+            {settings?.data?.businessHoursFrom} to{" "}
+            {settings?.data?.businessHoursTo}
+          </p>
         </div>
       </div>
     </div>

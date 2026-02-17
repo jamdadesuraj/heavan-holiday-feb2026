@@ -31,16 +31,19 @@ export const getAboutUs = async (req: Request, res: Response) => {
 
 export const updateAboutUs = async (req: Request, res: Response) => {
   try {
-    const aboutusValidation = z.object({
-      title: z.string().min(1, 'Title is required').optional(),
-      description: z.string().min(1, 'Description is required').optional(),
-      video: z.string().optional(),
-    });
+    // ← changed: using imported validation instead of inline
+    const parsed = aboutUsUpdateValidation.parse({ getaboutus: req.body });
+    const validatedData = parsed.getaboutus ?? {};
 
-    const validatedData = aboutusValidation.parse(req.body);
-    if (req.file) {
-      validatedData.video = (req.file as any).path;
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+    if (files?.video?.[0]) {
+      validatedData.video = files.video[0].path;
     }
+    if (files?.thumbnail?.[0]) {
+      validatedData.thumbnail = files.thumbnail[0].path;
+    }
+
     let aboutUs = await AboutUs.findOne();
 
     if (!aboutUs) {
@@ -54,7 +57,8 @@ export const updateAboutUs = async (req: Request, res: Response) => {
         data: aboutUs.aboutus,
       });
     } else {
-      if (aboutUs.aboutus.video && req.file) {
+      // delete old video from cloudinary if new video uploaded
+      if (aboutUs.aboutus.video && files?.video?.[0]) {
         try {
           const urlParts = aboutUs.aboutus.video.split('/');
           const publicIdWithExtension = urlParts[urlParts.length - 1];
@@ -66,6 +70,19 @@ export const updateAboutUs = async (req: Request, res: Response) => {
           });
         } catch (cloudinaryError) {
           console.error('Error deleting old video:', cloudinaryError);
+        }
+      }
+
+      // delete old thumbnail from cloudinary if new thumbnail uploaded
+      if (aboutUs.aboutus.thumbnail && files?.thumbnail?.[0]) {
+        try {
+          const urlParts = aboutUs.aboutus.thumbnail.split('/');
+          const publicId = urlParts[urlParts.length - 1].split('.')[0];
+          const folderPath = urlParts.slice(-2, -1)[0];
+
+          await cloudinary.uploader.destroy(`${folderPath}/${publicId}`);
+        } catch (cloudinaryError) {
+          console.error('Error deleting old thumbnail:', cloudinaryError);
         }
       }
 

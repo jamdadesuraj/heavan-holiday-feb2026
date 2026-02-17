@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
-
+import { useGetBrandsSectionQuery } from "store/corporate-travel/corporate-travelApi";
 const brands = [
   "/assets/img/corporate-travel/1.svg",
   "/assets/img/corporate-travel/2.svg",
@@ -18,7 +18,27 @@ const brands = [
 
 const BrandsSection = () => {
   const [showModal, setShowModal] = useState(false);
+  const {
+    data: brandSection,
+    isLoading: brandsLoading,
+    error: brandsError,
+  } = useGetBrandsSectionQuery();
+  if (brandsLoading) {
+    return <p>loading</p>;
+  }
+  if (brandsError) {
+    return <p>error</p>;
+  }
+  console.log("brands", brandSection);
+  const industries = brandSection?.data?.brands.filter((item) => {
+    return item.isActive == true;
+  });
 
+  const industry = brandSection?.data?.industries.filter((item) => {
+    return item.isActive == true;
+  });
+  console.log("brands", industry);
+  console.log("industries", industries);
   return (
     <>
       {/* ===== Heading ===== */}
@@ -31,45 +51,15 @@ const BrandsSection = () => {
             <p className="italic">Industries</p>
             <div className="overflow-hidden w-full">
               <div className="flex animate-marquee whitespace-nowrap">
-                {[
-                  "Agriculture",
-                  "Finance",
-                  "Technology",
-                  "Healthcare",
-                  "Education",
-                  "Hospitality",
-                  "Manufacturing",
-                  "Retail",
-                  "Real Estate",
-                  "Automobile",
-                ].map((industry, i) => (
-                  <span
-                    key={i}
-                    className="not-italic text-blue-900 font-semibold mx-8 text-lg"
-                  >
-                    {industry}
-                  </span>
-                ))}
-                {/* Duplicate for seamless looping */}
-                {[
-                  "Agriculture",
-                  "Finance",
-                  "Technology",
-                  "Healthcare",
-                  "Education",
-                  "Hospitality",
-                  "Manufacturing",
-                  "Retail",
-                  "Real Estate",
-                  "Automobile",
-                ].map((industry, i) => (
-                  <span
-                    key={`dup-${i}`}
-                    className="not-italic text-blue-900 font-semibold mx-8 text-lg"
-                  >
-                    {industry}
-                  </span>
-                ))}
+                {industries &&
+                  industries.map((industry) => (
+                    <span
+                      key={industry._id}
+                      className="not-italic text-blue-900 font-semibold mx-8 text-lg"
+                    >
+                      {industry.name}
+                    </span>
+                  ))}
               </div>
             </div>
           </div>
@@ -89,11 +79,11 @@ const BrandsSection = () => {
               }}
               className="mySwiper"
             >
-              {brands.slice(0, 7).map((logo, i) => (
+              {industry.slice(0, 7).map((logo, i) => (
                 <SwiperSlide key={i}>
                   <div className="flex items-center justify-center">
                     <Image
-                      src={logo}
+                      src={logo.image}
                       alt={`Brand ${i + 1}`}
                       width={150}
                       height={80}

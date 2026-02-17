@@ -1,10 +1,16 @@
-// features/blog/blogApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const blogApi = createApi({
   reducerPath: "blogApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:8080/v1/api",
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        headers.set("authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
   }),
   tagTypes: ["Blog", "Category"],
   endpoints: (builder) => ({
@@ -19,6 +25,16 @@ export const blogApi = createApi({
       query: () => "/blogs/blogs",
       providesTags: ["Blog"],
     }),
+
+    // --- COMMENT ENDPOINTS ---
+    addComment: builder.mutation({
+      query: ({ blogId, commentBody }) => ({
+        url: `/blogs/${blogId}/comments`,
+        method: "POST",
+        body: { commentBody },
+      }),
+      invalidatesTags: ["Blog"],
+    }),
   }),
 });
 
@@ -28,4 +44,7 @@ export const {
 
   // Blog hooks
   useGetAllBlogsQuery,
+
+  // Comment hooks
+  useAddCommentMutation,
 } = blogApi;

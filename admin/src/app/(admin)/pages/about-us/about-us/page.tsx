@@ -27,6 +27,8 @@ const NewPageForm: React.FC = () => {
 
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoPreview, setVideoPreview] = useState<string>("");
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState<string>("");
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
 
@@ -58,6 +60,7 @@ const NewPageForm: React.FC = () => {
         description: aboutUsData.data.description || "",
       });
       setVideoPreview(aboutUsData.data.video || "");
+      setThumbnailPreview(aboutUsData.data.thumbnail || "");
     }
   }, [aboutUsData]);
 
@@ -107,6 +110,12 @@ const NewPageForm: React.FC = () => {
     setVideoFile(file);
     setVideoPreview(URL.createObjectURL(file));
   };
+  const handleThumbnailChange = (files: File[]) => {
+    const file = files[0];
+    if (!file) return;
+    setThumbnailFile(file);
+    setThumbnailPreview(URL.createObjectURL(file));
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -117,6 +126,9 @@ const NewPageForm: React.FC = () => {
 
     if (videoFile) {
       submitData.append("video", videoFile);
+    }
+    if (thumbnailFile) {
+      submitData.append("thumbnail", thumbnailFile);
     }
 
     try {
@@ -267,6 +279,28 @@ const NewPageForm: React.FC = () => {
                       icon="ri:upload-cloud-2-line"
                       text="Drop video files here or click to upload."
                       extraText="(Maximum file size: 50MB. Supported formats: MP4, WebM, etc.)"
+                    />
+                  </div>
+                </Col>
+                <Col xs={12}>
+                  <div className="mb-3">
+                    <label className="form-label">Thumbnail Upload</label>
+
+                    {thumbnailPreview && (
+                      <div className="mb-3">
+                        <img
+                          src={thumbnailPreview}
+                          className="img-fluid rounded"
+                          style={{ maxHeight: "200px", objectFit: "contain" }}
+                        />
+                      </div>
+                    )}
+
+                    <FileUploader
+                      onFileUpload={handleThumbnailChange}
+                      icon="ri:upload-cloud-2-line"
+                      text="Drop thumbnail image here or click to upload."
+                      extraText="(Supported formats: JPG, PNG, WebP)"
                     />
                   </div>
                 </Col>

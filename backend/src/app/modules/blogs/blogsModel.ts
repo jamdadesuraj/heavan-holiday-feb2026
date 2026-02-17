@@ -1,5 +1,4 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
-
 import { CategoryDocument, BlogPostDocument } from './blogsInterface';
 
 const CategorySchema = new Schema<CategoryDocument>(
@@ -30,7 +29,6 @@ const BlogPostSchema = new Schema<BlogPostDocument>(
       required: [true, 'Title is required'],
       trim: true,
     },
-
     date: {
       type: Number,
       required: [true, 'Date is required'],
@@ -64,6 +62,24 @@ const BlogPostSchema = new Schema<BlogPostDocument>(
       default: 'draft',
       required: [true, 'Status is required'],
     },
+    comments: [
+      {
+        commentBody: {
+          type: String,
+          required: [true, 'Comment body is required'],
+          trim: true,
+        },
+        created_at: {
+          type: Date,
+          default: Date.now,
+        },
+        status: {
+          type: String,
+          enum: ['active', 'inactive'],
+          default: 'active',
+        },
+      },
+    ],
   },
   {
     timestamps: true,

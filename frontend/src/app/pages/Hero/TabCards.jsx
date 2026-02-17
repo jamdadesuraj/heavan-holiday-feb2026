@@ -150,7 +150,7 @@ const TabCards = () => {
 
               return (
                 <Link
-                  href={`/category/${category._id}`}
+                  href={`/tour-list/${category._id}`}
                   key={category._id}
                   className="relative rounded-lg overflow-hidden shadow hover:shadow-lg transition block"
                 >

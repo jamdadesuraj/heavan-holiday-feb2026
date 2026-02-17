@@ -32,7 +32,7 @@ const AboutUs = () => {
           {/* Left: Text */}
           <div>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              {response?.title || "आम्ही आहोत, वीणा वर्ल्ड!"}
+              {response?.title || ""}
             </h2>
             <p className="text-gray-700 mb-2">
               {description ||
@@ -46,7 +46,7 @@ const AboutUs = () => {
               <>
                 {/* Thumbnail */}
                 <img
-                  src="/assets/img/about/1.avif"
+                  src={response?.thumbnail || ""}
                   alt="Heaven Holiday Corporate AV"
                   className="w-full h-full object-cover"
                 />

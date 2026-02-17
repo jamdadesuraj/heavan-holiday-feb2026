@@ -1,22 +1,35 @@
+// settings.validation.ts
+
 import { z } from 'zod';
 
-export const generalSettingsUpdateValidation = z.object({
-  number: z.string().min(1).optional(),
-  email: z.string().email().optional(),
-  facebook: z.string().url().optional(),
-  instagram: z.string().url().optional(),
-  linkedIn: z.string().url().optional(),
-  twitter: z.string().url().optional(),
-  youtube: z.string().url().optional(),
-  headerTab: z.string().optional(),
-  address: z.string().optional(),
-  iframe: z.string().optional(),
-  freeShippingThreshold: z
-    .preprocess((v) => {
-      if (v === undefined || v === null || v === '') return undefined;
-      if (typeof v === 'number') return v;
-      const n = Number(v as any);
-      return isNaN(n) ? undefined : n;
-    }, z.number().min(0))
-    .optional(),
+export const settingsUpdateValidation = z.object({
+  // Brand Identity
+  companyName: z.string().trim().min(1).optional(),
+  companyLogo: z.string().optional(),
+  favicon: z.string().optional(),
+  copyrightText: z.string().trim().optional(),
+
+  // Phone Numbers
+  tollFree1: z.string().trim().optional(),
+  tollFree2: z.string().trim().optional(),
+  callUs1: z.string().trim().optional(),
+  callUs2: z.string().trim().optional(),
+  nriWithinIndia: z.string().trim().optional(),
+  nriOutsideIndia: z.string().trim().optional(),
+
+  // Contact & Hours
+  supportEmail: z.string().email().toLowerCase().optional(),
+  businessHoursFrom: z.string().optional(),
+  businessHoursTo: z.string().optional(),
+
+  // Caution
+  cautionEnabled: z.boolean().optional(),
+  cautionText: z.string().trim().optional(),
+
+  // Travel Planner
+  travelPlannerEnabled: z.boolean().optional(),
+  travelPlannerLabel: z.string().trim().optional(),
+  travelPlannerLink: z.string().trim().optional(),
 });
+
+export type SettingsUpdateInput = z.infer<typeof settingsUpdateValidation>;

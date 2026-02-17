@@ -1,31 +1,109 @@
-import mongoose, { Schema } from 'mongoose';
-import { IGeneralSettings } from './general-settings.interface';
+import { Schema, model, models } from 'mongoose';
+import { IGeneralSettingsDocument } from './general-settings.interface';
 
-const GeneralSettingsSchema: Schema = new Schema(
+const GeneralSettingsSchema = new Schema<IGeneralSettingsDocument>(
   {
-    number: { type: String, trim: true },
-    email: { type: String, trim: true },
-    facebook: { type: String, trim: true },
-    instagram: { type: String, trim: true },
-    linkedIn: { type: String, trim: true },
-    twitter: { type: String, trim: true },
-    youtube: { type: String, trim: true },
-    favicon: { type: String, trim: true },
-    logo: { type: String, trim: true },
-    headerTab: { type: String, trim: true },
-    address: { type: String, trim: true },
-    iframe: { type: String, trim: true },
-    freeShippingThreshold: { type: Number, default: 0 },
+    companyName: {
+      type: String,
+      required: true,
+      trim: true,
+      default: 'Heaven Holiday',
+    },
+    companyLogo: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    favicon: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    copyrightText: {
+      type: String,
+      trim: true,
+      default: '© 2025 Heaven Holiday. All rights reserved.',
+    },
+
+    tollFree1: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    tollFree2: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    callUs1: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    callUs2: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    nriWithinIndia: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    nriOutsideIndia: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+
+    supportEmail: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      default: '',
+    },
+    businessHoursFrom: {
+      type: String,
+      trim: true,
+      default: '10:00',
+    },
+    businessHoursTo: {
+      type: String,
+      trim: true,
+      default: '19:00',
+    },
+
+    cautionEnabled: {
+      type: Boolean,
+      default: false,
+    },
+    cautionText: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+
+    travelPlannerEnabled: {
+      type: Boolean,
+      default: true,
+    },
+    travelPlannerLabel: {
+      type: String,
+      trim: true,
+      default: 'Plan My Trip',
+    },
+    travelPlannerLink: {
+      type: String,
+      trim: true,
+      default: '/plan-trip',
+    },
   },
   {
     timestamps: true,
-    toJSON: {
-      transform: function (doc, ret) {
-        (ret as any).createdAt = new Date((ret as any).createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
-        (ret as any).updatedAt = new Date((ret as any).updatedAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
-      },
-    },
-  }
+  },
 );
 
-export const GeneralSettings = mongoose.model<IGeneralSettings>('GeneralSettings', GeneralSettingsSchema);
+export const GeneralSettings = model<IGeneralSettingsDocument>(
+  'GeneralSettings',
+  GeneralSettingsSchema,
+);

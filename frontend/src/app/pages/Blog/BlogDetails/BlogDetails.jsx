@@ -1,12 +1,13 @@
 "use client";
 import Breadcrumb from "@/app/components/Breadcum";
 import React, { useState } from "react";
-import { useGetAllBlogsQuery } from "../../../../../store/blogs/blogsApi";
-import { useParams } from "next/navigation";
 import {
-  useCreateCommentMutation,
-  useGetAllCommentsQuery,
-} from "store/commentApi/commentApi";
+  useGetAllBlogsQuery,
+  useAddCommentMutation,
+} from "../../../../../store/blogs/blogsApi";
+import { useParams } from "next/navigation";
+
+import { useGetProfileQuery } from "store/authApi/authApi";
 
 const Tag = ({ children }) => (
   <span className="inline-block text-sm px-3 py-1 mr-2 mb-2 rounded-full bg-gray-100 text-gray-700">
@@ -17,46 +18,45 @@ const Tag = ({ children }) => (
 export default function BlogDetails() {
   const { id } = useParams();
 
-  const [name, setName] = useState("");
   const [comment, setComment] = useState("");
 
   const {
     data: blogs,
     isLoading: blogsLoading,
     error: blogsError,
+    refetch,
   } = useGetAllBlogsQuery();
 
   const {
-    data: comments,
-    isLoading: commentsLoading,
-    error: commentsError,
-    refetch,
-  } = useGetAllCommentsQuery();
+    data: profile,
+    isLoading: profileLoading,
+    error: profileError,
+  } = useGetProfileQuery();
+  console.log("profile", profile);
 
-  const [createComment, { isLoading: isCreating }] = useCreateCommentMutation();
+  const [addComment, { isLoading: isCreating }] = useAddCommentMutation();
 
-  // ✅ safer way — use find instead of filter
   const blog = blogs?.data?.find((item) => item._id === id);
 
-  if (blogsLoading || commentsLoading) return <p>Loading...</p>;
-  if (blogsError || commentsError) return <p>Something went wrong</p>;
+  if (blogsLoading || profileLoading) return <p>Loading...</p>;
+  if (blogsError || profileError) return <p>Something went wrong</p>;
   if (!blog) return <p>Blog not found</p>;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!name || !comment) return alert("All fields required");
+    const token = localStorage.getItem("authToken");
+    if (!token) return alert("Please login to post a comment");
+    if (!comment) return alert("Comment is required");
 
     try {
-      await createComment({
+      await addComment({
         blogId: id,
-        name,
-        comment,
+        commentBody: comment,
       }).unwrap();
 
-      setName("");
       setComment("");
-      refetch(); // ✅ refresh comments
+      refetch(); // refresh blog to get updated comments
     } catch (err) {
       console.error(err);
       alert("Failed to post comment");
@@ -106,18 +106,44 @@ export default function BlogDetails() {
               {/* COMMENTS */}
               <div className="mt-10">
                 <h4 className="text-lg font-semibold mb-4">
-                  Comments ({comments?.data?.length || 0})
+                  Comments (
+                  {blog?.comments?.filter((c) => c.status === "active")
+                    ?.length || 0}
+                  )
                 </h4>
 
                 {/* Show comments */}
                 <div className="space-y-4">
-                  {comments?.data
-                    ?.filter((c) => c.blogId === id)
+                  {blog?.comments
+                    ?.filter((c) => c.status === "active")
                     ?.map((c) => (
                       <div key={c._id} className="p-4 border rounded">
-                        <p className="text-sm font-medium">{c.name}</p>
-                        <p className="mt-2 text-sm text-gray-700">
-                          {c.comment}
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-sm font-medium text-gray-800">
+                            {profile.data.user.name
+                              ? `${profile.data.user.name} `
+                              : "Anonymous"}
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            {new Date(c.created_at).toLocaleDateString(
+                              "en-GB",
+                              {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                              },
+                            )}{" "}
+                            {new Date(c.created_at).toLocaleTimeString(
+                              "en-US",
+                              {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              },
+                            )}
+                          </p>
+                        </div>
+                        <p className="mt-1 text-sm text-gray-700">
+                          {c.commentBody}
                         </p>
                       </div>
                     ))}
@@ -128,12 +154,15 @@ export default function BlogDetails() {
                   onSubmit={handleSubmit}
                   className="mt-6 p-4 border rounded grid gap-3"
                 >
-                  <input
-                    className="border rounded px-3 py-2"
-                    placeholder="Your name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
+                  {/* Show logged in user name */}
+                  {profile?.data && (
+                    <p className="text-sm text-gray-600">
+                      Commenting as{" "}
+                      <span className="font-medium text-gray-800">
+                        {profile.data.firstName} {profile.data.lastName}
+                      </span>
+                    </p>
+                  )}
                   <textarea
                     className="border rounded px-3 py-2"
                     rows={4}

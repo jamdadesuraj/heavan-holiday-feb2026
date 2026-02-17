@@ -115,7 +115,7 @@ export default function SpecialityTours() {
             },
           ].map((item) => (
             <Link
-              href="#"
+              href="/tour-list"
               key={item.title}
               className="flex items-center space-x-3 p-3 bg-white rounded-lg shadow hover:shadow-md transition"
             >
@@ -145,7 +145,7 @@ export default function SpecialityTours() {
             "Grandparents and Grandchildren Special Tours",
           ].map((item) => (
             <Link
-              href="#"
+              href="/tour-list"
               key={item}
               className="flex items-start gap-3 bg-orange-50 rounded-lg p-4 hover:bg-orange-100 transition"
             >

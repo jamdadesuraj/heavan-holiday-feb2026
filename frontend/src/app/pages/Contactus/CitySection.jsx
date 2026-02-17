@@ -63,7 +63,7 @@ const CitySection = () => {
 
       {/* Footer */}
       <p className="mt-6 text-blue-600 text-sm font-medium cursor-pointer hover:underline">
-        +50 more cities..
+        +{activeCities.length || ""} more cities..
       </p>
     </div>
   );

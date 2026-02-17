@@ -1,27 +1,21 @@
-// types/brand.interface.ts
+import { Document, Types } from 'mongoose';
 
 export interface IBrand {
-  _id?: string;
   name: string;
   industry: string;
+  image: string;
   isActive: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
 
 export interface IIndustry {
-  _id?: string;
   image: string;
   isActive: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
 
-export interface IBrandsSection {
-  _id?: string;
+export interface IBrandsSection extends Document {
   heading: string;
-  brands: IBrand[];
-  industries: IIndustry[];
+  brands: Types.DocumentArray<IBrand>;
+  industries: Types.DocumentArray<IIndustry>;
   isActive: boolean;
   createdAt?: Date;
   updatedAt?: Date;

@@ -5,6 +5,7 @@ export interface IAboutus extends Document {
     title: string;
     description: string;
     video: string;
+    thumbnail: string;
   };
   createdAt: Date;
   updatedAt: Date;

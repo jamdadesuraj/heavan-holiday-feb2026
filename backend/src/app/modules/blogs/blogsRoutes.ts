@@ -9,6 +9,7 @@ import {
   createBlog,
   updateBlog,
   deleteBlog,
+  addComment,
 } from './blogsController';
 
 import { upload } from '../../config/cloudinary';
@@ -18,6 +19,7 @@ const router = express.Router();
 // ✅ SPECIFIC ROUTES FIRST - Categories (exact paths)
 router.get('/categories', getAllCategories);
 router.post('/categories', createCategory);
+router.post('/:id/comments', addComment);
 
 // ✅ SPECIFIC ROUTES - Blogs (exact paths)
 router.get('/blogs', getWholeDocument);

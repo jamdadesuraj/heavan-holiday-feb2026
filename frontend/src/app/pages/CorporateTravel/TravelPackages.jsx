@@ -7,93 +7,42 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
-
+import { useGetCounterQuery } from "store/counterApi/counterApi";
+import { useGetTourPackageQuery } from "store/toursManagement/toursPackagesApi";
 const TravelPackages = () => {
-  const indiaPackages = [
-    {
-      name: "Goa",
-      nights: "3N",
-      price: "₹20,000",
-      img: "/assets/img/tours/6.webp",
-    },
-    {
-      name: "Munnar",
-      nights: "3N",
-      price: "₹23,000",
-      img: "/assets/img/tours/1.avif",
-    },
-    {
-      name: "Hyderabad",
-      nights: "3N",
-      price: "₹19,000",
-      img: "/assets/img/tours/2.avif",
-    },
-    {
-      name: "Jaipur",
-      nights: "3N",
-      price: "₹22,000",
-      img: "/assets/img/tours/3.avif",
-    },
-    {
-      name: "Udaipur",
-      nights: "3N",
-      price: "₹24,000",
-      img: "/assets/img/tours/4.avif",
-    },
-    {
-      name: "Delhi Agra",
-      nights: "3N",
-      price: "₹21,000",
-      img: "/assets/img/tours/5.avif",
-    },
-  ];
+  const { data, isLoading, error } = useGetCounterQuery();
+  const {
+    data: packages,
+    isLoading: packageLoading,
+    error: packageError,
+  } = useGetTourPackageQuery();
 
-  const internationalPackages = [
-    {
-      name: "Hong Kong",
-      nights: "4N",
-      price: "₹50,000",
-      img: "/assets/img/tours/6.webp",
-    },
-    {
-      name: "Thailand",
-      nights: "4N",
-      price: "₹32,000",
-      img: "/assets/img/tours/7.avif",
-    },
-    {
-      name: "Malaysia",
-      nights: "4N",
-      price: "₹32,000",
-      img: "/assets/img/tours/5.avif",
-    },
-    {
-      name: "Dubai, UAE",
-      nights: "4N",
-      price: "₹40,000",
-      img: "/assets/img/tours/5.avif",
-    },
-    {
-      name: "Vietnam",
-      nights: "4N",
-      price: "₹38,000",
-      img: "/assets/img/tours/2.avif",
-    },
-    {
-      name: "Indonesia",
-      nights: "4N",
-      price: "₹34,000",
-      img: "/assets/img/tours/1.avif",
-    },
-  ];
+  if (isLoading || packageLoading) {
+    return <p>loading</p>;
+  }
+  if (error || packageError) {
+    return <p>error</p>;
+  }
+
+  const indiaPackages = packages?.data?.filter((item) => {
+    return item.category.categoryType == "india";
+  });
+
+  const internationalPackages = packages?.data?.filter((item) => {
+    return item.category.categoryType == "world";
+  });
 
   const renderCards = (packages) =>
     packages.map((pkg, i) => (
       <SwiperSlide key={i}>
         <div className="relative rounded-xl overflow-hidden group shadow-md cursor-pointer">
           <Image
-            src={pkg.img}
-            alt={pkg.name}
+            src={
+              pkg.galleryImages?.length > 0
+                ? pkg.galleryImages[0]
+                : "/assets/img/tours/1.avif"
+            }
+            alt={pkg.title}
             width={300}
             height={200}
             className="object-cover w-full h-52 transition-transform duration-300 group-hover:scale-110"
@@ -104,10 +53,11 @@ const TravelPackages = () => {
 
           {/* Normal bottom text */}
           <div className="absolute bottom-2 left-2 text-white transition-opacity duration-300 group-hover:opacity-0 z-10">
-            <h4 className="font-semibold text-lg">{pkg.name}</h4>
+            <h4 className="font-semibold text-lg">{pkg.title}</h4>
             <p className="text-sm">{pkg.nights}</p>
             <p className="text-xs">
-              Starts from <span className="font-bold">{pkg.price}</span>
+              Starts from{" "}
+              <span className="font-bold">{pkg.baseJoiningPrice}</span>
             </p>
           </div>
 
@@ -139,9 +89,9 @@ const TravelPackages = () => {
             Incentive Corporate Tours for you and your team!
           </h2>
           <p className="text-gray-600 max-w-3xl mx-auto text-sm mt-2">
-            After celebrating life with more than 7,18,824 happy tourists, the
-            travel experts at Veena World have readymade Incentive Tour packages
-            designed for you and your team.
+            After celebrating life with more than {data?.data?.guests || ""}{" "}
+            happy tourists, the travel experts at Heaven Holiday have readymade
+            Incentive Tour packages designed for you and your team.
           </p>
         </div>
 

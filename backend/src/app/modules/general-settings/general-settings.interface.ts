@@ -1,19 +1,33 @@
 import { Document } from 'mongoose';
 
-export interface IGeneralSettings extends Document {
-  number?: string;
-  email?: string;
-  facebook?: string;
-  instagram?: string;
-  linkedIn?: string;
-  twitter?: string;
-  youtube?: string;
-  favicon?: string; // URL
-  logo?: string; // URL
-  headerTab?: string;
-  address?: string;
-  iframe?: string;
-  freeShippingThreshold?: number;
-  createdAt: Date;
-  updatedAt: Date;
+export interface IGeneralSettings {
+  // Brand Identity
+  companyName: string;
+  companyLogo: string;
+  favicon: string;
+  copyrightText: string;
+
+  // Phone Numbers
+  tollFree1: string;
+  tollFree2: string;
+  callUs1: string;
+  callUs2: string;
+  nriWithinIndia: string;
+  nriOutsideIndia: string;
+
+  // Contact & Hours
+  supportEmail: string;
+  businessHoursFrom: string;
+  businessHoursTo: string;
+
+  // Caution / Notice
+  cautionEnabled: boolean;
+  cautionText: string;
+
+  // Travel Planner
+  travelPlannerEnabled: boolean;
+  travelPlannerLabel: string;
+  travelPlannerLink: string;
 }
+
+export interface IGeneralSettingsDocument extends IGeneralSettings, Document {}
