@@ -429,7 +429,7 @@ const DiscoverWorld = () => {
                               href={`/tour-details/${tour._id}`}
                               className="flex-1 border border-blue-600 text-center font-bold text-blue-600 px-2 py-2 rounded-md text-sm"
                             >
-                              View Tour Details
+                              View details
                             </Link>
                             <Link
                               href={`/tour-details/${tour._id}`}

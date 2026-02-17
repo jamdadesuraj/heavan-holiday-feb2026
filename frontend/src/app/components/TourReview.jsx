@@ -75,52 +75,45 @@ const TourReview = () => {
 
       {/* Review Cards */}
       <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6 px-4">
-        {filteredReviews.map((review) => (
+        {filteredReviews.slice(0, 6).map((review) => (
           <div
             key={review._id}
             className="bg-white rounded-lg shadow-md p-5 relative"
           >
-            {/* Rating + Tag */}
             <div className="flex items-center gap-2 mb-2">
               {review.rating && (
                 <div className="flex items-center text-yellow-500">
                   <Star className="w-4 h-4 fill-yellow-500" />
-                  <span className="ml-1 font-bold">{review.rating || ""}</span>
+                  <span className="ml-1 font-bold">{review.rating}</span>
                 </div>
               )}
+
               <span className="text-xs bg-pink-100 text-pink-600 px-2 py-0.5 rounded">
-                {review.tag || ""}
+                {review.tag}
               </span>
             </div>
-            {/* Title */}
-            <h3 className="text-lg font-semibold">{review.title || ""}</h3>
-            {/* Description */}
+
+            <h3 className="text-lg font-semibold">{review.title}</h3>
+
             <p
               className="text-gray-600 text-sm mt-2"
               dangerouslySetInnerHTML={{ __html: review.text || "" }}
             />
-            {/* Author */}
+
             <div className="mt-4">
-              <p className="font-semibold">{review.author || ""}</p>
+              <p className="font-semibold">{review.author}</p>
               <p className="text-xs text-gray-500">
-                Travelled in {review.updatedAt || ""}
+                Travelled in {review.updatedAt}
               </p>
             </div>
-            {/* Guides */}
+
             <div className="mt-3 text-blue-600 text-sm">
-              {review.guides.join(", ")}
+              {review.guides?.join(", ")}
             </div>
-            Optional image
-            {/* {review.img && (
-              <img
-                src={review.img}
-                alt={review.title}
-                className="absolute top-5 right-5 w-20 h-20 object-cover rounded-md"
-              />
-            )} */}
           </div>
         ))}
       </div>
+
 
       {/* Button */}
       <div className="text-center mt-10">

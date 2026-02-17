@@ -31,7 +31,7 @@ export default function Home() {
       <BookingBanner />
       <TourPackagescards />
       <TourReview />
-      <Banner />
+      {/* <Banner /> */}
       <AllInclusive />
       <Counter />
       <DiscoverWorld />
