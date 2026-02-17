@@ -45,7 +45,7 @@ const Tourscards = () => {
         ) : (
           <>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6">
-              {activeCategories.map((tour) => (
+              {activeCategories.slice(0, 7).map((tour) => (
                 <Link
                   href={`tour-list/${tour._id}`}
                   target="_blank"
@@ -65,10 +65,10 @@ const Tourscards = () => {
                       <div className="absolute inset-0 bg-linear-to-t from-black via-transparent to-black opacity-70"></div>
 
                       <span className="absolute bottom-7 left-3 bg-white text-black text-[10px] font-bold px-2 py-1 rounded">
-                        {tour.badge.slice(0, 10)}...
+                        {tour.badge?.slice(0, 10)}...
                       </span>
 
-                      <span className="absolute bottom-1 left-1 font-bold text-white text-[10px] px-2 py-1  rounded">
+                      <span className="absolute bottom-1 left-1 font-bold text-white text-[10px] px-2 py-1 rounded">
                         {tour.categoryType} | {tour.guests} Travelled
                       </span>
                     </div>
@@ -82,6 +82,7 @@ const Tourscards = () => {
                 </Link>
               ))}
             </div>
+
 
             {/* Button */}
             <div className="flex justify-center mt-6">

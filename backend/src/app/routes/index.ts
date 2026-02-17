@@ -73,6 +73,7 @@ import { visaInfoRouter } from '../modules/singaporeVisa/singaporeVisaRoutes';
 import { annualReturnRouter } from '../modules/annulReturn/returnRoutes';
 import { onlineBookingRouter } from '../modules/booking/bookingRoutes';
 import { blogsRouter } from '../modules/blogs/blogsRoutes';
+import { blogsCommentsRouter } from "../modules/blogs/blogComment.Routes"
 import { videoBlogRouter } from '../modules/videoBlogs/videoBlogRoutes';
 import { enquiryRouter } from '../modules/enquiry/enquiryRoutes';
 import { CSRFAQRouter } from '../modules/csrFaq/faqRoutes';
@@ -402,6 +403,10 @@ const moduleRoutes = [
   {
     path: '/blogs',
     route: blogsRouter,
+  },
+  {
+    path: "/blog-comments",
+    route: blogsCommentsRouter
   },
   {
     path: '/video-blogs',
