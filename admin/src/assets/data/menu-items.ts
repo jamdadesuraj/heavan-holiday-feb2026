@@ -10,10 +10,6 @@ export const MENU_ITEMS: MenuItemType[] = [
     key: "dashboard",
     label: "Dashboard",
     icon: "tabler:dashboard",
-    badge: {
-      text: "5",
-      variant: "success",
-    },
     url: "/dashboard",
   },
 
@@ -332,7 +328,7 @@ export const MENU_ITEMS: MenuItemType[] = [
   {
     key: "singapore-visa",
     label: "Singapore Visa",
-    icon: "tabler:passport",
+    icon: "tabler:report",
     url: "/pages/singapore-visa",
   },
 
