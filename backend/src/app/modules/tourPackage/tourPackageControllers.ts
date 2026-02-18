@@ -689,13 +689,32 @@ export const updateTourPackageCard = async (
     }
 
     // Handle images update
+    // Handle images update
+    const removedImages = parseJSON(req.body.removedImages) || [];
+
+    // Remove deleted images from existing gallery
+    let existingImages = tourPackageCard.galleryImages.filter(
+      (img: string) => !removedImages.includes(img),
+    );
+
+    // Delete removed images from storage (if using cloudinary/local)
+    if (removedImages.length > 0) {
+      for (const imageUrl of removedImages) {
+        const publicId = imageUrl.split('/').pop()?.split('.')[0];
+        if (publicId) {
+          await cloudinary.uploader.destroy(`tour-package-cards/${publicId}`);
+        }
+      }
+    }
+
     if (req.files && Array.isArray(req.files) && req.files.length > 0) {
       const files = req.files as Express.Multer.File[];
-
       updateData.galleryImages = [
-        ...tourPackageCard.galleryImages,
+        ...existingImages,
         ...files.map((file) => file.path),
       ];
+    } else {
+      updateData.galleryImages = existingImages;
     }
 
     // Validate and update

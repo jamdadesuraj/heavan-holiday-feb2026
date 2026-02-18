@@ -6,16 +6,17 @@ import Link from "next/link";
 import EmiModal from "./EmiModal";
 import BookingStepperModal from "@/app/components/bookingModals";
 import DepartureBookingSkeleton from "@/app/components/DepartureBookingSkeleton";
-
+import SignInModal from "@/app/components/SignInModal";
+import { useGetContactDetailsQuery } from "store/aboutUsApi/contactApi";
 const DepartureBooking = ({ tourData, onDepartureSelect }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [preSelectedDeparture, setPreSelectedDeparture] = useState(null);
-
+  const [isSignInOpen, setIsSignInOpen] = useState(false);
   // Get first departure for default values
   const firstDeparture = tourData?.departures?.[0];
   const departureCity = firstDeparture?.city || "Mumbai";
-
+  const { data: contact } = useGetContactDetailsQuery();
   // skeleton
   if (!tourData) {
     return <DepartureBookingSkeleton />;
@@ -61,7 +62,6 @@ const DepartureBooking = ({ tourData, onDepartureSelect }) => {
   const emiAmount = Math.ceil(basePrice / 12);
   const formattedEmi = `₹${emiAmount.toLocaleString("en-IN")}/month`;
 
-  // ✅ NEW HANDLER: Handle departure selection
   const handleDepartureSelect = (departure) => {
     console.log("Departure selected:", departure);
     setSelectedDate(departure);
@@ -95,8 +95,8 @@ const DepartureBooking = ({ tourData, onDepartureSelect }) => {
             {/* Left: Date Selection */}
             <DepartureSelector
               departures={tourData?.departures}
-              onDateSelect={handleDepartureSelect} // ✅ UPDATED: Use new handler
-              packageType="Joining Package" // ✅ ADD packageType
+              onDateSelect={handleDepartureSelect}
+              packageType="Joining Package"
             />
 
             {/* Right: Booking Summary */}
@@ -107,7 +107,6 @@ const DepartureBooking = ({ tourData, onDepartureSelect }) => {
                 BOOKING SUMMARY
               </h2>
 
-              {/* Dept City - ✅ UPDATED: Show selected city if available */}
               <div className="mb-2 flex justify-between text-sm text-gray-700">
                 <span>Dept. city</span>
                 <span className="font-medium">
@@ -115,7 +114,6 @@ const DepartureBooking = ({ tourData, onDepartureSelect }) => {
                 </span>
               </div>
 
-              {/* Dept Date - ✅ UPDATED: Show selected date if available */}
               <div className="mb-2 flex justify-between text-sm text-gray-700 wrap-break-word">
                 <span>Dept. date</span>
                 <span className="font-semibold text-black">
@@ -180,11 +178,9 @@ const DepartureBooking = ({ tourData, onDepartureSelect }) => {
                 <div className="flex flex-col gap-2">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-blue-600">📞</span>
-                    <span>1800 22 7979</span>
+                    <span>{contact?.data?.callUs?.phoneNumbers[0]}</span>
                     <span>|</span>
-                    <span>1800 313 5555</span>
-                    <span>|</span>
-                    <span>1800 22 7979</span>
+                    <span>{contact?.data?.callUs?.phoneNumbers[1]}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-blue-600">📍</span>
@@ -199,9 +195,23 @@ const DepartureBooking = ({ tourData, onDepartureSelect }) => {
               </div>
 
               {/* Buttons */}
+
               <div className="flex flex-col sm:flex-row gap-3 bg-gray-900 rounded-lg py-2 px-4">
+                {
+                  <SignInModal
+                    isOpen={isSignInOpen}
+                    onClose={() => setIsSignInOpen(false)}
+                  />
+                }
                 <button
-                  onClick={() => setIsBookingModalOpen(true)}
+                  onClick={() => {
+                    const token = localStorage.getItem("authToken");
+                    if (!token) {
+                      setIsSignInOpen(true);
+                    } else {
+                      setIsBookingModalOpen(true);
+                    }
+                  }}
                   className="flex-1 py-2 bg-red-700 rounded-lg font-medium hover:bg-red-500 text-white transition cursor-pointer"
                 >
                   Book Online

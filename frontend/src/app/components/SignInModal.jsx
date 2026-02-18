@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { User, X } from "lucide-react";
+import { X } from "lucide-react";
 import Link from "next/link";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 import { auth, sendOtp } from "@/app/config/firebase";
 import {
@@ -10,10 +12,10 @@ import {
   useCompleteBasicInfoMutation,
 } from "store/authApi/authApi";
 
-const SignInModal = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const SignInModal = ({ isOpen, onClose }) => {
   const [step, setStep] = useState(1);
   const [mobile, setMobile] = useState("");
+  const [countryCode, setCountryCode] = useState("91");
   const [otp, setOtp] = useState("");
   const [userData, setUserData] = useState({
     firstName: "",
@@ -23,7 +25,7 @@ const SignInModal = () => {
   const [loading, setLoading] = useState(false);
   const [confirmResult, setConfirmResult] = useState(null);
 
-  const isMobileValid = mobile.length === 10;
+  const isMobileValid = mobile.length >= 6;
   const isOtpValid = otp.length === 6;
 
   // RTK mutations
@@ -35,9 +37,8 @@ const SignInModal = () => {
       // Step 1: Send OTP
       if (step === 1 && isMobileValid) {
         setLoading(true);
-        const phoneNumber = `+91${mobile}`;
+        const phoneNumber = `+${countryCode}${mobile}`;
 
-        // Use your sendOtp function
         const confirmation = await sendOtp(phoneNumber);
 
         setConfirmResult(confirmation);
@@ -63,7 +64,7 @@ const SignInModal = () => {
 
         // Call backend to register/login
         const response = await verifyPhoneAndRegister({
-          phone: `+91${mobile}`,
+          phone: `+${countryCode}${mobile}`,
         }).unwrap();
 
         // Check if user is new or existing
@@ -71,12 +72,11 @@ const SignInModal = () => {
           response.data.isNewUser &&
           response.data.requiresProfileCompletion
         ) {
-          setStep(3); // Go to profile completion
+          setStep(3);
         } else {
-          // User already exists, close modal
           alert("Login successful! Welcome back.");
           resetForm();
-          setIsOpen(false);
+          onClose();
         }
 
         setLoading(false);
@@ -102,9 +102,8 @@ const SignInModal = () => {
 
         alert("Account created successfully! Welcome to Heaven Holiday.");
 
-        // Reset and close modal
         resetForm();
-        setIsOpen(false);
+        onClose();
         setLoading(false);
       }
     } catch (error) {
@@ -130,6 +129,7 @@ const SignInModal = () => {
   const resetForm = () => {
     setStep(1);
     setMobile("");
+    setCountryCode("91");
     setOtp("");
     setUserData({ firstName: "", lastName: "", email: "" });
     setConfirmResult(null);
@@ -138,7 +138,7 @@ const SignInModal = () => {
   const handleResendOTP = async () => {
     try {
       setLoading(true);
-      const phoneNumber = `+91${mobile}`;
+      const phoneNumber = `+${countryCode}${mobile}`;
       const confirmation = await sendOtp(phoneNumber);
       setConfirmResult(confirmation);
       alert("OTP resent successfully!");
@@ -152,15 +152,6 @@ const SignInModal = () => {
 
   return (
     <>
-      {/* Trigger button */}
-      <button
-        onClick={() => setIsOpen(true)}
-        className="flex items-center gap-1 hover:text-yellow-400 text-xs cursor-pointer"
-      >
-        <User className="w-4 h-4" />
-        <span className="hidden sm:inline">Sign In</span>
-      </button>
-
       {/* Modal overlay */}
       {isOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -171,7 +162,7 @@ const SignInModal = () => {
               className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 bg-gray-200 p-2 rounded-full cursor-pointer"
               onClick={() => {
                 resetForm();
-                setIsOpen(false);
+                onClose();
               }}
             >
               <X className="w-5 h-5" />
@@ -187,23 +178,22 @@ const SignInModal = () => {
                   Please enter your mobile number to receive a verification code
                 </p>
 
-                <div className="flex items-center border rounded-lg overflow-hidden mb-4">
-                  <select className="px-2 py-2 bg-gray-100 text-sm outline-none">
-                    <option value="+91">🇮🇳 +91</option>
-                    <option value="+1">🇺🇸 +1</option>
-                    <option value="+44">🇬🇧 +44</option>
-                  </select>
-                  <input
-                    type="tel"
-                    value={mobile}
-                    onChange={(e) =>
-                      setMobile(e.target.value.replace(/\D/g, ""))
-                    }
-                    maxLength={10}
-                    placeholder="Enter 10 digit mobile number"
-                    className="flex-1 px-3 py-2 text-sm outline-none"
-                  />
-                </div>
+                {/* UPDATED: react-phone-input-2 */}
+                <PhoneInput
+                  country={"in"}
+                  value={countryCode + mobile}
+                  onChange={(value, data) => {
+                    setCountryCode(data.dialCode);
+                    setMobile(value.slice(data.dialCode.length));
+                  }}
+                  inputStyle={{
+                    width: "100%",
+                    height: "40px",
+                    fontSize: "14px",
+                    borderRadius: "8px",
+                  }}
+                  containerStyle={{ marginBottom: "16px" }}
+                />
 
                 <button
                   disabled={!isMobileValid || loading}
@@ -226,7 +216,8 @@ const SignInModal = () => {
                   Verify OTP
                 </h2>
                 <p className="text-sm text-gray-600 text-center mb-6">
-                  Enter the 6-digit code sent to +91{mobile}
+                  Enter the 6-digit code sent to +{countryCode}
+                  {mobile}
                 </p>
 
                 <input
@@ -372,7 +363,7 @@ const SignInModal = () => {
               <Link
                 onClick={() => {
                   resetForm();
-                  setIsOpen(false);
+                  onClose();
                 }}
                 href="/term-conditions"
                 className="text-blue-600 hover:underline"
@@ -385,7 +376,7 @@ const SignInModal = () => {
                 className="text-blue-600 hover:underline"
                 onClick={() => {
                   resetForm();
-                  setIsOpen(false);
+                  onClose();
                 }}
               >
                 Privacy Policy

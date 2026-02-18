@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useMemo } from "react";
-
+import SignInModal from "@/app/components/SignInModal";
 // Modal Component
 const Modal = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
@@ -29,6 +29,7 @@ const DepartureSelector = ({
   const [selectedDateDepartures, setSelectedDateDepartures] = useState(null); // Stores all departures for clicked date
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCity, setSelectedCity] = useState("");
+  const [isSignInOpen, setIsSignInOpen] = useState(false);
 
   // Get unique cities from departures
   const uniqueCities = useMemo(() => {
@@ -232,6 +233,11 @@ const DepartureSelector = ({
     if (dateInfo.disabled) {
       return;
     }
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setIsSignInOpen(true);
+      return;
+    }
 
     // If city tab is active (not "All departures"), select directly
     if (activeTab !== "All departures") {
@@ -302,168 +308,174 @@ const DepartureSelector = ({
 
   return (
     <>
-      <div
-        id="departure-section"
-        className="bg-white p-4 rounded-lg shadow-md w-full md:col-span-2 flex flex-col"
-      >
-        <h2 className="font-semibold text-lg mb-2 border-b pb-2">
-          1. SELECT DEPARTURE CITY & DATE
-        </h2>
-        {/* Tabs */}
-        <div className="flex gap-3 my-4">
-          <button
-            onClick={() => handleTabClick("All departures")}
-            className={`px-4 py-2 rounded-full border cursor-pointer text-xs ${
-              activeTab === "All departures"
-                ? "bg-blue-900 text-white cursor-pointer border-blue-600"
-                : "border-gray-300 bg-white text-gray-700"
-            }`}
-          >
-            All departures
-          </button>
-          {uniqueCities.map((city) => (
+      <div>
+        <div
+          id="departure-section"
+          className="bg-white p-4 rounded-lg shadow-md w-full md:col-span-2 flex flex-col"
+        >
+          <h2 className="font-semibold text-lg mb-2 border-b pb-2">
+            1. SELECT DEPARTURE CITY & DATE
+          </h2>
+          {/* Tabs */}
+          <div className="flex gap-3 my-4">
             <button
-              key={city}
-              onClick={() => handleTabClick(city)}
+              onClick={() => handleTabClick("All departures")}
               className={`px-4 py-2 rounded-full border cursor-pointer text-xs ${
-                activeTab === city
+                activeTab === "All departures"
                   ? "bg-blue-900 text-white cursor-pointer border-blue-600"
                   : "border-gray-300 bg-white text-gray-700"
               }`}
             >
-              {city}
+              All departures
             </button>
-          ))}
-        </div>
+            {uniqueCities.map((city) => (
+              <button
+                key={city}
+                onClick={() => handleTabClick(city)}
+                className={`px-4 py-2 rounded-full border cursor-pointer text-xs ${
+                  activeTab === city
+                    ? "bg-blue-900 text-white cursor-pointer border-blue-600"
+                    : "border-gray-300 bg-white text-gray-700"
+                }`}
+              >
+                {city}
+              </button>
+            ))}
+          </div>
 
-        {/* Header */}
-        <div className="flex justify-between items-center mb-4 text-sm">
-          <div>
-            <p className="font-semibold">{activeTab} dates</p>
-            <p className="text-green-600">
-              All inclusive tours, lock in at this great price today.
-            </p>
+          {/* Header */}
+          <div className="flex justify-between items-center mb-4 text-sm">
+            <div>
+              <p className="font-semibold">{activeTab} dates</p>
+              <p className="text-green-600">
+                All inclusive tours, lock in at this great price today.
+              </p>
+            </div>
+          </div>
+
+          {/* Month + Date Cards */}
+          <div className="flex flex-wrap gap-4">
+            {groupedDepartures.map((month, i) => (
+              <div key={i} className="flex items-start gap-2">
+                <div className="bg-gray-700 text-white text-[10px] w-10 text-center px-2 py-6 rounded-md">
+                  {month.name}
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  {month.dates.map((date, j) => (
+                    <div
+                      key={j}
+                      onClick={() => handleDateClick(date)}
+                      className={`w-24 text-center rounded-lg p-2 border transition ${
+                        date.disabled
+                          ? "cursor-not-allowed opacity-50 bg-gray-100"
+                          : "cursor-pointer hover:border-blue-400"
+                      } ${"border-gray-300"} ${
+                        date.status === "green"
+                          ? "bg-green-100"
+                          : date.status === "red"
+                            ? "bg-red-50"
+                            : date.status === "orange"
+                              ? "bg-orange-50"
+                              : date.status === "purple"
+                                ? "bg-purple-50"
+                                : "bg-white"
+                      }`}
+                    >
+                      <div className="text-[10px] text-gray-800 border-b py-1">
+                        {date.weekday}
+                      </div>
+                      <div className="text-sm font-bold">{date.day}</div>
+                      <div className="text-xs font-medium">{date.price}</div>
+                      {date.label && (
+                        <div
+                          className={`text-[10px] mt-1 font-semibold ${
+                            date.status === "red"
+                              ? "text-red-500"
+                              : date.status === "orange"
+                                ? "text-orange-500"
+                                : date.status === "green"
+                                  ? "text-green-600"
+                                  : date.status === "purple"
+                                    ? "text-purple-600"
+                                    : "text-gray-500"
+                          }`}
+                        >
+                          {date.label}
+                        </div>
+                      )}
+                      {/* Show cities count if multiple cities and "All departures" tab */}
+                      {activeTab === "All departures" &&
+                        date.cities.length > 1 && (
+                          <div className="text-[9px] text-blue-600 mt-1 font-medium">
+                            {date.cities.length} cities
+                          </div>
+                        )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* footer text */}
+          <div className="text-xs text-gray-500 mt-auto">
+            <ul className="flex gap-4 list-none p-0">
+              <li>Terms and Conditions apply.</li>
+              <li>5% GST is applicable on given tour price.</li>
+              <li>
+                Mentioned tour prices are Per Person for Indian Nationals only.
+              </li>
+            </ul>
           </div>
         </div>
 
-        {/* Month + Date Cards */}
-        <div className="flex flex-wrap gap-4">
-          {groupedDepartures.map((month, i) => (
-            <div key={i} className="flex items-start gap-2">
-              <div className="bg-gray-700 text-white text-[10px] w-10 text-center px-2 py-6 rounded-md">
-                {month.name}
-              </div>
-              <div className="flex gap-2 flex-wrap">
-                {month.dates.map((date, j) => (
-                  <div
-                    key={j}
-                    onClick={() => handleDateClick(date)}
-                    className={`w-24 text-center rounded-lg p-2 border transition ${
-                      date.disabled
-                        ? "cursor-not-allowed opacity-50 bg-gray-100"
-                        : "cursor-pointer hover:border-blue-400"
-                    } ${"border-gray-300"} ${
-                      date.status === "green"
-                        ? "bg-green-100"
-                        : date.status === "red"
-                          ? "bg-red-50"
-                          : date.status === "orange"
-                            ? "bg-orange-50"
-                            : date.status === "purple"
-                              ? "bg-purple-50"
-                              : "bg-white"
-                    }`}
-                  >
-                    <div className="text-[10px] text-gray-800 border-b py-1">
-                      {date.weekday}
-                    </div>
-                    <div className="text-sm font-bold">{date.day}</div>
-                    <div className="text-xs font-medium">{date.price}</div>
-                    {date.label && (
-                      <div
-                        className={`text-[10px] mt-1 font-semibold ${
-                          date.status === "red"
-                            ? "text-red-500"
-                            : date.status === "orange"
-                              ? "text-orange-500"
-                              : date.status === "green"
-                                ? "text-green-600"
-                                : date.status === "purple"
-                                  ? "text-purple-600"
-                                  : "text-gray-500"
-                        }`}
-                      >
-                        {date.label}
-                      </div>
-                    )}
-                    {/* Show cities count if multiple cities and "All departures" tab */}
-                    {activeTab === "All departures" &&
-                      date.cities.length > 1 && (
-                        <div className="text-[9px] text-blue-600 mt-1 font-medium">
-                          {date.cities.length} cities
-                        </div>
-                      )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* Modal - Only shows cities available for the clicked date */}
+        <Modal isOpen={isModalOpen} onClose={handleModalClose}>
+          <h3 className="text-lg font-semibold mb-4 text-center">
+            Select your preferred departure city
+          </h3>
 
-        {/* footer text */}
-        <div className="text-xs text-gray-500 mt-auto">
-          <ul className="flex gap-4 list-none p-0">
-            <li>Terms and Conditions apply.</li>
-            <li>5% GST is applicable on given tour price.</li>
-            <li>
-              Mentioned tour prices are Per Person for Indian Nationals only.
-            </li>
-          </ul>
-        </div>
+          <div className="space-y-3 mb-4">
+            {modalCities.map((city) => (
+              <label
+                key={city}
+                className="flex items-center gap-2 cursor-pointer"
+              >
+                <input
+                  type="radio"
+                  name="city"
+                  value={city}
+                  checked={selectedCity === city}
+                  onChange={(e) => setSelectedCity(e.target.value)}
+                  className="h-4 w-4"
+                />
+                <span>{city}</span>
+              </label>
+            ))}
+          </div>
+
+          <div className="bg-blue-50 text-gray-700 text-sm p-2 rounded mb-4">
+            Except for joining/leaving, To & fro economy class air is included
+            for all departure city.
+          </div>
+
+          <button
+            onClick={handleProceed}
+            disabled={!selectedCity}
+            className={`w-full py-2 rounded-md font-medium ${
+              selectedCity
+                ? "bg-yellow-300 hover:bg-red-700 hover:text-white"
+                : "bg-yellow-200 text-gray-400 cursor-not-allowed"
+            }`}
+          >
+            Proceed
+          </button>
+        </Modal>
+        <SignInModal
+          isOpen={isSignInOpen}
+          onClose={() => setIsSignInOpen(false)}
+        />
       </div>
-
-      {/* Modal - Only shows cities available for the clicked date */}
-      <Modal isOpen={isModalOpen} onClose={handleModalClose}>
-        <h3 className="text-lg font-semibold mb-4 text-center">
-          Select your preferred departure city
-        </h3>
-
-        <div className="space-y-3 mb-4">
-          {modalCities.map((city) => (
-            <label
-              key={city}
-              className="flex items-center gap-2 cursor-pointer"
-            >
-              <input
-                type="radio"
-                name="city"
-                value={city}
-                checked={selectedCity === city}
-                onChange={(e) => setSelectedCity(e.target.value)}
-                className="h-4 w-4"
-              />
-              <span>{city}</span>
-            </label>
-          ))}
-        </div>
-
-        <div className="bg-blue-50 text-gray-700 text-sm p-2 rounded mb-4">
-          Except for joining/leaving, To & fro economy class air is included for
-          all departure city.
-        </div>
-
-        <button
-          onClick={handleProceed}
-          disabled={!selectedCity}
-          className={`w-full py-2 rounded-md font-medium ${
-            selectedCity
-              ? "bg-yellow-300 hover:bg-red-700 hover:text-white"
-              : "bg-yellow-200 text-gray-400 cursor-not-allowed"
-          }`}
-        >
-          Proceed
-        </button>
-      </Modal>
     </>
   );
 };

@@ -3,24 +3,64 @@
 import React, { useState } from "react";
 import { Heart, Download, Mail, Share2, X, Copy } from "lucide-react";
 import Link from "next/link";
-import { FaFacebook, FaWhatsapp } from "react-icons/fa";
+import { FaFacebook, FaWhatsapp, FaTwitter, FaInstagram } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { useAddToWishlistMutation } from "store/authApi/authApi";
 import { auth } from "@/app/config/firebase";
 
-const TourActions = ({ packageId }) => {
+const TourActions = ({ packageId, tourTitle: tourTitleProp }) => {
   const router = useRouter();
   const [activeModal, setActiveModal] = useState(null);
   const [addToWishlist] = useAddToWishlistMutation();
 
   const closeModal = () => setActiveModal(null);
 
+  // Share helpers
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+  const tourTitle = tourTitleProp || "Check out this tour on Heaven Holiday!";
+
+  const handleWhatsAppShare = () => {
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(tourTitle + " " + shareUrl)}`,
+      "_blank",
+    );
+  };
+
+  const handleFacebookShare = () => {
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
+      "_blank",
+    );
+  };
+
+  const handleTwitterShare = () => {
+    window.open(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(tourTitle)}&url=${encodeURIComponent(shareUrl)}`,
+      "_blank",
+    );
+  };
+
+  const handleInstagramShare = async () => {
+    if (navigator.share) {
+      // Mobile: opens native share sheet where user can pick Instagram
+      await navigator.share({ title: tourTitle, url: shareUrl });
+    } else {
+      // Desktop: copy link
+      navigator.clipboard.writeText(shareUrl);
+      alert("Link copied! Open Instagram and paste it in your story or bio.");
+    }
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(shareUrl);
+    alert("Link copied to clipboard!");
+  };
+
   const handleAddToWishlist = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
     try {
-      // Check if user is authenticated
       const token = localStorage.getItem("authToken");
 
       if (!token && !auth.currentUser) {
@@ -29,11 +69,8 @@ const TourActions = ({ packageId }) => {
         return;
       }
 
-      // Backend gets Firebase UID from token automatically
       await addToWishlist({ packageId }).unwrap();
       alert("Package added to wishlist successfully!");
-
-      // Redirect to wishlist page
       router.push("/account/wishlist");
     } catch (error) {
       console.error("Wishlist error:", error);
@@ -79,7 +116,6 @@ const TourActions = ({ packageId }) => {
       {activeModal === "download" && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
           <div className="bg-white rounded-lg w-[600px] flex relative overflow-hidden">
-            {/* Left image */}
             <div className="w-1/2">
               <img
                 src="/assets/img/tour-card/1.avif"
@@ -87,7 +123,6 @@ const TourActions = ({ packageId }) => {
                 className="h-full w-full object-cover"
               />
             </div>
-            {/* Right content */}
             <div className="w-1/2 p-6">
               <button
                 className="absolute top-2 right-2 text-gray-500 cursor-pointer bg-gray-300 p-2 rounded-full"
@@ -123,7 +158,6 @@ const TourActions = ({ packageId }) => {
       {activeModal === "email" && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
           <div className="bg-white rounded-lg w-[600px] flex relative overflow-hidden">
-            {/* Left image */}
             <div className="w-1/2">
               <img
                 src="/assets/img/tour-card/2.avif"
@@ -131,7 +165,6 @@ const TourActions = ({ packageId }) => {
                 className="h-full w-full object-cover"
               />
             </div>
-            {/* Right content */}
             <div className="w-1/2 p-6">
               <button
                 className="absolute top-2 right-2 text-gray-500 cursor-pointer bg-gray-300 p-2 rounded-full"
@@ -177,7 +210,6 @@ const TourActions = ({ packageId }) => {
       {activeModal === "share" && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
           <div className="bg-white rounded-lg w-[500px] flex relative overflow-hidden">
-            {/* Left image */}
             <div className="w-1/2">
               <img
                 src="/assets/img/tour-card/3.avif"
@@ -185,7 +217,6 @@ const TourActions = ({ packageId }) => {
                 className="h-full w-full object-cover"
               />
             </div>
-            {/* Right content */}
             <div className="w-1/2 p-6">
               <button
                 className="absolute top-2 right-2 text-gray-500 cursor-pointer bg-gray-300 p-2 rounded-full"
@@ -195,17 +226,42 @@ const TourActions = ({ packageId }) => {
               </button>
               <h2 className="text-lg font-semibold mb-4">Share This Tour</h2>
               <div className="flex flex-col gap-2">
-                <button className="flex items-center gap-2 border px-3 py-2 rounded hover:bg-gray-100 text-green-600 text-xs cursor-pointer">
+                <button
+                  onClick={handleWhatsAppShare}
+                  className="flex items-center gap-2 border px-3 py-2 rounded hover:bg-gray-100 text-green-600 text-xs cursor-pointer"
+                >
                   <FaWhatsapp className="w-4 h-4" />
                   Share via WhatsApp
                 </button>
 
-                <button className="flex items-center gap-2 border px-3 py-2 rounded hover:bg-gray-100 text-blue-600 text-xs cursor-pointer">
+                <button
+                  onClick={handleFacebookShare}
+                  className="flex items-center gap-2 border px-3 py-2 rounded hover:bg-gray-100 text-blue-600 text-xs cursor-pointer"
+                >
                   <FaFacebook className="w-4 h-4" />
                   Share via Facebook
                 </button>
 
-                <button className="flex items-center gap-2 border px-3 py-2 rounded hover:bg-gray-100 text-gray-700 text-xs cursor-pointer">
+                <button
+                  onClick={handleTwitterShare}
+                  className="flex items-center gap-2 border px-3 py-2 rounded hover:bg-gray-100 text-sky-500 text-xs cursor-pointer"
+                >
+                  <FaTwitter className="w-4 h-4" />
+                  Share via Twitter
+                </button>
+
+                <button
+                  onClick={handleInstagramShare}
+                  className="flex items-center gap-2 border px-3 py-2 rounded hover:bg-gray-100 text-pink-600 text-xs cursor-pointer"
+                >
+                  <FaInstagram className="w-4 h-4" />
+                  Share via Instagram
+                </button>
+
+                <button
+                  onClick={handleCopyLink}
+                  className="flex items-center gap-2 border px-3 py-2 rounded hover:bg-gray-100 text-gray-700 text-xs cursor-pointer"
+                >
                   <Copy className="w-4 h-4" />
                   Copy Link
                 </button>

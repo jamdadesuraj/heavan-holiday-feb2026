@@ -86,7 +86,7 @@ const TourPackagePage = () => {
   const [activeTab, setActiveTab] = useState("categories");
   const [modalType, setModalType] = useState<ModalType>(null);
   const [isEditMode, setIsEditMode] = useState(false);
-
+  const [removedImages, setRemovedImages] = useState<string[]>([]);
   // Category state
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [categoryName, setCategoryName] = useState("");
@@ -250,6 +250,7 @@ const TourPackagePage = () => {
     setTourIncludes([]);
     setTourGalleryFiles([]);
     setTourGalleryPreviews([]);
+    setRemovedImages([]);
     setCurrentTourCardTab("basic");
     setTourInclusions("");
     setTourExclusions("");
@@ -541,14 +542,6 @@ const TourPackagePage = () => {
     const previews: string[] = [];
 
     for (const file of files) {
-      if (file.size > 5 * 1024 * 1024) {
-        showAlert(
-          `${file.name} exceeds 5MB. Please upload smaller images.`,
-          "warning",
-        );
-        continue;
-      }
-
       if (!file.type.startsWith("image/")) {
         showAlert(`${file.name} is not a valid image file.`, "warning");
         continue;
@@ -563,9 +556,14 @@ const TourPackagePage = () => {
   };
 
   const handleRemoveGalleryImage = (index: number) => {
-    setTourGalleryPreviews((prev) => prev.filter((_, i) => i !== index));
-
     const preview = tourGalleryPreviews[index];
+
+    // If server image (not blob), track it as removed
+    if (preview && !preview.startsWith("blob:")) {
+      setRemovedImages((prev) => [...prev, preview]);
+    }
+
+    // If blob, remove from files too
     if (preview && preview.startsWith("blob:")) {
       const fileIndex = tourGalleryFiles.findIndex(
         (_, i) => URL.createObjectURL(tourGalleryFiles[i]) === preview,
@@ -574,6 +572,8 @@ const TourPackagePage = () => {
         setTourGalleryFiles((prev) => prev.filter((_, i) => i !== fileIndex));
       }
     }
+
+    setTourGalleryPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
   // State helpers
@@ -940,6 +940,7 @@ const TourPackagePage = () => {
 
       if (isEditMode) {
         formData.append("existingImages", JSON.stringify(tourGalleryPreviews));
+        formData.append("removedImages", JSON.stringify(removedImages));
       }
 
       // Send new files

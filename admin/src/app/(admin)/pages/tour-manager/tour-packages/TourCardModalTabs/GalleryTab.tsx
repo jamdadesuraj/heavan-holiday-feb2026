@@ -29,7 +29,6 @@ const GalleryTab = ({
             onFileUpload={handleTourGalleryChange}
             icon="ri:upload-cloud-2-line"
             text="Drop images here or click to upload."
-            extraText="(Maximum file size: 5MB per image. Multiple images allowed)"
           />
         ) : (
           <>
