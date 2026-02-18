@@ -6,12 +6,15 @@ import { FaSms, FaWhatsapp } from "react-icons/fa";
 import Link from "next/link";
 import CitySection from "./CitySection";
 import { useGetAllOfficesQuery } from "../../../../store/contact-office/contactOfficeApi";
+import PhoneInput from "react-phone-input-2";
 
 const OfficeCard = () => {
   const [selectedOffice, setSelectedOffice] = useState(null);
   const [phone, setPhone] = useState("");
   const [consent, setConsent] = useState(false);
   const { data, isLoading, error } = useGetAllOfficesQuery();
+  const [countryCode, setCountryCode] = useState("91");
+  const [mobile, setMobile] = useState("");
 
   if (isLoading) {
     return (
@@ -151,7 +154,7 @@ const OfficeCard = () => {
 
       {/* 🔹 Share Modal */}
       {selectedOffice && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-lg p-6 w-80 relative">
             {/* Close Btn */}
             <button
@@ -171,20 +174,22 @@ const OfficeCard = () => {
             </h3>
 
             {/* Phone Input */}
-            <div className="flex border rounded-md overflow-hidden">
-              <select className="bg-gray-100 px-2 text-sm border-r">
-                <option value="+91">🇮🇳 +91</option>
-                <option value="+1">🇺🇸 +1</option>
-                <option value="+44">🇬🇧 +44</option>
-              </select>
-              <input
-                type="tel"
-                placeholder="Enter mobile number"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="flex-1 px-3 py-2 text-sm outline-none"
-              />
-            </div>
+            {/* UPDATED: react-phone-input-2 */}
+            <PhoneInput
+              country={"in"}
+              value={countryCode + mobile}
+              onChange={(value, data) => {
+                setCountryCode(data.dialCode);
+                setMobile(value.slice(data.dialCode.length));
+              }}
+              inputStyle={{
+                width: "100%",
+                height: "40px",
+                fontSize: "14px",
+                borderRadius: "8px",
+              }}
+              containerStyle={{ marginBottom: "16px" }}
+            />
 
             {/* Checkbox */}
             <label className="flex items-center gap-2 mt-3 text-sm text-gray-600">

@@ -41,6 +41,7 @@ import BookingStepperModal from "@/app/components/bookingModals";
 import { useState } from "react";
 import { useGetTourReviewQuery } from "store/reviewsApi/reviewsApi";
 import { useCreateEnquiryMutation } from "store/enquiryApi/enquiryApi";
+import toast from "react-hot-toast";
 const TourDetails = () => {
   const breadcrumbItems = [
     { label: "Home", href: "/" },
@@ -213,10 +214,12 @@ const TourDetails = () => {
         status: "active",
       }).unwrap();
 
-      alert("Request submitted successfully! We will call you back soon.");
+      toast.success(
+        "Request submitted successfully! We will call you back soon.",
+      );
       setFormData({ name: "", mono: "" });
     } catch (error) {
-      alert(
+      toast.error(
         error?.data?.message || "Failed to submit request. Please try again.",
       );
     }

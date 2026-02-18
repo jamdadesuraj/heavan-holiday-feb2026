@@ -20,6 +20,7 @@ import {
 } from "store/authApi/authApi";
 import { auth } from "@/app/config/firebase";
 import { useGetTourReviewQuery } from "store/reviewsApi/reviewsApi";
+import toast from "react-hot-toast";
 const DiscoverWorld = () => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("");
@@ -139,7 +140,7 @@ const DiscoverWorld = () => {
       } else {
         await addToWishlist({ packageId }).unwrap();
         setWishlistItems((prev) => new Set(prev).add(packageId));
-        alert("Added to wishlist");
+        toast.success("Added to wishlist");
       }
     } catch (error) {
       console.error("Wishlist error:", error);
@@ -148,7 +149,7 @@ const DiscoverWorld = () => {
       } else if (error?.message) {
         alert(error.message);
       } else {
-        alert("Failed to update wishlist");
+        toast.error("Failed to update wishlist");
       }
     }
   };

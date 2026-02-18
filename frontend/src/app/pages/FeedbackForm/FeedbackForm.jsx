@@ -3,7 +3,7 @@
 import Breadcrumb from "@/app/components/Breadcum";
 import React, { useState, useRef } from "react";
 import { useCreateFeedbackMutation } from "../../../../store/reviewsFeedback/reviewsApi";
-
+import toast from "react-hot-toast";
 const FeedbackForm = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -40,11 +40,11 @@ const FeedbackForm = () => {
       });
 
       // Show success message
-      alert("Feedback submitted successfully!");
+
+      toast.success("Feedback submitted successfully!");
     } catch (err) {
-      // Error handling
-      console.error("Failed to submit feedback:", err);
-      alert(
+      // Show error message
+      toast.error(
         err?.data?.message || "Failed to submit feedback. Please try again.",
       );
     }

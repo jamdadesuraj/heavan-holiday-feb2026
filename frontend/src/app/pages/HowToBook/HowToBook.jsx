@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { useGetContactDetailsQuery } from "../../../../store/aboutUsApi/contactApi";
 import { useGetOnlineBookingQuery } from "../../../../store/onlineBookingApi/stepsApi";
 import { useCreateEnquiryMutation } from "../../../../store/enquiryApi/enquiryApi";
+import toast from "react-hot-toast";
 
 const HowToBook = () => {
   // Form state
@@ -51,10 +52,12 @@ const HowToBook = () => {
         status: "active",
       }).unwrap();
 
-      alert("Request submitted successfully! We will call you back soon.");
+      toast.success(
+        "Request submitted successfully! We will call you back soon.",
+      );
       setFormData({ name: "", mono: "" });
     } catch (error) {
-      alert(
+      toast.error(
         error?.data?.message || "Failed to submit request. Please try again.",
       );
     }

@@ -30,7 +30,7 @@ export default function CustomizedHolidays() {
   }, [data]);
 
   return (
-    <div className="left-0 top-full w-full lg:w-[650px] bg-white shadow-lg border-t border-gray-200 z-50 overflow-hidden">
+    <div className="left-0 top-full w-full lg:w-162.5 bg-white shadow-lg border-t border-gray-200 z-50 overflow-hidden">
       <div className="flex flex-col md:flex-row p-4 md:p-6 gap-6 md:gap-8">
         {/* LEFT SIDE */}
         <div className="w-full md:w-1/2 space-y-5 text-sm">
@@ -52,7 +52,7 @@ export default function CustomizedHolidays() {
             </div>
           </Link>
 
-          <ul className="space-y-3 sm:space-y-4">
+          <ul className="space-y-10 sm:space-y-4 flex flex-col gap-3">
             <Link href="/tour-list">
               <li className="flex items-center gap-3">
                 <Users className="w-5 h-5 text-gray-600 shrink-0" />
@@ -65,11 +65,13 @@ export default function CustomizedHolidays() {
                 <span className="text-gray-700 text-sm">Romantic Holidays</span>
               </li>
             </Link>
-            <Link href="/tour-list"></Link>
-            <li className="flex items-center gap-3">
-              <Compass className="w-5 h-5 text-gray-600 shrink-0" />
-              <span className="text-gray-700 text-sm">Getaways</span>
-            </li>
+            <Link href="/tour-list">
+              <li className="flex items-center gap-3">
+                <Compass className="w-5 h-5 text-gray-600 shrink-0" />
+                <span className="text-gray-700 text-sm">Getaways</span>
+              </li>
+            </Link>
+
             <Link href="/tour-list">
               <li className="flex items-center gap-3 flex-wrap">
                 <Gift className="w-5 h-5 text-gray-600 shrink-0" />

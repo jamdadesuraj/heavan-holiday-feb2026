@@ -8,6 +8,7 @@ import { useGetContactDetailsQuery } from "../../../../store/aboutUsApi/contactA
 import { useGetTourManagerDirectoryQuery } from "../../../../store/toursManagement/tourManagersApi";
 import { useCreateEnquiryMutation } from "../../../../store/enquiryApi/enquiryApi";
 import { useGetSettingsQuery } from "store/settings/settingsApi";
+import toast from "react-hot-toast";
 
 const RightSidebar = () => {
   const featureImage = [
@@ -58,16 +59,17 @@ const RightSidebar = () => {
   } = useGetSettingsQuery();
 
   // Handle form submission
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.name || !formData.mono) {
-      alert("Please fill all fields!");
+      toast.error("Please fill all fields!");
       return;
     }
 
     if (!/^[0-9]{10}$/.test(formData.mono)) {
-      alert("Mobile number must be exactly 10 digits!");
+      toast.error("Mobile number must be exactly 10 digits!");
       return;
     }
 
@@ -79,10 +81,13 @@ const RightSidebar = () => {
         status: "active",
       }).unwrap();
 
-      alert("Request submitted successfully! We will call you back soon.");
+      toast.success(
+        "Request submitted successfully! We will call you back soon.",
+      );
+
       setFormData({ name: "", mono: "" });
     } catch (error) {
-      alert(
+      toast.error(
         error?.data?.message || "Failed to submit request. Please try again.",
       );
     }

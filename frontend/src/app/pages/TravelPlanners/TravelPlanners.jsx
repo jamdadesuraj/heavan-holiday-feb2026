@@ -62,19 +62,24 @@ const TravelPlanners = () => {
               <Link
                 href={`/travel-planner-details/${book._id}`}
                 key={book._id}
-                className="flex flex-col items-center text-center shadow-lg rounded-xl overflow-hidden bg-white hover:shadow-2xl transition"
+                className="group flex flex-col items-center text-center bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition duration-300"
               >
-                <Image
-                  src={book.coverImg}
-                  alt={book.title}
-                  width={400}
-                  height={500}
-                  className="object-cover"
-                />
-                <div className="p-4">
-                  <span className="text-blue-600 font-medium hover:underline">
+                {/* Image Container */}
+                <div className="w-48 h-64 relative overflow-hidden">
+                  <Image
+                    src={book.coverImg}
+                    alt={book.title}
+                    fill
+                    className="object-fill group-hover:scale-105 transition duration-300"
+                    sizes="192px"
+                  />
+                </div>
+
+                {/* Title */}
+                <div className="p-4 w-full">
+                  <h3 className="text-black font-semibold text-sm line-clamp-2">
                     {book.title}
-                  </span>
+                  </h3>
                 </div>
               </Link>
             ))}

@@ -144,7 +144,7 @@ const TabCards = () => {
         {/* Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {activeCategories.length > 0 ? (
-            activeCategories.map((category) => {
+            activeCategories.slice(0, 8).map((category) => {
               const packageCount = packageCountByCategory[category._id] || 0;
               const guestsCount = bookingCountByCategory[category._id] || 0;
 

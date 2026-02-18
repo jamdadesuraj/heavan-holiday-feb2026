@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { FaCcVisa, FaStar } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
@@ -130,6 +130,7 @@ const DekhoApnaDesh = () => {
     e.stopPropagation();
 
     const token = localStorage.getItem("authToken");
+
     if (!token && !auth.currentUser) {
       alert("Please login first");
       router.push("/login");
@@ -156,9 +157,7 @@ const DekhoApnaDesh = () => {
         await addToWishlist({ packageId }).unwrap();
       }
     } catch (error) {
-      // Rollback on error
-      console.error("Wishlist error:", error);
-
+      // rollback
       if (isInWishlist) {
         setWishlistItems((prev) => new Set(prev).add(packageId));
       } else {
@@ -173,9 +172,21 @@ const DekhoApnaDesh = () => {
     }
   };
 
+  useEffect(() => {
+    const storedWishlist = localStorage.getItem("wishlist");
+
+    if (storedWishlist) {
+      setWishlistItems(new Set(JSON.parse(storedWishlist)));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("wishlist", JSON.stringify(Array.from(wishlistItems)));
+  }, [wishlistItems]);
+
   if (categoriesLoading || packageLoading) {
     return (
-      <section className="py-12 bg-white">
+      <section className="py-12 bg-white z-0">
         <div className="max-w-6xl mx-auto px-6 animate-pulse">
           {/* Heading Skeleton */}
           <div className="text-center mb-8 space-y-3">
@@ -237,7 +248,7 @@ const DekhoApnaDesh = () => {
   }
 
   return (
-    <section className="py-12 bg-white relative">
+    <section className="py-12 bg-white relative z-0">
       <div className="max-w-6xl mx-auto px-6">
         {/* Heading */}
         <h2 className="text-2xl md:text-2xl text-center font-bold mb-3">

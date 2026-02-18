@@ -11,6 +11,7 @@ import { useParams } from "next/navigation";
 import { useCreateEnquiryMutation } from "store/enquiryApi/enquiryApi";
 import { useState } from "react";
 import { useGetContactDetailsQuery } from "store/aboutUsApi/contactApi";
+import toast from "react-hot-toast";
 const TravelPlannerDetails = () => {
   const bookRef = useRef(null);
   const [formData, setFormData] = useState({
@@ -64,10 +65,12 @@ const TravelPlannerDetails = () => {
         status: "active",
       }).unwrap();
 
-      alert("Request submitted successfully! We will call you back soon.");
+      toast.success(
+        "Request submitted successfully! We will call you back soon.",
+      );
       setFormData({ name: "", mono: "" });
     } catch (error) {
-      alert(
+      toast.error(
         error?.data?.message || "Failed to submit request. Please try again.",
       );
     }
@@ -112,29 +115,28 @@ const TravelPlannerDetails = () => {
               className="shadow-2xl rounded-lg"
             >
               {/* Cover Page */}
-              <div className="bg-white flex items-center justify-center">
+              <div className="w-48 h-64 bg-white flex items-center justify-center relative overflow-hidden rounded-lg">
                 <Image
                   src={book.coverImg}
                   alt={book.title}
-                  width={400}
-                  height={550}
+                  fill
                   className="object-cover"
+                  sizes="192px"
                 />
               </div>
 
               {/* Gallery Pages - images is array of URL strings */}
               {book.images.map((imageUrl, index) => (
-                <div
-                  key={index}
-                  className="bg-white flex items-center justify-center"
-                >
-                  <Image
-                    src={imageUrl}
-                    alt={`${book.title} - Page ${index + 1}`}
-                    width={400}
-                    height={550}
-                    className="object-cover"
-                  />
+                <div key={index} className="w-48">
+                  <div className="w-full h-full relative overflow-hidden rounded-lg bg-white shadow-sm">
+                    <Image
+                      src={imageUrl}
+                      alt={`${book.title} - Page ${index + 1}`}
+                      fill
+                      className="object-cover"
+                      sizes="192px"
+                    />
+                  </div>
                 </div>
               ))}
             </HTMLFlipBook>

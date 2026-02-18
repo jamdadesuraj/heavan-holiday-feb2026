@@ -45,7 +45,7 @@ const Tourscards = () => {
         ) : (
           <>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6">
-              {activeCategories.map((tour) => (
+              {activeCategories.slice(0, 7).map((tour) => (
                 <Link
                   href={`tour-list/${tour._id}`}
                   target="_blank"
@@ -69,13 +69,14 @@ const Tourscards = () => {
                       </span>
 
                       <span className="absolute bottom-1 left-1 font-bold text-white text-[10px] px-2 py-1  rounded">
-                        {tour.categoryType} | {tour.guests} Travelled
+                        {tour.categoryType.slice(0, 8)} |{" "}
+                        {tour.guests.slice(0, 1)} Travelled
                       </span>
                     </div>
 
                     <div className="p-2">
                       <h3 className="text-gray-800 text-xs font-semibold">
-                        {tour.title}
+                        {tour.title.slice(0, 15)}...
                       </h3>
                     </div>
                   </div>

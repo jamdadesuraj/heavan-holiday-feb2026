@@ -22,7 +22,7 @@ export default function MainNavbar() {
     { name: "Corporate Travel", url: "/corporate-travel" },
     { name: "Inbound", mega: true, position: "right-0" },
     // { name: "Forex", mega: true, position: "right-0" },
-    { name: "Gift Cards", url: "/gift-cards" },
+    // { name: "Gift Cards", url: "/gift-cards" },
     { name: "Contact Us", url: "/contact-us" },
   ];
 
@@ -48,7 +48,7 @@ export default function MainNavbar() {
   return (
     <header className="w-full relative">
       <nav className="bg-[#10263e] text-white font-bold text-sm">
-        <div className="max-w-[1200px] mx-auto flex items-center justify-between px-4 py-2">
+        <div className="max-w-300 mx-auto flex items-center justify-between px-4 py-2">
           {/* Desktop Menu */}
           <ul className="hidden lg:flex w-full justify-between items-center">
             {menu.map((item) => (
@@ -61,7 +61,7 @@ export default function MainNavbar() {
 
                     {/* Dropdown positioned differently per menu */}
                     <div
-                      className={`absolute top-full ${item.position} bg-white text-black shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all z-50 min-w-[250px]`}
+                      className={`absolute top-full ${item.position} bg-white text-black shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all z-50 min-w-62.5`}
                     >
                       {renderMegaMenu(item.name)}
                     </div>

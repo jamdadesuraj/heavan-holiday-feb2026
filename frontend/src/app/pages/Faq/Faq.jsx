@@ -5,6 +5,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { useCreateEnquiryMutation } from "../../../../store/enquiryApi/enquiryApi";
 import { useGetContactDetailsQuery } from "../../../../store/aboutUsApi/contactApi";
+import toast from "react-hot-toast";
 const Faq = () => {
   // Form state
   const [formData, setFormData] = useState({
@@ -37,10 +38,12 @@ const Faq = () => {
         status: "active",
       }).unwrap();
 
-      alert("Request submitted successfully! We will call you back soon.");
+      toast.success(
+        "Request submitted successfully! We will call you back soon.",
+      );
       setFormData({ name: "", mono: "" });
     } catch (error) {
-      alert(
+      toast.error(
         error?.data?.message || "Failed to submit request. Please try again.",
       );
     }

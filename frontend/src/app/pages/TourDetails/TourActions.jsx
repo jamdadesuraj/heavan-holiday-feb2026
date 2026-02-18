@@ -7,6 +7,7 @@ import { FaFacebook, FaWhatsapp, FaTwitter, FaInstagram } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { useAddToWishlistMutation } from "store/authApi/authApi";
 import { auth } from "@/app/config/firebase";
+import toast from "react-hot-toast";
 
 const TourActions = ({ packageId, tourTitle: tourTitleProp }) => {
   const router = useRouter();
@@ -70,19 +71,16 @@ const TourActions = ({ packageId, tourTitle: tourTitleProp }) => {
       }
 
       await addToWishlist({ packageId }).unwrap();
-      alert("Package added to wishlist successfully!");
+      toast.success("Added to wishlist");
+
       router.push("/account/wishlist");
     } catch (error) {
-      console.error("Wishlist error:", error);
-      console.log("Error data:", error?.data);
-      console.log("Error message:", error?.data?.message);
-
       if (error?.data?.message) {
         alert(error.data.message);
       } else if (error?.message) {
         alert(error.message);
       } else {
-        alert("Failed to add to wishlist");
+        toast.error("Failed to add to wishlist. Please try again.");
       }
     }
   };
