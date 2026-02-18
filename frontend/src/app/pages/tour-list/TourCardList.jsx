@@ -195,7 +195,7 @@ const TourCard = ({ tour, wishlistItems, handleToggleWishlist }) => {
             "en-IN",
           )}
         </h3>
-        <p className="text-xs text-gray-500">per person on twin sharing</p>
+        {/* <p className="text-xs text-gray-500">per person on twin sharing</p>
         <p className="text-xs text-gray-500">
           EMI from{" "}
           <span className="text-sky-600">
@@ -205,7 +205,7 @@ const TourCard = ({ tour, wishlistItems, handleToggleWishlist }) => {
             )?.toLocaleString("en-IN")}
             /mo
           </span>
-        </p>
+        </p> */}
         <Link
           href={`/tour-details/${tour._id}`}
           className="bg-red-700 text-center text-xs text-white hover:bg-red-500 w-full py-2 mt-2 rounded font-semibold cursor-pointer"

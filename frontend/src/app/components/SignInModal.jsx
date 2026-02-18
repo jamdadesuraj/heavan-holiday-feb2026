@@ -369,11 +369,25 @@ const SignInModal = () => {
             {/* Terms */}
             <p className="text-xs text-gray-600 text-center mt-4">
               By continuing you agree to our{" "}
-              <Link href="/terms" className="text-blue-600 hover:underline">
+              <Link
+                onClick={() => {
+                  resetForm();
+                  setIsOpen(false);
+                }}
+                href="/term-conditions"
+                className="text-blue-600 hover:underline"
+              >
                 Terms of Use
               </Link>{" "}
               &{" "}
-              <Link href="/privacy" className="text-blue-600 hover:underline">
+              <Link
+                href="/privacy-policy"
+                className="text-blue-600 hover:underline"
+                onClick={() => {
+                  resetForm();
+                  setIsOpen(false);
+                }}
+              >
                 Privacy Policy
               </Link>
             </p>
