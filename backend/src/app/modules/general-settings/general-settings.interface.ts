@@ -5,6 +5,7 @@ export interface IGeneralSettings {
   companyName: string;
   companyLogo: string;
   favicon: string;
+  paymentGateways: string;
   copyrightText: string;
 
   // Phone Numbers

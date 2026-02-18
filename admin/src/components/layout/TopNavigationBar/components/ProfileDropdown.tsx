@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import React from "react";
 import avatar1 from "@/assets/images/users/avatar-1.jpg";
@@ -10,8 +11,15 @@ import {
   DropdownToggle,
 } from "react-bootstrap";
 import Link from "next/link";
-
+import { useGetSettingsQuery } from "@/app/redux/api/settings/settingsApi";
 const ProfileDropdown = () => {
+  const { data, isLoading, error } = useGetSettingsQuery(undefined);
+  if (isLoading) {
+    return <p>loading</p>;
+  }
+  if (error) {
+    return <p>error</p>;
+  }
   return (
     <div className="topbar-item nav-user">
       <Dropdown>
@@ -25,8 +33,9 @@ const ProfileDropdown = () => {
           aria-expanded="false"
         >
           <Image
-            src={avatar1}
+            src={data?.data?.companyLogo || ""}
             width={32}
+            height={32}
             className="rounded-circle me-lg-2 d-flex"
             alt="user-image"
           />
@@ -43,44 +52,7 @@ const ProfileDropdown = () => {
           <DropdownHeader className="noti-title">
             <h6 className="text-overflow m-0">Welcome !</h6>
           </DropdownHeader>
-          <DropdownItem>
-            <IconifyIcon
-              icon="tabler:user-hexagon"
-              className=" me-1 fs-17 align-middle"
-            />
-            <span className="align-middle">My Account</span>
-          </DropdownItem>
-          <DropdownItem>
-            <IconifyIcon
-              icon="tabler:wallet"
-              className="me-1 fs-17 align-middle"
-            />
-            <span className="align-middle">
-              Wallet : <span className="fw-semibold">$985.25</span>
-            </span>
-          </DropdownItem>
-          <DropdownItem>
-            <IconifyIcon
-              icon="tabler:settings"
-              className=" me-1 fs-17 align-middle"
-            />
-            <span className="align-middle">Settings</span>
-          </DropdownItem>
-          <DropdownItem>
-            <IconifyIcon
-              icon="tabler:lifebuoy"
-              className=" me-1 fs-17 align-middle"
-            />
-            <span className="align-middle">Support</span>
-          </DropdownItem>
-          <div className="dropdown-divider" />
-          <DropdownItem as={Link} href="/auth/lock-screen">
-            <IconifyIcon
-              icon="tabler:lock-square-rounded"
-              className="me-1 fs-17 align-middle"
-            />
-            <span className="align-middle">Lock Screen</span>
-          </DropdownItem>
+
           <DropdownItem
             as={Link}
             href="/auth/login"

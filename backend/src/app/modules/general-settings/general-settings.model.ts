@@ -14,6 +14,11 @@ const GeneralSettingsSchema = new Schema<IGeneralSettingsDocument>(
       trim: true,
       default: '',
     },
+    paymentGateways: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     favicon: {
       type: String,
       trim: true,

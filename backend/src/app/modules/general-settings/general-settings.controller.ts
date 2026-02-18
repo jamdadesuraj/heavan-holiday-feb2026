@@ -9,6 +9,7 @@ import { cloudinary } from '../../config/cloudinary';
 const DUMMY_DEFAULTS = {
   companyName: 'Heaven Holiday',
   companyLogo: '',
+  paymentGateways: '',
   favicon: '',
   copyrightText: '© 2025 Heaven Holiday. All rights reserved.',
   tollFree1: '1800 22 7979',
@@ -100,6 +101,15 @@ export const updateSettings = async (
         await destroyCloudinaryImage(settings.companyLogo, 'settings-logo');
       }
       rawUpdate.companyLogo = newUrl;
+    }
+    if (files?.paymentGateways?.[0]) {
+      const newUrl = files.paymentGateways[0].path;
+      uploadedUrls.push({ url: newUrl, folder: 'settings-logo' });
+
+      if (settings.paymentGateways) {
+        await destroyCloudinaryImage(settings.paymentGateways, 'settings-logo');
+      }
+      rawUpdate.paymentGateways = newUrl;
     }
 
     if (files?.favicon?.[0]) {

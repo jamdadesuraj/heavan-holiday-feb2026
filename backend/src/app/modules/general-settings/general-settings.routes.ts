@@ -12,6 +12,7 @@ router.patch(
   '/',
   upload.fields([
     { name: 'companyLogo', maxCount: 1 },
+    { name: 'paymentGateways', maxCount: 1 },
     { name: 'favicon', maxCount: 1 },
   ]),
   updateSettings,

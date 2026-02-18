@@ -6,6 +6,7 @@ export const settingsUpdateValidation = z.object({
   // Brand Identity
   companyName: z.string().trim().min(1).optional(),
   companyLogo: z.string().optional(),
+  paymentGateways: z.string().optional(),
   favicon: z.string().optional(),
   copyrightText: z.string().trim().optional(),
 

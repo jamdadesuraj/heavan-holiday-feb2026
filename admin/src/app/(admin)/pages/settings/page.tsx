@@ -46,8 +46,12 @@ const GeneralSettingsForm: React.FC = () => {
 
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [faviconFile, setFaviconFile] = useState<File | null>(null);
+  const [paymentGatewaysFile, setPaymentGatewaysFile] = useState<File | null>(
+    null,
+  ); // ADD
   const [logoPreview, setLogoPreview] = useState("");
   const [faviconPreview, setFaviconPreview] = useState("");
+  const [paymentGatewaysPreview, setPaymentGatewaysPreview] = useState(""); // ADD
 
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -75,6 +79,7 @@ const GeneralSettingsForm: React.FC = () => {
       });
       setLogoPreview(d.companyLogo ?? "");
       setFaviconPreview(d.favicon ?? "");
+      setPaymentGatewaysPreview(d.paymentGateways ?? ""); // ADD
     }
   }, [settingsData]);
 
@@ -82,6 +87,7 @@ const GeneralSettingsForm: React.FC = () => {
     if (isSuccess) {
       setLogoFile(null);
       setFaviconFile(null);
+      setPaymentGatewaysFile(null); // ADD
       setShowSuccessAlert(true);
       const t = setTimeout(() => setShowSuccessAlert(false), 5000);
       return () => clearTimeout(t);
@@ -121,6 +127,14 @@ const GeneralSettingsForm: React.FC = () => {
     setFaviconPreview(URL.createObjectURL(file));
   };
 
+  // ADD: Payment Gateways handler
+  const handlePaymentGatewaysChange = (files: File[]) => {
+    const file = files[0];
+    if (!file) return;
+    setPaymentGatewaysFile(file);
+    setPaymentGatewaysPreview(URL.createObjectURL(file));
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -134,6 +148,8 @@ const GeneralSettingsForm: React.FC = () => {
     // Append images only if a new file was selected
     if (logoFile) submitData.append("companyLogo", logoFile);
     if (faviconFile) submitData.append("favicon", faviconFile);
+    if (paymentGatewaysFile)
+      submitData.append("paymentGateways", paymentGatewaysFile); // ADD
 
     try {
       await updateSettings(submitData).unwrap();
@@ -297,6 +313,41 @@ const GeneralSettingsForm: React.FC = () => {
                     icon="ri:upload-cloud-2-line"
                     text="Drop favicon here or click to upload."
                     extraText="(16×16 or 32×32 .ico / .png)"
+                  />
+                </Col>
+
+                {/* ADD: Payment Gateways Image */}
+                <Col lg={6}>
+                  <label className="form-label">Payment Gateways Image</label>
+                  {paymentGatewaysPreview && (
+                    <div className="mb-2">
+                      <Alert
+                        variant="info"
+                        className="d-flex align-items-center py-2"
+                      >
+                        <IconifyIcon
+                          icon="solar:info-circle-bold-duotone"
+                          className="fs-20 me-2"
+                        />
+                        <div className="lh-1">
+                          {paymentGatewaysFile
+                            ? "New payment gateways image preview:"
+                            : "Current payment gateways image:"}
+                        </div>
+                      </Alert>
+                      <img
+                        src={paymentGatewaysPreview}
+                        alt="Payment Gateways"
+                        className="img-fluid rounded border"
+                        style={{ maxHeight: "100px", objectFit: "contain" }}
+                      />
+                    </div>
+                  )}
+                  <FileUploader
+                    onFileUpload={handlePaymentGatewaysChange}
+                    icon="ri:upload-cloud-2-line"
+                    text="Drop payment gateways image here or click to upload."
+                    extraText="(PNG, JPG recommended)"
                   />
                 </Col>
               </Row>
@@ -464,127 +515,44 @@ const GeneralSettingsForm: React.FC = () => {
         {/* ══════════════ 4. Caution / Notice ══════════════ */}
         <Row className="mt-3">
           <Col xs={12}>
-            <ComponentContainerCard
-              title="Caution / Site Notice"
-              description="Optional banner shown across the site."
-            >
-              <Row className="gy-3">
-                <Col lg={12}>
-                  <div className="form-check form-switch">
-                    <input
-                      type="checkbox"
-                      id="cautionEnabled"
-                      name="cautionEnabled"
-                      checked={formData.cautionEnabled}
-                      onChange={handleChange}
-                      className="form-check-input"
-                      role="switch"
-                    />
-                    <label
-                      htmlFor="cautionEnabled"
-                      className="form-check-label"
-                    >
-                      Enable Caution
-                    </label>
-                  </div>
-                </Col>
-
-                <Col lg={12}>
-                  <label htmlFor="cautionText" className="form-label">
-                    Caution Message
-                  </label>
-                  <textarea
-                    id="cautionText"
-                    name="cautionText"
-                    value={formData.cautionText}
-                    onChange={handleChange}
-                    className="form-control"
-                    rows={3}
-                    placeholder="e.g. Due to high demand, response times may be delayed."
-                  />
-                </Col>
-
-                {formData.cautionEnabled && formData.cautionText && (
-                  <Col lg={12}>
-                    <Alert
-                      variant="warning"
-                      className="d-flex align-items-start gap-2"
-                    >
-                      <IconifyIcon
-                        icon="solar:danger-triangle-bold-duotone"
-                        className="fs-20 mt-1 flex-shrink-0"
-                      />
-                      <div>
-                        <strong>Banner Preview:</strong>
-                        <div className="mt-1">{formData.cautionText}</div>
-                      </div>
-                    </Alert>
-                  </Col>
-                )}
-              </Row>
-            </ComponentContainerCard>
+            <Row className="gy-3">
+              <Col lg={12}>
+                <label htmlFor="cautionText" className="form-label">
+                  Caution Message
+                </label>
+                <textarea
+                  id="cautionText"
+                  name="cautionText"
+                  value={formData.cautionText}
+                  onChange={handleChange}
+                  className="form-control"
+                  rows={3}
+                  placeholder="e.g. Due to high demand, response times may be delayed."
+                />
+              </Col>
+            </Row>
           </Col>
         </Row>
 
         {/* ══════════════ 5. Travel Planner ══════════════ */}
         <Row className="mt-3">
           <Col xs={12}>
-            <ComponentContainerCard
-              title="Travel Planner"
-              description="CTA button shown in the navigation."
-            >
-              <Row className="gy-3">
-                <Col lg={12}>
-                  <div className="form-check form-switch">
-                    <input
-                      type="checkbox"
-                      id="travelPlannerEnabled"
-                      name="travelPlannerEnabled"
-                      checked={formData.travelPlannerEnabled}
-                      onChange={handleChange}
-                      className="form-check-input"
-                      role="switch"
-                    />
-                    <label
-                      htmlFor="travelPlannerEnabled"
-                      className="form-check-label"
-                    >
-                      Show Travel Planner CTA in Navigation
-                    </label>
-                  </div>
-                </Col>
-
-                <Col lg={6}>
-                  <label htmlFor="travelPlannerLabel" className="form-label">
-                    Button Label
-                  </label>
-                  <input
-                    type="text"
-                    id="travelPlannerLabel"
-                    name="travelPlannerLabel"
-                    value={formData.travelPlannerLabel}
-                    onChange={handleChange}
-                    className="form-control"
-                    placeholder="Plan My Trip"
-                  />
-                </Col>
-
-                <Col lg={6}>
-                  <label htmlFor="travelPlannerLink" className="form-label">
-                    Destination URL
-                  </label>
-                  <input
-                    type="text"
-                    id="travelPlannerLink"
-                    name="travelPlannerLink"
-                    value={formData.travelPlannerLink}
-                    onChange={handleChange}
-                    className="form-control"
-                    placeholder="/plan-trip"
-                  />
-                </Col>
-              </Row>
-            </ComponentContainerCard>
+            <Row className="gy-3">
+              <Col lg={12}>
+                <label htmlFor="travelPlannerLabel" className="form-label">
+                  Button Label
+                </label>
+                <input
+                  type="text"
+                  id="travelPlannerLabel"
+                  name="travelPlannerLabel"
+                  value={formData.travelPlannerLabel}
+                  onChange={handleChange}
+                  className="form-control"
+                  placeholder="Plan My Trip"
+                />
+              </Col>
+            </Row>
           </Col>
         </Row>
 
