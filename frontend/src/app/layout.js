@@ -8,6 +8,7 @@ import FooterContactInfo from "@/app/components/FooterContactInfo";
 import Footer from "@/app/components/Footer";
 import ReduxProvider from "../../providers/reduxProvider";
 import { Toaster } from "react-hot-toast";
+import DynamicFavicon from "./components/DynamicFavicon";
 
 // Configure Jura font
 const jura = Jura({
@@ -29,6 +30,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className={`${jura.variable} antialiased`}>
         <ReduxProvider>
+          <DynamicFavicon />
           <Toaster position="top-right" />
           <TopNavBar />
           <MainNavbar />
