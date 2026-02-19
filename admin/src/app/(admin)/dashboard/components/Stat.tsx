@@ -7,6 +7,8 @@ import { useGetTourPackageCardsQuery } from "@/app/redux/api/tourManager/tourPac
 import { useGetAllEnquiriesQuery } from "@/app/redux/api/enquiry/enquiryApi";
 import { useGetAllBookingsQuery } from "@/app/redux/api/bookingsApi/bookingApi";
 import { useGetTeamsQuery } from "@/app/redux/api/team/teamApi";
+import { useGetAllOfficesQuery } from "@/app/redux/api/contactOffice/contactOfficeApi";
+import { useGetAllJobApplicationsQuery } from "@/app/redux/api/jobApplications/jobApplicationsApi";
 const StatCard = ({ count, icon, otherIcon, title }: StatType) => {
   return (
     <Card className="overflow-hidden">
@@ -55,22 +57,41 @@ const Stat = () => {
     isLoading: isTeamLoading,
     error: isTeamError,
   } = useGetTeamsQuery(undefined);
+  const {
+    data: office,
+    isLoading: isofficeLoading,
+    error: isofficeError,
+  } = useGetAllOfficesQuery(undefined);
+  const {
+    data: applications,
+    isLoading: isapplicationsLoading,
+    error: isapplicationsError,
+  } = useGetAllJobApplicationsQuery(undefined);
   if (
     isTourCardsLoading ||
     isEnquiryLoading ||
     isBookingLoading ||
-    isTeamLoading
+    isTeamLoading ||
+    isofficeLoading ||
+    isapplicationsLoading
   ) {
     return <p>loading</p>;
   }
-  if (isTourCardsError || isEnquiryError || isBookingError || isTeamError) {
+  if (
+    isTourCardsError ||
+    isEnquiryError ||
+    isBookingError ||
+    isTeamError ||
+    isofficeError ||
+    isapplicationsError
+  ) {
     return <p>error</p>;
   }
   const statData: StatType[] = [
     {
       title: "Total Bookings",
       icon: "solar:ticket-bold-duotone",
-      otherIcon: "solar:calendar-mark-bold-duotone",
+      otherIcon: "solar:calendar-bold-duotone",
       count: bookingsData?.data?.bookings.length || "1000",
     },
     {
@@ -88,10 +109,23 @@ const Stat = () => {
     {
       title: "Total Team",
       icon: "solar:users-group-rounded-bold-duotone",
-      otherIcon: "solar:user-id-bold-duotone",
+      otherIcon: "solar:user-bold-duotone",
       count: teamData?.data?.length || "1000",
     },
+    {
+      title: "Total Offices",
+      icon: "solar:buildings-bold-duotone",
+      otherIcon: "solar:map-point-bold-duotone",
+      count: office?.data?.length || "1000",
+    },
+    {
+      title: "Total Job Applications",
+      icon: "solar:document-text-bold-duotone",
+      otherIcon: "solar:map-point-bold-duotone",
+      count: applications?.data?.length || "1000",
+    },
   ];
+
   return (
     <Row className="row-cols-xxl-4 row-cols-md-2 row-cols-1">
       {statData.map((item, idx) => (

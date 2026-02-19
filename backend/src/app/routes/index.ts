@@ -86,6 +86,7 @@ import { IncludedRouter } from '../modules/toursIncluded/toursIncludedRoutes';
 import { bookingRouter } from '../modules/bookPackage/bookingRoutes';
 import { brandsRouter } from '../modules/brands/brandsRoutes';
 import { generalSettingsRouter } from '../modules/general-settings/general-settings.routes';
+import { adminRouter } from '../modules/admin/adminRoutes';
 const router = Router();
 const moduleRoutes = [
   {
@@ -455,6 +456,10 @@ const moduleRoutes = [
   {
     path: '/settings',
     route: generalSettingsRouter,
+  },
+  {
+    path: '/admin',
+    route: adminRouter,
   },
 ];
 
