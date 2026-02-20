@@ -1,11 +1,9 @@
 // redux/api/includesApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const includesApi = createApi({
   reducerPath: "includesApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Includes"],
   endpoints: (builder) => ({
     // GET all includes

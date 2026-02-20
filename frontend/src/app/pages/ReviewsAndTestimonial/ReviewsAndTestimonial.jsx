@@ -3,8 +3,10 @@ import React from "react";
 import { Search } from "lucide-react";
 import Image from "next/image";
 import Breadcrumb from "@/app/components/Breadcum";
-
+import { useGetCounterQuery } from "store/counterApi/counterApi";
 const ReviewsAndTestimonial = () => {
+  const { data, isLoading, error } = useGetCounterQuery();
+  const responce = data?.data;
   const breadcrumbItems = [
     { label: "Home", href: "/" },
     { label: "Reviews And Testimonials", href: null },
@@ -24,9 +26,9 @@ const ReviewsAndTestimonial = () => {
 
             {/* Stats */}
             <p className="text-lg md:text-xl mb-6">
-              <span className="font-bold">8,77,189</span>{" "}
+              <span className="font-bold">{responce?.guests}</span>{" "}
               <span className="text-gray-200">happy travellers</span>{" "}
-              <span className="font-bold">68,053</span>{" "}
+              <span className="font-bold">{responce?.toursCompleted}</span>{" "}
               <span className="text-gray-200">tours</span>
             </p>
 

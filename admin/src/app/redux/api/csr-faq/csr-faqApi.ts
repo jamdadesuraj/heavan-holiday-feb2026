@@ -1,23 +1,21 @@
 // faqApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const csrfaqApi = createApi({
   reducerPath: "csrfaqApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/csr-faq",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["FAQ"],
   endpoints: (builder) => ({
     // Get all FAQs
     getAllFAQs: builder.query({
-      query: () => "/",
+      query: () => "/csr-faq/",
       providesTags: ["FAQ"],
     }),
 
     // Create FAQ
     createFAQ: builder.mutation({
       query: (body) => ({
-        url: "/",
+        url: "/csr-faq/",
         method: "POST",
         body,
       }),
@@ -27,7 +25,7 @@ export const csrfaqApi = createApi({
     // Update FAQ
     updateFAQ: builder.mutation({
       query: ({ id, ...body }) => ({
-        url: `/${id}`,
+        url: `/csr-faq/${id}`,
         method: "PATCH",
         body,
       }),
@@ -37,7 +35,7 @@ export const csrfaqApi = createApi({
     // Delete FAQ
     deleteFAQ: builder.mutation({
       query: (id) => ({
-        url: `/${id}`,
+        url: `/csr-faq/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["FAQ"],

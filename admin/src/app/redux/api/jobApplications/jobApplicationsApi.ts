@@ -1,17 +1,14 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 type GetApplicationsParams = {
   status?: string;
   page?: number;
   limit?: number;
   search?: string;
 };
-
 export const jobApplicationApi = createApi({
   reducerPath: "jobApplicationApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/job-applications",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["JobApplication"],
   endpoints: (builder) => ({
     // Get all job applications
@@ -24,7 +21,7 @@ export const jobApplicationApi = createApi({
         if (args?.limit) params.append("limit", args.limit.toString());
         if (args?.search) params.append("search", args.search);
 
-        return `/?${params.toString()}`;
+        return `/job-applications/?${params.toString()}`;
       },
       providesTags: ["JobApplication"],
     }),
@@ -32,7 +29,7 @@ export const jobApplicationApi = createApi({
     // Create job application
     createJobApplication: builder.mutation<any, any>({
       query: (body) => ({
-        url: "/",
+        url: "/job-applications/",
         method: "POST",
         body,
       }),
@@ -45,7 +42,7 @@ export const jobApplicationApi = createApi({
       { id: string; status: string }
     >({
       query: ({ id, status }) => ({
-        url: `/${id}/status`,
+        url: `/job-applications/${id}/status`,
         method: "PATCH",
         body: { status },
       }),
@@ -55,7 +52,7 @@ export const jobApplicationApi = createApi({
     // Delete job application
     deleteJobApplication: builder.mutation<any, string>({
       query: (id) => ({
-        url: `/${id}`,
+        url: `/job-applications/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["JobApplication"],

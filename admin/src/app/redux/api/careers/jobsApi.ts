@@ -1,21 +1,21 @@
 // features/department/departmentApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const departmentApi = createApi({
   reducerPath: "departmentApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/careers-department",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Department"],
   endpoints: (builder) => ({
     getDepartments: builder.query({
       query: (isActive) =>
-        isActive !== undefined ? `/?isActive=${isActive}` : "/department",
+        isActive !== undefined
+          ? `/careers-department/?isActive=${isActive}`
+          : "/careers-department/department",
       providesTags: ["Department"],
     }),
     createDepartment: builder.mutation({
       query: (body) => ({
-        url: "/department",
+        url: "/careers-department/department",
         method: "POST",
         body,
       }),
@@ -23,7 +23,7 @@ export const departmentApi = createApi({
     }),
     updateDepartment: builder.mutation({
       query: ({ id, data }) => ({
-        url: `/department/${id}`,
+        url: `/careers-department/department/${id}`,
         method: "PUT",
         body: data,
       }),
@@ -31,14 +31,14 @@ export const departmentApi = createApi({
     }),
     deleteDepartment: builder.mutation({
       query: (id) => ({
-        url: `/department/${id}`,
+        url: `/careers-department/department/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Department"],
     }),
     toggleDepartmentStatus: builder.mutation({
       query: (id) => ({
-        url: `/department/${id}/toggle-status`,
+        url: `/careers-department/department/${id}/toggle-status`,
         method: "PATCH",
       }),
       invalidatesTags: ["Department"],

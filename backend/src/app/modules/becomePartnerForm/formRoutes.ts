@@ -5,12 +5,12 @@ import {
   updateFormStatus,
   deleteForm,
 } from './formController';
-
+import { adminAuthMiddleware } from '../../middlewares/adminMiddleware';
 const router = Router();
 
 router.get('/', getAllForms);
-router.post('/', createForm);
-router.patch('/:id/status', updateFormStatus);
-router.delete('/:id', deleteForm);
+router.post('/', adminAuthMiddleware, createForm);
+router.patch('/:id/status', adminAuthMiddleware, updateFormStatus);
+router.delete('/:id', adminAuthMiddleware, deleteForm);
 
 export const becomePartnerFormRouter = router;

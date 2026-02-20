@@ -3,15 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 export function middleware(req: NextRequest) {
   const token = req.cookies.get("adminToken")?.value;
   const isAuthPage = req.nextUrl.pathname.startsWith("/auth");
-  const isRoot = req.nextUrl.pathname === "/";
-
-  if (isRoot && token) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
-  }
-
-  if (isRoot && !token) {
-    return NextResponse.redirect(new URL("/auth/login", req.url));
-  }
 
   if (!token && !isAuthPage) {
     return NextResponse.redirect(new URL("/auth/login", req.url));

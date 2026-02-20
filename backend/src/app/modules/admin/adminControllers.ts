@@ -13,8 +13,8 @@ export const createDefaultAdmin = async () => {
     if (!adminExists) {
       await Admin.create({
         username: 'admin',
-        email: process.env.DEFAULT_ADMIN_EMAIL || 'admin@example.com',
-        password: process.env.DEFAULT_ADMIN_PASSWORD || 'admin123',
+        email: process.env.DEFAULT_ADMIN_EMAIL,
+        password: process.env.DEFAULT_ADMIN_PASSWORD,
       });
       console.log(' Default admin created');
     }
@@ -127,6 +127,41 @@ export const changePassword = async (
       statusCode: 200,
       message: 'Password changed successfully',
       data: null,
+    });
+    return;
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ── POST /admin/create ────────────────────────────────────────────────────────
+export const createAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const adminExists = await Admin.findOne();
+    if (adminExists) {
+      next(new appError('Admin already exists', 400));
+      return;
+    }
+
+    const admin = await Admin.create({
+      username: 'admin',
+      email: process.env.DEFAULT_ADMIN_EMAIL,
+      password: process.env.DEFAULT_ADMIN_PASSWORD,
+    });
+
+    res.status(201).json({
+      success: true,
+      statusCode: 201,
+      message: 'Admin created successfully',
+      data: {
+        id: admin._id,
+        username: admin.username,
+        email: admin.email,
+      },
     });
     return;
   } catch (error) {

@@ -12,27 +12,37 @@ import {
   updateBrandsSectionHeading,
 } from './brandsController';
 import { upload } from '../../config/cloudinary';
-
+import { adminAuthMiddleware } from '../../middlewares/adminMiddleware';
 const router = express.Router();
 
 router.get('/section', getBrandsSection);
 
-router.patch('/section', updateBrandsSectionHeading);
+router.patch('/section', adminAuthMiddleware, updateBrandsSectionHeading);
 
-router.post('/brands', createBrand);
+router.post('/brands', adminAuthMiddleware, createBrand);
 
-router.get('/brands', getAllBrands);
+router.get('/brands', adminAuthMiddleware, getAllBrands);
 
-router.patch('/brands/:id', updateBrandById);
+router.patch('/brands/:id', adminAuthMiddleware, updateBrandById);
 
-router.delete('/brands/:id', deleteBrandById);
+router.delete('/brands/:id', adminAuthMiddleware, deleteBrandById);
 
-router.post('/industries', upload.single('image'), createIndustry);
+router.post(
+  '/industries',
+  adminAuthMiddleware,
+  upload.single('image'),
+  createIndustry,
+);
 
-router.get('/industries', getAllIndustries);
+router.get('/industries', adminAuthMiddleware, getAllIndustries);
 
-router.patch('/industries/:id', upload.single('image'), updateIndustryById);
+router.patch(
+  '/industries/:id',
+  adminAuthMiddleware,
+  upload.single('image'),
+  updateIndustryById,
+);
 
-router.delete('/industries/:id', deleteIndustryById);
+router.delete('/industries/:id', adminAuthMiddleware, deleteIndustryById);
 
 export const brandsRouter = router;

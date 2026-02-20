@@ -7,19 +7,24 @@ import {
   deleteStep,
 } from './bookingController';
 import { upload } from '../../config/cloudinary';
-
+import { adminAuthMiddleware } from '../../middlewares/adminMiddleware';
 const router = express.Router();
 
 // Public route - Get online booking content
 router.get('/', getOnlineBooking);
 
 // Admin routes - Protected
-router.put('/', updateOnlineBooking);
+router.put('/', adminAuthMiddleware, updateOnlineBooking);
 
-router.post('/steps', upload.single('image'), createStep);
+router.post('/steps', adminAuthMiddleware, upload.single('image'), createStep);
 
-router.put('/steps/:stepNo', upload.single('image'), updateStep);
+router.put(
+  '/steps/:stepNo',
+  adminAuthMiddleware,
+  upload.single('image'),
+  updateStep,
+);
 
-router.delete('/steps/:stepNo', deleteStep);
+router.delete('/steps/:stepNo', adminAuthMiddleware, deleteStep);
 
 export const onlineBookingRouter = router;

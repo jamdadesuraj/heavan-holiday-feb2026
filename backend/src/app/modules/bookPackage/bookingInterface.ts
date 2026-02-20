@@ -15,6 +15,7 @@ export interface ITraveler {
   isLeadTraveler?: boolean;
   email?: string;
   phone?: string;
+  passportImage?: string;
 }
 
 // ========== SELECTED DEPARTURE INTERFACE ==========
@@ -47,6 +48,9 @@ export interface IPricing {
   paidAmount: number;
   pendingAmount: number;
   pricePerPerson?: number;
+  baseAmount?: number;
+  gstPercentage?: number;
+  gstAmount?: number;
 }
 
 // ========== PAYMENT INTERFACE ==========

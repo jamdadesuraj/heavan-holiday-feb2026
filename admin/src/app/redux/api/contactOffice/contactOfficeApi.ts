@@ -1,14 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const contactOfficeApi = createApi({
   reducerPath: "contactOfficeApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/contact-office",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Office"],
   endpoints: (builder) => ({
     getAllOffices: builder.query({
-      query: () => "/",
+      query: () => "/contact-office/",
       providesTags: (result) =>
         result
           ? [
@@ -22,13 +20,13 @@ export const contactOfficeApi = createApi({
     }),
 
     getOfficeById: builder.query({
-      query: (id: string) => `/${id}`,
+      query: (id: string) => `/contact-office/${id}`,
       providesTags: (result, error, id) => [{ type: "Office", id }],
     }),
 
     createOffice: builder.mutation({
       query: (data: any) => ({
-        url: "/",
+        url: "/contact-office/",
         method: "POST",
         body: data,
       }),
@@ -37,7 +35,7 @@ export const contactOfficeApi = createApi({
 
     updateOffice: builder.mutation({
       query: ({ id, ...data }: { id: string; [key: string]: any }) => ({
-        url: `/${id}`,
+        url: `/contact-office/${id}`,
         method: "PUT",
         body: data,
       }),
@@ -49,7 +47,7 @@ export const contactOfficeApi = createApi({
 
     deleteOffice: builder.mutation({
       query: (id: string) => ({
-        url: `/${id}`,
+        url: `/contact-office/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: [{ type: "Office", id: "LIST" }],
@@ -57,7 +55,7 @@ export const contactOfficeApi = createApi({
 
     updateOfficeTimes: builder.mutation({
       query: ({ id, officeTimes }: { id: string; officeTimes: any[] }) => ({
-        url: `/${id}/times`,
+        url: `/contact-office/${id}/times`,
         method: "PUT",
         body: { officeTimes },
       }),
@@ -77,7 +75,7 @@ export const contactOfficeApi = createApi({
         date: string;
         description: string;
       }) => ({
-        url: `/${id}/holidays`,
+        url: `/contact-office/${id}/holidays`,
         method: "POST",
         body: { date, description },
       }),
@@ -89,7 +87,7 @@ export const contactOfficeApi = createApi({
 
     removeHoliday: builder.mutation({
       query: ({ id, date }: { id: string; date: string }) => ({
-        url: `/${id}/holidays`,
+        url: `/contact-office/${id}/holidays`,
         method: "DELETE",
         body: { date },
       }),
@@ -100,12 +98,12 @@ export const contactOfficeApi = createApi({
     }),
 
     getOfficeHolidays: builder.query({
-      query: (id: string) => `/${id}/holidays`,
+      query: (id: string) => `/contact-office/${id}/holidays`,
       providesTags: (result, error, id) => [{ type: "Office", id }],
     }),
 
     checkOfficeStatus: builder.query({
-      query: (id: string) => `/${id}/status`,
+      query: (id: string) => `/contact-office/${id}/status`,
     }),
 
     getOfficeSchedule: builder.query({
@@ -121,7 +119,7 @@ export const contactOfficeApi = createApi({
         const params = new URLSearchParams();
         if (startDate) params.append("startDate", startDate);
         if (endDate) params.append("endDate", endDate);
-        return `/${id}/schedule${params.toString() ? `?${params.toString()}` : ""}`;
+        return `/contact-office/${id}/schedule${params.toString() ? `?${params.toString()}` : ""}`;
       },
       providesTags: (result, error, { id }) => [{ type: "Office", id }],
     }),

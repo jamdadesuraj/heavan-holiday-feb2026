@@ -8,21 +8,21 @@ import {
   deleteFeature,
   updateHighlight,
 } from './infoBoxController';
-
+import { adminAuthMiddleware } from '../../middlewares/adminMiddleware';
 const router = express.Router();
 
 // GET route
 router.get('/', getContactFeatures); // Get all contact features
 
 // POST routes
-router.post('/', createContactFeatures); // Create contact features document
-router.post('/feature', createFeature); // Create new feature
+router.post('/', adminAuthMiddleware, createContactFeatures); // Create contact features document
+router.post('/feature', adminAuthMiddleware, createFeature); // Create new feature
 
 // PUT routes
-router.put('/feature/:featureId', updateFeature); // Update specific feature
-router.put('/highlight', updateHighlight); // Update highlight section
+router.put('/feature/:featureId', adminAuthMiddleware, updateFeature); // Update specific feature
+router.put('/highlight', adminAuthMiddleware, updateHighlight); // Update highlight section
 
 // DELETE route
-router.delete('/feature/:featureId', deleteFeature); // Delete specific feature
+router.delete('/feature/:featureId', adminAuthMiddleware, deleteFeature); // Delete specific feature
 
 export const contactInfoBoxRouter = router;

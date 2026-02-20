@@ -1,21 +1,19 @@
 // redux/api/joinUs/joinUsApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const joinUsApi = createApi({
   reducerPath: "joinUsApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/joinUs",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["JoinUs"],
   endpoints: (builder) => ({
     getContent: builder.query({
-      query: () => "/",
+      query: () => "/joinUs/",
       providesTags: ["JoinUs"],
     }),
 
     updateJoinUs: builder.mutation({
       query: (data) => ({
-        url: "/",
+        url: "/joinUs/",
         method: "PUT",
         body: data,
       }),
@@ -25,7 +23,7 @@ export const joinUsApi = createApi({
         const patchResult = dispatch(
           joinUsApi.util.updateQueryData("getContent", undefined, (draft) => {
             Object.assign(draft.data, updateData);
-          })
+          }),
         );
         try {
           await queryFulfilled;

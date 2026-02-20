@@ -1,20 +1,18 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const bookApi = createApi({
   reducerPath: "bookApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/books",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Book"],
   endpoints: (builder) => ({
     getAllBooks: builder.query({
-      query: () => "/",
+      query: () => "/books/",
       providesTags: ["Book"],
     }),
 
     createBook: builder.mutation({
       query: (formData) => ({
-        url: "/",
+        url: "/books/",
         method: "POST",
         body: formData,
       }),
@@ -23,7 +21,7 @@ export const bookApi = createApi({
 
     updateBook: builder.mutation({
       query: ({ id, formData }) => ({
-        url: `/${id}`,
+        url: `/books/${id}`,
         method: "PUT",
         body: formData,
       }),
@@ -35,7 +33,7 @@ export const bookApi = createApi({
 
     deleteBook: builder.mutation({
       query: (id) => ({
-        url: `/${id}`,
+        url: `/books/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Book"],
@@ -43,7 +41,7 @@ export const bookApi = createApi({
 
     addImagesToBook: builder.mutation({
       query: ({ id, formData }) => ({
-        url: `/${id}/add-images`,
+        url: `/books/${id}/add-images`,
         method: "POST",
         body: formData,
       }),
@@ -55,7 +53,7 @@ export const bookApi = createApi({
 
     removeImageFromBook: builder.mutation({
       query: ({ id, imageUrl }) => ({
-        url: `/${id}/remove-image`,
+        url: `/books/${id}/remove-image`,
         method: "DELETE",
         body: { imageUrl },
       }),

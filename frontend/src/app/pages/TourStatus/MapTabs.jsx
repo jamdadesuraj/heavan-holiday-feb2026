@@ -1,8 +1,9 @@
 "use client";
-
+import { useGetContactDetailsQuery } from "store/aboutUsApi/contactApi";
 import React, { useState } from "react";
 import { FaSmile, FaPlane, FaStar, FaUserTie } from "react-icons/fa";
 import { useGetCounterQuery } from "../../../../store/counterApi/counterApi";
+import { useGetTourPackageQuery } from "store/toursManagement/toursPackagesApi";
 const states = [
   "Andhra Pradesh",
   "Arunachal Pradesh",
@@ -44,19 +45,22 @@ const states = [
 ];
 
 const MapTabs = () => {
-  const [activeTab, setActiveTab] = useState("india");
   const [selection, setSelection] = useState("All destinations");
+  const { data, isLoading, error } = useGetContactDetailsQuery();
+  const {
+    data: packages,
+    isLoading: packageLoading,
+    error: packageError,
+  } = useGetTourPackageQuery();
 
-  // Determine dropdown options based on activeTab
-  const dropdownOptions =
-    activeTab === "india"
-      ? ["All destinations", "India", ...states]
-      : ["All destinations", "World"];
+  const dropdownOptions = ["All destinations", "India", ...states];
+
   const {
     data: counter,
     isLoading: counterLoading,
     isError: counterError,
   } = useGetCounterQuery();
+
   if (counterLoading) {
     return <p>loading</p>;
   }
@@ -64,56 +68,28 @@ const MapTabs = () => {
     return <p>error</p>;
   }
 
-  console.log(counter);
+  const mapLink = data?.data?.offices?.mapLink;
+  console.log("map link", mapLink);
   return (
     <section className="py-10 bg-gray-100">
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 px-4">
-        {/* Left Side - Tabs + Map */}
+        {/* Left Side - Map */}
         <div className="bg-white rounded-lg shadow-md p-4">
-          {/* Tabs */}
-          <div className="flex border-b">
-            <button
-              className={`flex-1 text-center py-2 font-medium ${
-                activeTab === "india"
-                  ? "text-blue-600 border-b-2 border-blue-600"
-                  : "text-gray-500"
-              }`}
-              onClick={() => {
-                setActiveTab("india");
-                setSelection("All destinations");
-              }}
-            >
-              India
-            </button>
-            <button
-              className={`flex-1 text-center py-2 font-medium ${
-                activeTab === "world"
-                  ? "text-blue-600 border-b-2 border-blue-600"
-                  : "text-gray-500"
-              }`}
-              onClick={() => {
-                setActiveTab("world");
-                setSelection("All destinations");
-              }}
-            >
-              World
-            </button>
-          </div>
-
           {/* Map Area */}
           <div className="relative mt-4 bg-gray-100 rounded-lg h-[400px] flex items-center justify-center">
-            {activeTab === "india" ? (
-              <img
-                src="/maps/india-map.png"
-                alt="India Map"
-                className="w-full h-full object-contain"
+            {mapLink ? (
+              <iframe
+                src={`https://maps.google.com/maps?q=${encodeURIComponent(mapLink)}&output=embed`}
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="rounded-lg"
               />
             ) : (
-              <img
-                src="/maps/world-map.png"
-                alt="World Map"
-                className="w-full h-full object-contain"
-              />
+              <p className="text-gray-500">Map not available</p>
             )}
 
             {/* Zoom Controls */}

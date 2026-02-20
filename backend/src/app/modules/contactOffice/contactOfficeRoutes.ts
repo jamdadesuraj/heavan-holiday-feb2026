@@ -12,22 +12,22 @@ import {
   checkOfficeStatus,
   getOfficeSchedule,
 } from './contactOffice.Controller';
-
+import { adminAuthMiddleware } from '../../middlewares/adminMiddleware';
 const router = Router();
 
 // Basic CRUD operations
 router.get('/', getAllOffices);
 router.get('/:id', getOfficeById);
-router.post('/', createOffice);
-router.put('/:id', updateOffice);
-router.delete('/:id', deleteOffice);
+router.post('/', adminAuthMiddleware, createOffice);
+router.put('/:id', adminAuthMiddleware, updateOffice);
+router.delete('/:id', adminAuthMiddleware, deleteOffice);
 
 // Office times management
-router.put('/:id/times', updateOfficeTimes);
+router.put('/:id/times', adminAuthMiddleware, updateOfficeTimes);
 
 // Holiday management
-router.post('/:id/holidays', addHoliday);
-router.delete('/:id/holidays', removeHoliday);
+router.post('/:id/holidays', adminAuthMiddleware, addHoliday);
+router.delete('/:id/holidays', adminAuthMiddleware, removeHoliday);
 router.get('/:id/holidays', getOfficeHolidays);
 
 // Status and schedule

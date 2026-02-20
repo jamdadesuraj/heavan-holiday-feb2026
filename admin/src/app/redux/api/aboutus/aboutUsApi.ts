@@ -1,14 +1,9 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react"; // ← remove fetchBaseQuery
+import { baseQueryWithAuth } from "../../baseQuery";
 
 export const aboutUsApi = createApi({
   reducerPath: "aboutUsApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api",
-    prepareHeaders: (headers) => {
-      headers.delete("content-type");
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["AboutUs"],
   endpoints: (builder) => ({
     getAboutUs: builder.query({

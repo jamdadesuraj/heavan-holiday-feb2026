@@ -4,13 +4,13 @@ import {
   createTourManager,
   updateTourManager,
 } from './tourManagerController';
-
+import { adminAuthMiddleware } from '../../middlewares/adminMiddleware';
 const router = express.Router();
 
 router.get('/', getTourManagers);
 
-router.post('/', createTourManager);
+router.post('/', adminAuthMiddleware, createTourManager);
 
-router.put('/:id', updateTourManager);
+router.put('/:id', adminAuthMiddleware, updateTourManager);
 
 export const tourManagerRouter = router;

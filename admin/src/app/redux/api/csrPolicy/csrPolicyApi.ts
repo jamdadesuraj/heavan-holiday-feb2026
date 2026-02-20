@@ -1,22 +1,20 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const preambleApi = createApi({
   reducerPath: "preambleApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/csr-preamble",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Preamble"],
   endpoints: (builder) => ({
     // Get Preamble
     getPreamble: builder.query({
-      query: () => "/preamble",
+      query: () => "csr-preamble/preamble",
       providesTags: ["Preamble"],
     }),
 
     // Create Complete Preamble
     createPreamble: builder.mutation({
       query: (data) => ({
-        url: "/preamble",
+        url: "csr-preamble/preamble",
         method: "POST",
         body: data,
       }),
@@ -26,7 +24,7 @@ export const preambleApi = createApi({
     // Update Main Fields
     updateMainFields: builder.mutation({
       query: (data) => ({
-        url: "/preamble/main-fields",
+        url: "csr-preamble/preamble/main-fields",
         method: "PATCH",
         body: data,
       }),
@@ -36,7 +34,7 @@ export const preambleApi = createApi({
     // Add Table Row
     addTableRow: builder.mutation({
       query: (data) => ({
-        url: "/preamble/table-row",
+        url: "csr-preamble/preamble/table-row",
         method: "POST",
         body: data,
       }),
@@ -46,7 +44,7 @@ export const preambleApi = createApi({
     // Update Table Row
     updateTableRow: builder.mutation({
       query: (data) => ({
-        url: "/preamble/table-row",
+        url: "csr-preamble/preamble/table-row",
         method: "PATCH",
         body: data,
       }),
@@ -56,7 +54,7 @@ export const preambleApi = createApi({
     // Delete Table Row
     deleteTableRow: builder.mutation({
       query: (id) => ({
-        url: "/preamble/table-row",
+        url: "csr-preamble/preamble/table-row",
         method: "DELETE",
         body: { id },
       }),

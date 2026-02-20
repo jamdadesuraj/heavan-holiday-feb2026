@@ -1,20 +1,18 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const tourReviewApi = createApi({
   reducerPath: "tourReviewApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/reviews",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["TourReview"],
   endpoints: (builder) => ({
     getTourReview: builder.query({
-      query: () => "/",
+      query: () => "/reviews/",
       providesTags: ["TourReview"],
     }),
 
     updateMainFields: builder.mutation({
       query: (body) => ({
-        url: "/update-main",
+        url: "/reviews/update-main",
         method: "PUT",
         body,
       }),
@@ -23,7 +21,7 @@ export const tourReviewApi = createApi({
 
     addReview: builder.mutation({
       query: (body) => ({
-        url: "/review/add",
+        url: "/reviews/review/add",
         method: "POST",
         body,
       }),
@@ -31,7 +29,7 @@ export const tourReviewApi = createApi({
     }),
     updateReview: builder.mutation({
       query: ({ id, data }) => ({
-        url: `/review/update/${id}`,
+        url: `/reviews/review/update/${id}`,
         method: "PUT",
         body: data,
       }),
@@ -39,7 +37,7 @@ export const tourReviewApi = createApi({
     }),
     deleteReview: builder.mutation({
       query: (id) => ({
-        url: `/review/delete/${id}`,
+        url: `/reviews/review/delete/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["TourReview"],

@@ -1,25 +1,20 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const onlineBookingApi = createApi({
   reducerPath: "onlineBookingApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/online-booking",
-    prepareHeaders: (headers) => {
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["OnlineBooking", "Steps"],
   endpoints: (builder) => ({
     // Get full online booking document
     getOnlineBooking: builder.query({
-      query: () => "/",
+      query: () => "/online-booking/",
       providesTags: ["OnlineBooking"],
     }),
 
     // Update title and description
     updateOnlineBooking: builder.mutation({
       query: (data) => ({
-        url: "/",
+        url: "/online-booking/",
         method: "PUT",
         body: data,
       }),
@@ -29,7 +24,7 @@ export const onlineBookingApi = createApi({
     // Create a new step
     createStep: builder.mutation({
       query: (formData) => ({
-        url: "/steps",
+        url: "/online-booking/steps",
         method: "POST",
         body: formData,
       }),
@@ -39,7 +34,7 @@ export const onlineBookingApi = createApi({
     // Update a step
     updateStep: builder.mutation({
       query: ({ stepNo, formData }) => ({
-        url: `/steps/${stepNo}`,
+        url: `/online-booking/steps/${stepNo}`,
         method: "PUT",
         body: formData,
       }),
@@ -49,7 +44,7 @@ export const onlineBookingApi = createApi({
     // Delete a step
     deleteStep: builder.mutation({
       query: (stepNo) => ({
-        url: `/steps/${stepNo}`,
+        url: `/online-booking/steps/${stepNo}`,
         method: "DELETE",
       }),
       invalidatesTags: ["OnlineBooking", "Steps"],

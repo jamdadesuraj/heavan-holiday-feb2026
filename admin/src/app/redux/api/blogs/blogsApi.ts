@@ -1,11 +1,9 @@
 // features/blog/blogApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const blogApi = createApi({
   reducerPath: "blogApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Blog", "Category"],
   endpoints: (builder) => ({
     // --- CATEGORY ENDPOINTS ---

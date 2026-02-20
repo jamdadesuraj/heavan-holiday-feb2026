@@ -7,19 +7,29 @@ import {
   updateSlide,
   deleteSlide,
 } from './offer-bannerController';
-
+import { adminAuthMiddleware } from '../../middlewares/adminMiddleware';
 import { upload } from '../../config/cloudinary';
 
 const router = express.Router();
 
 router.get('/celebrate', getCelebrate);
 
-router.put('/celebrate/main-fields', updateMainFields);
+router.put('/celebrate/main-fields', adminAuthMiddleware, updateMainFields);
 
-router.post('/celebrate/slide', upload.single('image'), addSlide);
+router.post(
+  '/celebrate/slide',
+  adminAuthMiddleware,
+  upload.single('image'),
+  addSlide,
+);
 
-router.put('/celebrate/slide/:slideId', upload.single('image'), updateSlide);
+router.put(
+  '/celebrate/slide/:slideId',
+  adminAuthMiddleware,
+  upload.single('image'),
+  updateSlide,
+);
 
-router.delete('/celebrate/slide/:slideId', deleteSlide);
+router.delete('/celebrate/slide/:slideId', adminAuthMiddleware, deleteSlide);
 
 export const celebrateRouter = router;

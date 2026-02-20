@@ -1,15 +1,13 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const galleryApi = createApi({
   reducerPath: "galleryApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/gallery",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Gallery"],
   endpoints: (builder) => ({
     getGallery: builder.query<any, void>({
       query: () => ({
-        url: "",
+        url: "/gallery",
         method: "GET",
       }),
       providesTags: ["Gallery"],
@@ -19,7 +17,7 @@ export const galleryApi = createApi({
       { title: string; subtitle: string }
     >({
       query: (data) => ({
-        url: "/info",
+        url: "/gallery/info",
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: data,
@@ -28,7 +26,7 @@ export const galleryApi = createApi({
     }),
     addImageToGallery: builder.mutation<any, FormData>({
       query: (formData) => ({
-        url: "/image",
+        url: "/gallery/image",
         method: "POST",
         body: formData,
       }),
@@ -36,7 +34,7 @@ export const galleryApi = createApi({
     }),
     deleteImageFromGallery: builder.mutation<any, { imageId: string }>({
       query: ({ imageId }) => ({
-        url: "/image",
+        url: "/gallery/image",
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: { imageId },
@@ -49,7 +47,7 @@ export const galleryApi = createApi({
       { imageId: string; status: string }
     >({
       query: (data) => ({
-        url: "/image/status",
+        url: "/gallery/image/status",
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: data,

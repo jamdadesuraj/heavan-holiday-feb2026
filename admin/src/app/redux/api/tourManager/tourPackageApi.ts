@@ -1,17 +1,15 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const tourPackageApi = createApi({
   reducerPath: "tourPackageApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/tour-package",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Category", "TourPackageCard", "Departure"],
   endpoints: (builder) => ({
     // ==================== CATEGORY ENDPOINTS ====================
 
     createCategory: builder.mutation({
       query: (data: FormData) => ({
-        url: "/categories",
+        url: "/tour-package/categories",
         method: "POST",
         body: data,
       }),
@@ -28,7 +26,7 @@ export const tourPackageApi = createApi({
             }
           });
         }
-        return `/categories${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
+        return `/tour-package/categories${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
       },
       providesTags: ["Category"],
     }),
@@ -41,7 +39,7 @@ export const tourPackageApi = createApi({
         categoryId: string;
         data: FormData;
       }) => ({
-        url: `/categories/${categoryId}`,
+        url: `/tour-package/categories/${categoryId}`,
         method: "PUT",
         body: data,
       }),
@@ -53,7 +51,7 @@ export const tourPackageApi = createApi({
 
     deleteCategory: builder.mutation({
       query: (categoryId: string) => ({
-        url: `/categories/${categoryId}`,
+        url: `/tour-package/categories/${categoryId}`,
         method: "DELETE",
       }),
       invalidatesTags: (result, error, categoryId) => [
@@ -66,7 +64,7 @@ export const tourPackageApi = createApi({
 
     createTourPackageCard: builder.mutation({
       query: (data: FormData) => ({
-        url: "/tour-package-cards",
+        url: "/tour-package/tour-package-cards",
         method: "POST",
         body: data,
       }),
@@ -83,14 +81,14 @@ export const tourPackageApi = createApi({
             }
           });
         }
-        return `/tour-package-cards${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
+        return `/tour-package/tour-package-cards${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
       },
       providesTags: ["TourPackageCard"],
     }),
 
     updateTourPackageCard: builder.mutation({
       query: ({ cardId, data }: { cardId: string; data: FormData }) => ({
-        url: `/tour-package-cards/${cardId}`,
+        url: `/tour-package/tour-package-cards/${cardId}`,
         method: "PUT",
         body: data,
       }),
@@ -103,7 +101,7 @@ export const tourPackageApi = createApi({
 
     deleteTourPackageCard: builder.mutation({
       query: (cardId: string) => ({
-        url: `/tour-package-cards/${cardId}`,
+        url: `/tour-package/tour-package-cards/${cardId}`,
         method: "DELETE",
       }),
       invalidatesTags: (result, error, cardId) => [
@@ -126,7 +124,7 @@ export const tourPackageApi = createApi({
             }
           });
         }
-        return `/tours/${tourId}/departures${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
+        return `/tour-package/tours/${tourId}/departures${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
       },
       providesTags: (result, error, { tourId }) => [
         { type: "Departure", id: tourId },
@@ -136,7 +134,7 @@ export const tourPackageApi = createApi({
     // Get departure cities for a tour
     getDepartureCities: builder.query({
       query: (tourId: string) => ({
-        url: `/tours/${tourId}/departure-cities`,
+        url: `/tour-package/tours/${tourId}/departure-cities`,
       }),
       providesTags: (result, error, tourId) => [
         { type: "Departure", id: `${tourId}-cities` },
@@ -156,7 +154,7 @@ export const tourPackageApi = createApi({
           seatsToReduce: number;
         };
       }) => ({
-        url: `/tours/${tourId}/departures/book`,
+        url: `/tour-package/tours/${tourId}/departures/book`,
         method: "PATCH",
         body: data,
       }),
@@ -180,7 +178,7 @@ export const tourPackageApi = createApi({
           totalSeats: number;
         }>;
       }) => ({
-        url: "/tours/departures/bulk-add",
+        url: "/tour-package/tours/departures/bulk-add",
         method: "POST",
         body: data,
       }),
@@ -199,7 +197,7 @@ export const tourPackageApi = createApi({
         departureDate?: string;
         newStatus: "Available" | "Filling Fast" | "Sold Out" | "Cancelled";
       }) => ({
-        url: "/tours/departures/bulk-update-status",
+        url: "/tour-package/tours/departures/bulk-update-status",
         method: "PATCH",
         body: data,
       }),

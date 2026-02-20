@@ -6,17 +6,17 @@ import {
   updateDetail,
   deleteDetail,
 } from './principlesController';
-
+import { adminAuthMiddleware } from '../../middlewares/adminMiddleware';
 const router = Router();
 
 router.get('/', getPrinciple);
 
-router.put('/', updateMainFields);
+router.put('/', adminAuthMiddleware, updateMainFields);
 
-router.post('/details', addDetail);
+router.post('/details', adminAuthMiddleware, addDetail);
 
-router.put('/details/:id', updateDetail);
+router.put('/details/:id', adminAuthMiddleware, updateDetail);
 
-router.delete('/details/:id', deleteDetail);
+router.delete('/details/:id', adminAuthMiddleware, deleteDetail);
 
 export const principleRouter = router;

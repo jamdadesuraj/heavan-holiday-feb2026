@@ -10,22 +10,34 @@ import {
   deleteTourPackageCard,
 } from './tourPackageControllers';
 import { upload } from '../../config/cloudinary';
-
+import { adminAuthMiddleware } from '../../middlewares/adminMiddleware';
 const router = Router();
 
-router.post('/categories', upload.single('image'), createCategory);
+router.post(
+  '/categories',
+  adminAuthMiddleware,
+  upload.single('image'),
+  createCategory,
+);
 router.get('/categories', getCategories);
-router.put('/categories/:categoryId', upload.single('image'), updateCategory);
-router.delete('/categories/:categoryId', deleteCategory);
+router.put(
+  '/categories/:categoryId',
+  adminAuthMiddleware,
+  upload.single('image'),
+  updateCategory,
+);
+router.delete('/categories/:categoryId', adminAuthMiddleware, deleteCategory);
 
 router.post(
   '/tour-package-cards',
+  adminAuthMiddleware,
   upload.array('galleryImages', 10),
   createTourPackageCard,
 );
 router.get('/tour-package-cards', getTourPackageCards);
 router.put(
   '/tour-package-cards/:cardId',
+  adminAuthMiddleware,
   upload.array('galleryImages', 10),
   updateTourPackageCard,
 );

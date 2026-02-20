@@ -1,17 +1,15 @@
 // store/careersApi/careersApi.js
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const careersApi = createApi({
   reducerPath: "careersApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/careers-header",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Careers"],
   endpoints: (builder) => ({
     // Get careers info
     getCareers: builder.query({
       query: () => ({
-        url: "/",
+        url: "/careers-header/",
         method: "GET",
       }),
       providesTags: ["Careers"],
@@ -20,7 +18,7 @@ export const careersApi = createApi({
     // Update careers with video upload
     updateCareers: builder.mutation({
       query: (formData) => ({
-        url: "/",
+        url: "/careers-header/",
         method: "PUT",
         body: formData, // FormData object with video
       }),

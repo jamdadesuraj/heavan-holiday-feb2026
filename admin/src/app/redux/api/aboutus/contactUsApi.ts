@@ -1,26 +1,21 @@
 // redux/api/contactUs/contactUsApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const contactUsApi = createApi({
   reducerPath: "contactUsApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/contact-us", // Adjust your base URL
-    prepareHeaders: (headers) => {
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["ContactUs"],
   endpoints: (builder) => ({
     // GET - Fetch contact details
     getContactDetails: builder.query({
-      query: () => "/",
+      query: () => "/contact-us/",
       providesTags: ["ContactUs"],
     }),
 
     // PUT - Full update/create contact details
     updateContactDetails: builder.mutation({
       query: (data) => ({
-        url: "/",
+        url: "/contact-us/",
         method: "PUT",
         body: data,
       }),
@@ -30,7 +25,7 @@ export const contactUsApi = createApi({
     // PATCH - Partial update contact details
     patchContactDetails: builder.mutation({
       query: (data) => ({
-        url: "/",
+        url: "/contact-us/",
         method: "PATCH",
         body: data,
       }),

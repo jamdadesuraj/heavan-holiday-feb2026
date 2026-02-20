@@ -1,35 +1,33 @@
 // redux/api/faq/faqApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const faqApi = createApi({
   reducerPath: "faqApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/faqs",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["FAQ", "Category"],
   endpoints: (builder) => ({
     // Get all FAQs and categories
     getAllFAQs: builder.query({
-      query: () => "/",
+      query: () => "/faqs/",
       providesTags: ["FAQ"],
     }),
 
     // Get only categories
     getAllCategories: builder.query({
-      query: () => "/categories",
+      query: () => "/faqs/categories",
       providesTags: ["Category"],
     }),
 
     // Get FAQs by category
     getFAQsByCategory: builder.query({
-      query: (category) => `/category/${category}`,
+      query: (category) => `/faqs/category/${category}`,
       providesTags: ["FAQ"],
     }),
 
     // Create category
     createCategory: builder.mutation({
       query: (data) => ({
-        url: "/category",
+        url: "/faqs/category",
         method: "POST",
         body: data,
       }),
@@ -39,7 +37,7 @@ export const faqApi = createApi({
     // Create FAQ
     createFAQ: builder.mutation({
       query: (data) => ({
-        url: "/faq",
+        url: "/faqs/faq",
         method: "POST",
         body: data,
       }),
@@ -49,7 +47,7 @@ export const faqApi = createApi({
     // Update category
     updateCategory: builder.mutation({
       query: ({ categoryId, ...data }) => ({
-        url: `/category/${categoryId}`,
+        url: `/faqs/category/${categoryId}`,
         method: "PUT",
         body: data,
       }),
@@ -59,7 +57,7 @@ export const faqApi = createApi({
     // Update FAQ
     updateFAQ: builder.mutation({
       query: ({ faqId, ...data }) => ({
-        url: `/faq/${faqId}`,
+        url: `/faqs/faq/${faqId}`,
         method: "PUT",
         body: data,
       }),
@@ -69,7 +67,7 @@ export const faqApi = createApi({
     // Delete category
     deleteCategory: builder.mutation({
       query: (categoryId) => ({
-        url: `/category/${categoryId}`,
+        url: `/faqs/category/${categoryId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Category", "FAQ"],
@@ -78,7 +76,7 @@ export const faqApi = createApi({
     // Delete FAQ
     deleteFAQ: builder.mutation({
       query: (faqId) => ({
-        url: `/faq/${faqId}`,
+        url: `/faqs/faq/${faqId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["FAQ"],

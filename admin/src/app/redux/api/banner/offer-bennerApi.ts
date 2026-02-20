@@ -1,22 +1,20 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const offerBannerApi = createApi({
   reducerPath: "offerBannerApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/offer-banner",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["OfferBanner"],
   endpoints: (builder) => ({
     getOfferBanner: builder.query<any, void>({
       query: () => ({
-        url: "/",
+        url: "/offer-banner/",
         method: "GET",
       }),
       providesTags: ["OfferBanner"],
     }),
     createOfferBanner: builder.mutation<any, FormData>({
       query: (formData) => ({
-        url: "/",
+        url: "/offer-banner/",
         method: "POST",
         body: formData,
       }),
@@ -24,7 +22,7 @@ export const offerBannerApi = createApi({
     }),
     updateOfferBanner: builder.mutation<any, FormData>({
       query: (formData) => ({
-        url: "/",
+        url: "/offer-banner/",
         method: "PUT",
         body: formData,
       }),
@@ -32,7 +30,7 @@ export const offerBannerApi = createApi({
     }),
     deleteOfferBanner: builder.mutation<any, { id: string }>({
       query: ({ id }) => ({
-        url: "/",
+        url: "/offer-banner/",
         method: "DELETE",
         body: { id },
       }),

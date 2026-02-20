@@ -1,14 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const cityApi = createApi({
   reducerPath: "cityApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/contact-city",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["City"],
   endpoints: (builder) => ({
     getAllCities: builder.query({
-      query: () => "/",
+      query: () => "/contact-city/",
       providesTags: (result) =>
         result
           ? [
@@ -23,7 +21,7 @@ export const cityApi = createApi({
 
     createCity: builder.mutation({
       query: (data: FormData) => ({
-        url: "/",
+        url: "/contact-city/",
         method: "POST",
         body: data,
       }),
@@ -32,7 +30,7 @@ export const cityApi = createApi({
 
     updateCity: builder.mutation({
       query: ({ id, data }: { id: string; data: FormData }) => ({
-        url: `/${id}`,
+        url: `/contact-city/${id}`,
         method: "PUT",
         body: data,
       }),
@@ -44,7 +42,7 @@ export const cityApi = createApi({
 
     deleteCity: builder.mutation({
       query: (id: string) => ({
-        url: `/${id}`,
+        url: `/contact-city/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: [{ type: "City", id: "LIST" }],

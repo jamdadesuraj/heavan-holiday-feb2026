@@ -4,13 +4,21 @@ import Image from "next/image";
 import { Card, Col, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import Cookies from "js-cookie";
 import TextFormInput from "@/components/form/TextFormInput";
 import { useGetSettingsQuery } from "@/app/redux/api/settings/settingsApi";
 import { useLoginAdminMutation } from "@/app/redux/api/adminApi/authApi";
 
+interface ToastState {
+  message: string;
+  type: "success" | "error";
+}
+
 const Login = () => {
   const { data, isLoading, error } = useGetSettingsQuery(undefined);
   const [loginAdmin, { isLoading: isLoginLoading }] = useLoginAdminMutation();
+  const [toast, setToast] = useState<ToastState | null>(null);
   const router = useRouter();
 
   const { control, handleSubmit } = useForm({
@@ -20,16 +28,29 @@ const Login = () => {
     },
   });
 
+  const showToast = (message: string, type: "success" | "error"): void => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 1000);
+  };
+
   if (isLoading) return <p>loading</p>;
   if (error) return <p>error</p>;
 
   const onSubmit = async (data: any) => {
     try {
       const res = await loginAdmin(data).unwrap();
-      localStorage.setItem("adminToken", res.data.token);
+      Cookies.set("adminToken", res.data.token, { expires: 7 });
+      showToast("Login successful! Redirecting...", "success");
       router.push("/dashboard");
     } catch (error: any) {
-      console.error(error?.data?.message || "Login failed");
+      const message = error?.data?.message || "Login failed";
+      if (message.includes("Invalid email or password")) {
+        showToast("Invalid email or password", "error");
+      } else if (message.includes("not found")) {
+        showToast("Admin not found", "error");
+      } else {
+        showToast(message, "error");
+      }
     }
   };
 
@@ -38,6 +59,17 @@ const Login = () => {
       <Row className="g-0 justify-content-center w-100 m-xxl-5 px-xxl-4 m-3">
         <Col xl={4} lg={5} md={6}>
           <Card className="overflow-hidden text-center h-100 p-xxl-4 p-3 mb-0">
+            {/* Toast */}
+            {toast && (
+              <div
+                className={`position-fixed top-0 start-50 translate-middle-x mt-3 px-4 py-2 rounded text-white text-sm fw-medium z-3 ${
+                  toast.type === "success" ? "bg-success" : "bg-danger"
+                }`}
+              >
+                {toast.message}
+              </div>
+            )}
+
             <a href="/" className="auth-brand mb-4">
               <Image
                 src={data?.data?.companyLogo}

@@ -102,7 +102,10 @@ const FAQDataPage = () => {
                   <span className="ml-4">{openIndex === i ? "−" : "+"}</span>
                 </button>
                 {openIndex === i && (
-                  <p className="mt-2 text-sm text-gray-600">{item.answer}</p>
+                  <p
+                    className="mt-2 text-sm text-gray-600"
+                    dangerouslySetInnerHTML={{ __html: item.answer }}
+                  />
                 )}
               </div>
             ))

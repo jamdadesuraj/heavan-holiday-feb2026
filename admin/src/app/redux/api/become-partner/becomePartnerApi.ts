@@ -1,19 +1,17 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const cardApi = createApi({
   reducerPath: "cardApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/become-partner",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Card"],
   endpoints: (builder) => ({
     getAllCards: builder.query({
-      query: () => "/",
+      query: () => "/become-partner/",
       providesTags: ["Card"],
     }),
     createCard: builder.mutation({
       query: (formData) => ({
-        url: "/",
+        url: "/become-partner/",
         method: "POST",
         body: formData,
       }),
@@ -21,7 +19,7 @@ export const cardApi = createApi({
     }),
     updateCard: builder.mutation({
       query: ({ id, formData }) => ({
-        url: `/${id}`,
+        url: `/become-partner/${id}`,
         method: "PUT",
         body: formData,
       }),
@@ -29,7 +27,7 @@ export const cardApi = createApi({
     }),
     deleteCard: builder.mutation({
       query: (id) => ({
-        url: `/${id}`,
+        url: `/become-partner/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Card"],

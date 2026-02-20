@@ -22,6 +22,7 @@ export const bookingApi = createApi({
         url: "/",
         method: "POST",
         body: bookingData,
+        formData: true,
       }),
       invalidatesTags: ["BookingList", "AllBookings"],
     }),

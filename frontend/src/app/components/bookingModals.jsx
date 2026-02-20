@@ -35,7 +35,7 @@ const BookingStepperModal = ({
 
   const [openTravelerForms, setOpenTravelerForms] = useState([]);
   const [paymentType, setPaymentType] = useState("advance");
-
+  const [passportImages, setPassportImages] = useState({});
   const [formData, setFormData] = useState({
     selectedDeparture: null,
     packageType: "Joining Package",
@@ -72,7 +72,9 @@ const BookingStepperModal = ({
             tourData?.baseFullPackagePrice
           : selectedDeparture?.joiningPrice || tourData?.baseJoiningPrice;
 
-      const totalAmount = basePrice * formData.travelerCount.total;
+      const baseAmount = basePrice * formData.travelerCount.total;
+      const gstAmount = Math.round(baseAmount * 0.05);
+      const totalAmount = baseAmount + gstAmount;
       const advanceAmount = Math.ceil(totalAmount * 0.5);
 
       setFormData((prev) => ({
@@ -372,6 +374,7 @@ const BookingStepperModal = ({
       },
     });
     setOpenTravelerForms([]);
+    setPassportImages({});
     setErrors({});
     setPaymentType("advance");
   };
@@ -403,39 +406,47 @@ const BookingStepperModal = ({
         return;
       }
 
-      const bookingPayload = {
-        user: userId,
-        tourPackage: tourData._id,
-        selectedDeparture: {
+      // create FormData instead of JSON object
+      const fd = new FormData();
+
+      fd.append("user", userId);
+      fd.append("tourPackage", tourData._id);
+      fd.append(
+        "selectedDeparture",
+        JSON.stringify({
           departureId: formData.selectedDeparture.departureId,
           departureCity: formData.selectedDeparture.departureCity,
           departureDate: formData.selectedDeparture.departureDate,
           packageType: formData.selectedDeparture.packageType,
-        },
-        travelers: formData.travelers.map((t) => ({
-          type: t.type,
-          title: t.title,
-          firstName: t.firstName,
-          lastName: t.lastName,
-          dateOfBirth: t.dateOfBirth,
-          age: parseInt(t.age),
-          gender: t.gender,
-          isLeadTraveler: t.isLeadTraveler,
-          email: t.email || undefined,
-          phone: t.phone || undefined,
-        })),
-        travelerCount: formData.travelerCount,
-        pricing: formData.pricing,
-        leadTraveler: {
-          name: `${leadTraveler.firstName} ${leadTraveler.lastName}`,
-          email: leadTraveler.email || undefined,
-          phone: leadTraveler.phone || undefined,
-        },
-      };
+        }),
+      );
+      fd.append(
+        "travelers",
+        JSON.stringify(
+          formData.travelers.map((t) => ({
+            type: t.type,
+            title: t.title,
+            firstName: t.firstName,
+            lastName: t.lastName,
+            dateOfBirth: t.dateOfBirth,
+            age: parseInt(t.age),
+            gender: t.gender,
+            isLeadTraveler: t.isLeadTraveler,
+            email: t.email || undefined,
+            phone: t.phone || undefined,
+          })),
+        ),
+      );
+      fd.append("travelerCount", JSON.stringify(formData.travelerCount));
+      fd.append("pricing", JSON.stringify(formData.pricing));
 
-      await createBooking(bookingPayload).unwrap();
+      // append passport images
+      Object.entries(passportImages).forEach(([key, file]) => {
+        fd.append(key, file);
+      });
+
+      await createBooking(fd).unwrap();
       toast.success("Booking created successfully!");
-      // Step changes to 5 via useEffect
     } catch (error) {
       toast.error(
         `Booking failed: ${error?.data?.message || "Please try again"}`,
@@ -453,8 +464,8 @@ const BookingStepperModal = ({
     const bookingId = bookingData.data.booking.bookingId;
     const amount =
       paymentType === "advance"
-        ? formData.pricing.advanceAmount
-        : formData.pricing.totalAmount;
+        ? bookingData.data.booking.pricing.advanceAmount
+        : bookingData.data.booking.pricing.totalAmount;
 
     try {
       // Step 1: Create Razorpay order
@@ -1055,7 +1066,35 @@ const BookingStepperModal = ({
                                   </p>
                                 )}
                               </div>
-
+                              {/* Passport Image */}
+                              <div>
+                                <label className="block text-sm font-medium mb-1">
+                                  Passport Photo
+                                </label>
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={(e) => {
+                                    if (e.target.files?.[0]) {
+                                      setPassportImages((prev) => ({
+                                        ...prev,
+                                        [`passportImage_${index}`]:
+                                          e.target.files[0],
+                                      }));
+                                    }
+                                  }}
+                                  className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                                />
+                                {passportImages[`passportImage_${index}`] && (
+                                  <p className="text-xs text-green-600 mt-1">
+                                    ✓{" "}
+                                    {
+                                      passportImages[`passportImage_${index}`]
+                                        .name
+                                    }
+                                  </p>
+                                )}
+                              </div>
                               {traveler.isLeadTraveler && (
                                 <>
                                   <div>
@@ -1264,8 +1303,26 @@ const BookingStepperModal = ({
                           {formData.travelerCount.total}
                         </span>
                       </div>
-                      <div className="flex justify-between font-semibold text-base border-t pt-2">
-                        <span>Total Amount:</span>
+                      <div className="flex justify-between text-sm border-t pt-2">
+                        <span className="text-gray-600">Base Amount:</span>
+                        <span>
+                          ₹
+                          {Math.round(
+                            formData.pricing.totalAmount / 1.05,
+                          ).toLocaleString("en-IN")}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">GST (5%):</span>
+                        <span>
+                          ₹
+                          {Math.round(
+                            (formData.pricing.totalAmount / 1.05) * 0.05,
+                          ).toLocaleString("en-IN")}
+                        </span>
+                      </div>
+                      <div className="flex justify-between font-semibold text-base pt-2">
+                        <span>Total Amount (with GST):</span>
                         <span className="text-green-600">
                           ₹
                           {formData.pricing.totalAmount.toLocaleString("en-IN")}
@@ -1344,7 +1401,7 @@ const BookingStepperModal = ({
                           <span className="font-medium">Pay Advance (50%)</span>
                           <p className="text-sm text-gray-600 ml-6">
                             Pay ₹
-                            {formData.pricing.advanceAmount.toLocaleString(
+                            {bookingData.data.booking.pricing.advanceAmount.toLocaleString(
                               "en-IN",
                             )}{" "}
                             now, rest before departure
@@ -1352,7 +1409,7 @@ const BookingStepperModal = ({
                         </div>
                         <span className="font-bold text-orange-600">
                           ₹
-                          {formData.pricing.advanceAmount.toLocaleString(
+                          {bookingData.data.booking.pricing.advanceAmount.toLocaleString(
                             "en-IN",
                           )}
                         </span>
@@ -1375,7 +1432,9 @@ const BookingStepperModal = ({
                         </div>
                         <span className="font-bold text-green-600">
                           ₹
-                          {formData.pricing.totalAmount.toLocaleString("en-IN")}
+                          {bookingData.data.booking.pricing.totalAmount.toLocaleString(
+                            "en-IN",
+                          )}
                         </span>
                       </label>
                     </div>
@@ -1390,10 +1449,10 @@ const BookingStepperModal = ({
                         ? "Processing..."
                         : `Pay ₹${
                             paymentType === "advance"
-                              ? formData.pricing.advanceAmount.toLocaleString(
+                              ? bookingData.data.booking.pricing.advanceAmount.toLocaleString(
                                   "en-IN",
                                 )
-                              : formData.pricing.totalAmount.toLocaleString(
+                              : bookingData.data.booking.pricing.totalAmount.toLocaleString(
                                   "en-IN",
                                 )
                           }`}
@@ -1481,22 +1540,55 @@ const BookingStepperModal = ({
                     </span>
                     <div className="text-right">
                       <p className="text-green-600 font-semibold text-xl">
-                        ₹{formData.pricing.totalAmount.toLocaleString("en-IN")}
+                        ₹
+                        {(currentStep === 5 && bookingData
+                          ? bookingData.data.booking.pricing.totalAmount
+                          : formData.pricing.totalAmount
+                        ).toLocaleString("en-IN")}
                       </p>
                       <p className="text-xs text-gray-500">
                         ₹
-                        {formData.pricing.pricePerPerson.toLocaleString(
-                          "en-IN",
-                        )}{" "}
+                        {(currentStep === 5 && bookingData
+                          ? bookingData.data.booking.pricing.pricePerPerson
+                          : formData.pricing.pricePerPerson
+                        ).toLocaleString("en-IN")}{" "}
                         per person
                       </p>
                     </div>
                   </div>
 
                   <div className="flex justify-between items-center mb-2 text-sm">
+                    <span className="text-gray-700">Base Amount</span>
+                    <span className="font-semibold">
+                      ₹
+                      {(currentStep === 5 && bookingData
+                        ? bookingData.data.booking.pricing.baseAmount
+                        : Math.round(formData.pricing.totalAmount / 1.05)
+                      ).toLocaleString("en-IN")}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between items-center mb-2 text-sm">
+                    <span className="text-gray-700">GST (5%)</span>
+                    <span className="font-semibold">
+                      ₹
+                      {(currentStep === 5 && bookingData
+                        ? bookingData.data.booking.pricing.gstAmount
+                        : Math.round(
+                            (formData.pricing.totalAmount / 1.05) * 0.05,
+                          )
+                      ).toLocaleString("en-IN")}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between items-center mb-2 text-sm">
                     <span className="text-gray-700">Advance (50%)</span>
                     <span className="font-semibold">
-                      ₹{formData.pricing.advanceAmount.toLocaleString("en-IN")}
+                      ₹
+                      {(currentStep === 5 && bookingData
+                        ? bookingData.data.booking.pricing.advanceAmount
+                        : formData.pricing.advanceAmount
+                      ).toLocaleString("en-IN")}
                     </span>
                   </div>
 
@@ -1504,9 +1596,11 @@ const BookingStepperModal = ({
                     <span className="text-gray-700">Balance</span>
                     <span className="font-semibold">
                       ₹
-                      {(
-                        formData.pricing.totalAmount -
-                        formData.pricing.advanceAmount
+                      {(currentStep === 5 && bookingData
+                        ? bookingData.data.booking.pricing.totalAmount -
+                          bookingData.data.booking.pricing.advanceAmount
+                        : formData.pricing.totalAmount -
+                          formData.pricing.advanceAmount
                       ).toLocaleString("en-IN")}
                     </span>
                   </div>

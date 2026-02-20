@@ -26,32 +26,44 @@ import {
   updateJobItemStatus,
 } from './openingController';
 const router = express.Router();
-
-router.post('/department', createDepartment);
+import { adminAuthMiddleware } from '../../middlewares/adminMiddleware';
+router.post('/department', adminAuthMiddleware, createDepartment);
 router.get('/department', getAllDepartments);
 
-router.put('/department/:id', updateDepartment);
-router.delete('/department/:id', deleteDepartment);
-router.patch('/department/:id/toggle-status', toggleDepartmentStatus);
+router.put('/department/:id', adminAuthMiddleware, updateDepartment);
+router.delete('/department/:id', adminAuthMiddleware, deleteDepartment);
+router.patch(
+  '/department/:id/toggle-status',
+  adminAuthMiddleware,
+  toggleDepartmentStatus,
+);
 
-router.post('/location', createLocation);
+router.post('/location', adminAuthMiddleware, createLocation);
 router.get('/location', getAllLocations);
 
-router.put('/location/:id', updateLocation);
-router.delete('/location/:id', deleteLocation);
-router.patch('/location/:id/toggle-status', toggleLocationStatus);
+router.put('/location/:id', adminAuthMiddleware, updateLocation);
+router.delete('/location/:id', adminAuthMiddleware, deleteLocation);
+router.patch(
+  '/location/:id/toggle-status',
+  adminAuthMiddleware,
+  toggleLocationStatus,
+);
 
 // Job Page (title, subtitle)
 router.get('/job/page', getJobPage);
-router.patch('/job/page/header', updateJobPageHeader);
+router.patch('/job/page/header', adminAuthMiddleware, updateJobPageHeader);
 
 // Job Items CRUD
-router.post('/job/items', createJobItem);
+router.post('/job/items', adminAuthMiddleware, createJobItem);
 router.get('/job/items', getAllJobItems);
 
-router.put('/job/items/:jobId', updateJobItem);
-router.delete('/job/items/:jobId', deleteJobItem);
-router.patch('/job/items/:jobId/status', updateJobItemStatus);
+router.put('/job/items/:jobId', adminAuthMiddleware, updateJobItem);
+router.delete('/job/items/:jobId', adminAuthMiddleware, deleteJobItem);
+router.patch(
+  '/job/items/:jobId/status',
+  adminAuthMiddleware,
+  updateJobItemStatus,
+);
 
 export const JobRouter = router;
 export const LocationRouter = router;

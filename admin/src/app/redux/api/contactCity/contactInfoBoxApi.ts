@@ -1,23 +1,21 @@
 // redux/api/contactfeatures/contactFeaturesApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const contactFeaturesApi = createApi({
   reducerPath: "contactFeaturesApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/contact-info-box",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["ContactFeatures"],
   endpoints: (builder) => ({
     // Get contact features
     getContactFeatures: builder.query({
-      query: () => "/",
+      query: () => "/contact-info-box/",
       providesTags: ["ContactFeatures"],
     }),
 
     // Create contact features document
     createContactFeatures: builder.mutation({
       query: (data) => ({
-        url: "/",
+        url: "/contact-info-box/",
         method: "POST",
         body: data,
       }),
@@ -27,7 +25,7 @@ export const contactFeaturesApi = createApi({
     // Create feature
     createFeature: builder.mutation({
       query: (data) => ({
-        url: "/feature",
+        url: "/contact-info-box/feature",
         method: "POST",
         body: data,
       }),
@@ -37,7 +35,7 @@ export const contactFeaturesApi = createApi({
     // Update feature
     updateFeature: builder.mutation({
       query: ({ featureId, ...data }) => ({
-        url: `/feature/${featureId}`,
+        url: `/contact-info-box/feature/${featureId}`,
         method: "PUT",
         body: data,
       }),
@@ -47,7 +45,7 @@ export const contactFeaturesApi = createApi({
     // Delete feature
     deleteFeature: builder.mutation({
       query: (featureId) => ({
-        url: `/feature/${featureId}`,
+        url: `/contact-info-box/feature/${featureId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["ContactFeatures"],
@@ -56,7 +54,7 @@ export const contactFeaturesApi = createApi({
     // Update highlight
     updateHighlight: builder.mutation({
       query: (data) => ({
-        url: "/highlight",
+        url: "/contact-info-box/highlight",
         method: "PUT",
         body: data,
       }),

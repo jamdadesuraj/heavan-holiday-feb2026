@@ -12,34 +12,40 @@ import {
   deleteImage,
 } from './toursGalleryControllers';
 import { upload } from '../../config/cloudinary';
-
+import { adminAuthMiddleware } from '../../middlewares/adminMiddleware';
 const router = Router();
 
 // Gallery routes
 router.get('/gallery', getGallery);
-router.post('/gallery', createGallery);
-router.patch('/gallery', updateGallery);
+router.post('/gallery', adminAuthMiddleware, createGallery);
+router.patch('/gallery', adminAuthMiddleware, updateGallery);
 
 // Image routes
 router.get('/gallery/images', getImages);
 
 // Upload image to Cloudinary (NEW - with file upload)
-router.post('/gallery/images/upload', upload.single('image'), uploadImage);
+router.post(
+  '/gallery/images/upload',
+  adminAuthMiddleware,
+  upload.single('image'),
+  uploadImage,
+);
 
 // Add image with URL (without file upload)
-router.post('/gallery/images', addImage);
+router.post('/gallery/images', adminAuthMiddleware, addImage);
 
 // Update image with file upload (NEW - replace image file)
 router.patch(
   '/gallery/images/:imageId/upload',
+  adminAuthMiddleware,
   upload.single('image'),
   updateImageWithUpload,
 );
 
 // Update image without file upload (metadata only)
-router.patch('/gallery/images/:imageId', updateImage);
+router.patch('/gallery/images/:imageId', adminAuthMiddleware, updateImage);
 
 // Delete image (auto-deletes from Cloudinary)
-router.delete('/gallery/images/:imageId', deleteImage);
+router.delete('/gallery/images/:imageId', adminAuthMiddleware, deleteImage);
 
 export const toursGalleryRouter = router;

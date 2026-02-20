@@ -1,17 +1,15 @@
 // features/celebrate/celebrateApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const celebrateApi = createApi({
   reducerPath: "celebrateApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/travel-deal-offer-banners",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Celebrate"],
   endpoints: (builder) => ({
     // ================= GET CELEBRATE SECTION =================
     getCelebrate: builder.query<any, void>({
       query: () => ({
-        url: "/celebrate",
+        url: "/travel-deal-offer-banners/celebrate",
         method: "GET",
       }),
       providesTags: ["Celebrate"],
@@ -20,7 +18,7 @@ export const celebrateApi = createApi({
     // ================= UPDATE MAIN FIELDS =================
     updateMainFields: builder.mutation<any, any>({
       query: (data) => ({
-        url: "/celebrate/main-fields",
+        url: "/travel-deal-offer-banners/celebrate/main-fields",
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: data,
@@ -31,7 +29,7 @@ export const celebrateApi = createApi({
     // ================= ADD SLIDE =================
     addSlide: builder.mutation<any, FormData>({
       query: (formData) => ({
-        url: "/celebrate/slide",
+        url: "/travel-deal-offer-banners/celebrate/slide",
         method: "POST",
         body: formData,
       }),
@@ -41,7 +39,7 @@ export const celebrateApi = createApi({
     // ================= UPDATE SLIDE =================
     updateSlide: builder.mutation<any, { id: string; formData: FormData }>({
       query: ({ id, formData }) => ({
-        url: `/celebrate/slide/${id}`,
+        url: `/travel-deal-offer-banners/celebrate/slide/${id}`,
         method: "PUT",
         body: formData,
       }),
@@ -51,7 +49,7 @@ export const celebrateApi = createApi({
     // ================= DELETE SLIDE =================
     deleteSlide: builder.mutation<any, string>({
       query: (id) => ({
-        url: `/celebrate/slide/${id}`,
+        url: `/travel-deal-offer-banners/celebrate/slide/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Celebrate"],

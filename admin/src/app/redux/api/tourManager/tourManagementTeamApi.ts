@@ -1,10 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const tourManagerDirectoryApi = createApi({
   reducerPath: "tourManagerDirectoryApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/tour-manager-team",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["TourManagerDirectory", "Manager"],
   endpoints: (builder) => ({
     // Get tour manager directory (with optional search, letter, and status filter)
@@ -14,7 +12,7 @@ export const tourManagerDirectoryApi = createApi({
         letter?: string;
         status?: "active" | "inactive";
       }) => ({
-        url: "/",
+        url: "/tour-manager-team/",
         params: params || {},
       }),
       providesTags: ["TourManagerDirectory"],
@@ -23,7 +21,7 @@ export const tourManagerDirectoryApi = createApi({
     // Update directory heading
     updateDirectoryHeading: builder.mutation({
       query: (data: { heading: string }) => ({
-        url: "/heading",
+        url: "/tour-manager-team/heading",
         method: "PUT",
         body: data,
       }),
@@ -33,7 +31,7 @@ export const tourManagerDirectoryApi = createApi({
     // Add a manager
     addManager: builder.mutation({
       query: (data: FormData) => ({
-        url: "/manager",
+        url: "/tour-manager-team/manager",
         method: "POST",
         body: data,
       }),
@@ -43,7 +41,7 @@ export const tourManagerDirectoryApi = createApi({
     // Update a manager
     updateManager: builder.mutation({
       query: ({ managerId, data }: { managerId: string; data: FormData }) => ({
-        url: `/manager/${managerId}`,
+        url: `/tour-manager-team/manager/${managerId}`,
         method: "PUT",
         body: data,
       }),
@@ -56,7 +54,7 @@ export const tourManagerDirectoryApi = createApi({
     // Delete a manager
     deleteManager: builder.mutation({
       query: (managerId: string) => ({
-        url: `/manager/${managerId}`,
+        url: `/tour-manager-team/manager/${managerId}`,
         method: "DELETE",
       }),
       invalidatesTags: (result, error, managerId) => [

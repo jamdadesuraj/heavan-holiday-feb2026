@@ -8,17 +8,27 @@ import {
   deleteHowWeHireStep,
 } from './hireControllers';
 import { upload } from '../../config/cloudinary';
-
+import { adminAuthMiddleware } from '../../middlewares/adminMiddleware';
 const router = Router();
 
 router.get('/', getHowWeHire);
 
-router.put('/info', updateHowWeHireInfo);
+router.put('/info', adminAuthMiddleware, updateHowWeHireInfo);
 
-router.post('/step', upload.single('img'), addHowWeHireStep);
+router.post(
+  '/step',
+  adminAuthMiddleware,
+  upload.single('img'),
+  addHowWeHireStep,
+);
 
-router.put('/step', upload.single('img'), updateHowWeHireStep);
+router.put(
+  '/step',
+  adminAuthMiddleware,
+  upload.single('img'),
+  updateHowWeHireStep,
+);
 
-router.delete('/step', deleteHowWeHireStep);
+router.delete('/step', adminAuthMiddleware, deleteHowWeHireStep);
 
 export const howWeHireRouter = router;
