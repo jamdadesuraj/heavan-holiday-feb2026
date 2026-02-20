@@ -6,7 +6,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 :root {
-  --#{$prefix}logo-lg-height: 90px;
+  --#{$prefix}logo-lg-height: 50px;
   --#{$prefix}logo-sm-height: 24px;
 
   --#{$prefix}sidenav-width: 250px;
@@ -107,7 +107,7 @@
 
   // Brand Topbar
   &[data-topbar-color="brand"] {
-    --#{$prefix}topbar-bg: #188ae2;
+    --#{$prefix}topbar-bg: #0c2d46;
     --#{$prefix}topbar-item-color: rgba(255, 255, 255, 0.7);
     --#{$prefix}topbar-item-hover-color: #ffffff;
     --#{$prefix}topbar-search-bg: rgba(255, 255, 255, 0.1);

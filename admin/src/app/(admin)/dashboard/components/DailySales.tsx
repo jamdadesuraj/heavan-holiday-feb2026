@@ -1,13 +1,20 @@
-'use client'
-import { ApexOptions } from 'apexcharts';
-import Image from 'next/image';
-import React from 'react'
-import americanExpress from '@/assets/images/cards/american-express.svg'
-import discoverCard from '@/assets/images/cards/discover-card.svg'
-import mastercard from '@/assets/images/cards/mastercard.svg'
-import ReactApexChart from 'react-apexcharts'
-import { Card, CardBody, Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'react-bootstrap';
-import IconifyIcon from '@/components/wrappers/IconifyIcon';
+"use client";
+import { ApexOptions } from "apexcharts";
+import Image from "next/image";
+import React from "react";
+import americanExpress from "@/assets/images/cards/american-express.svg";
+import discoverCard from "@/assets/images/cards/discover-card.svg";
+import mastercard from "@/assets/images/cards/mastercard.svg";
+import ReactApexChart from "react-apexcharts";
+import {
+  Card,
+  CardBody,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+} from "react-bootstrap";
+import IconifyIcon from "@/components/wrappers/IconifyIcon";
 
 const DailySales = () => {
   const DailySalesOpts: ApexOptions = {
@@ -16,15 +23,18 @@ const DailySales = () => {
         name: "Orders",
         type: "line",
         data: [
-          89.25, 98.58, 68.74, 108.87, 77.54, 84.03, 51.24, 28.57, 92.57, 42.36, 88.51, 36.57,
+          89.25, 98.58, 68.74, 108.87, 77.54, 84.03, 51.24, 28.57, 92.57, 42.36,
+          88.51, 36.57,
         ],
-      }, {
+      },
+      {
         name: "Delivered",
         type: "line",
         data: [
-          22.25, 24.58, 36.74, 22.87, 19.54, 25.03, 29.24, 10.57, 24.57, 35.36, 20.51, 17.57,
+          22.25, 24.58, 36.74, 22.87, 19.54, 25.03, 29.24, 10.57, 24.57, 35.36,
+          20.51, 17.57,
         ],
-      }
+      },
     ],
     chart: {
       height: 300,
@@ -36,19 +46,19 @@ const DailySales = () => {
     stroke: {
       dashArray: [0, 5],
       width: [2, 2],
-      curve: 'smooth'
+      curve: "smooth",
     },
     fill: {
       opacity: [1, 1],
-      type: ['gradient', 'gradient'],
+      type: ["gradient", "gradient"],
       gradient: {
-        shade: 'dark',
-        gradientToColors: ['#FDD835'],
+        shade: "dark",
+        gradientToColors: ["#FDD835"],
         type: "horizontal",
         shadeIntensity: 1,
         opacityFrom: 1,
         opacityTo: 1,
-        stops: [0, 100, 100, 100]
+        stops: [0, 100, 100, 100],
       },
     },
     markers: {
@@ -87,11 +97,11 @@ const DailySales = () => {
         formatter: function (val) {
           return val + "k";
         },
-        offsetX: -15
+        offsetX: -15,
       },
       axisBorder: {
         show: false,
-      }
+      },
     },
     grid: {
       show: true,
@@ -134,28 +144,29 @@ const DailySales = () => {
         borderRadius: 3,
       },
     },
-    colors: ["#6ac75a","#188ae2"],
+    colors: ["#6ac75a", "#0c2d46"],
     tooltip: {
       shared: true,
-      y: [{
-        formatter: function (y) {
-          if (typeof y !== "undefined") {
-            return "$" + y.toFixed(2) + "k";
-          }
-          return y;
+      y: [
+        {
+          formatter: function (y) {
+            if (typeof y !== "undefined") {
+              return "$" + y.toFixed(2) + "k";
+            }
+            return y;
+          },
         },
-      },
-      {
-        formatter: function (y) {
-          if (typeof y !== "undefined") {
-            return "$" + y.toFixed(2) + "k";
-          }
-          return y;
+        {
+          formatter: function (y) {
+            if (typeof y !== "undefined") {
+              return "$" + y.toFixed(2) + "k";
+            }
+            return y;
+          },
         },
-      }
       ],
     },
-  }
+  };
   return (
     <Card>
       <CardBody>
@@ -164,9 +175,14 @@ const DailySales = () => {
             <h4 className="header-title mb-1">Daily Sales</h4>
             <p className="text-muted">March 26 - April 01</p>
           </div>
-          <Dropdown align={'end'}>
-            <DropdownToggle as={'a'} className="drop-arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
-              <IconifyIcon icon='tabler:dots-vertical' />
+          <Dropdown align={"end"}>
+            <DropdownToggle
+              as={"a"}
+              className="drop-arrow-none card-drop"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <IconifyIcon icon="tabler:dots-vertical" />
             </DropdownToggle>
             <DropdownMenu className="dropdown-menu-end">
               <DropdownItem>Sales Report</DropdownItem>
@@ -179,17 +195,27 @@ const DailySales = () => {
         <div className="my-2 d-flex align-items-center justify-content-between">
           <h2 className="fw-normal">$8,459.56</h2>
           <div>
-            <Image src={americanExpress} alt="user-card" height={36} />&nbsp;
-            <Image src={discoverCard} alt="user-card" height={36} />&nbsp;
-            <Image src={mastercard} alt="user-card" height={36} />&nbsp;
+            <Image src={americanExpress} alt="user-card" height={36} />
+            &nbsp;
+            <Image src={discoverCard} alt="user-card" height={36} />
+            &nbsp;
+            <Image src={mastercard} alt="user-card" height={36} />
+            &nbsp;
           </div>
         </div>
         <div dir="ltr">
-          <ReactApexChart height={300} options={DailySalesOpts} series={DailySalesOpts.series} type="line" className="apex-charts" data-colors="#6ac75a,#188ae2" />
+          <ReactApexChart
+            height={300}
+            options={DailySalesOpts}
+            series={DailySalesOpts.series}
+            type="line"
+            className="apex-charts"
+            data-colors="#6ac75a,#0c2d46"
+          />
         </div>
       </CardBody>
     </Card>
-  )
-}
+  );
+};
 
-export default DailySales
+export default DailySales;

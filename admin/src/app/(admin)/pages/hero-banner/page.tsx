@@ -216,17 +216,25 @@ const HeroBannerPage = () => {
 
           <ComponentContainerCard
             title="Hero Banners"
-            description="Manage your hero banners."
+            description=""
+            rightAction={
+              <Button
+                size="sm"
+                className="px-2 py-1 d-flex align-items-center"
+                style={{ fontSize: "10px" }}
+                onClick={handleOpenCreateModal}
+              >
+                <IconifyIcon
+                  icon="tabler:plus"
+                  className="me-1"
+                  style={{ fontSize: "10px" }}
+                />
+                Add Banner
+              </Button>
+            }
           >
             {banners.length > 0 ? (
               <>
-                <div className="mb-3">
-                  <Button onClick={handleOpenCreateModal}>
-                    <IconifyIcon icon="tabler:plus" className="me-1" />
-                    Add Banner
-                  </Button>
-                </div>
-
                 <div className="table-responsive-sm">
                   <table className="table table-striped-columns mb-0">
                     <thead>
@@ -278,21 +286,37 @@ const HeroBannerPage = () => {
                           <td className="text-center">
                             <Link
                               href=""
+                              title="Edit"
                               onClick={(e) => {
                                 e.preventDefault();
                                 handleOpenEditModal(banner);
                               }}
-                              className="link-reset fs-20 p-1"
+                              className="d-inline-flex align-items-center justify-content-center 
+               text-black rounded-circle p-2 me-2 
+               hover-shadow"
+                              style={{
+                                width: "36px",
+                                height: "36px",
+                                backgroundColor: "#0000ff1f",
+                              }}
                             >
                               <IconifyIcon icon="tabler:pencil" />
                             </Link>
+
                             <Link
                               href=""
+                              title="Delete"
                               onClick={(e) => {
                                 e.preventDefault();
                                 handleDelete(banner._id);
                               }}
-                              className="link-reset fs-20 p-1"
+                              className="d-inline-flex align-items-center justify-content-center 
+               text-black rounded-circle p-2"
+                              style={{
+                                width: "36px",
+                                height: "36px",
+                                backgroundColor: "#ff00002b",
+                              }}
                             >
                               <IconifyIcon icon="tabler:trash" />
                             </Link>

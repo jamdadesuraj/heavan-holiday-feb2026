@@ -35,8 +35,8 @@ const TopNavigationBar = () => {
 
           <Notifications />
 
-          <ThemeCustomizeToggle />
-          <ThemeModeToggle />
+          {/* <ThemeCustomizeToggle />
+          <ThemeModeToggle /> */}
           <ProfileDropdown />
         </div>
       </div>
