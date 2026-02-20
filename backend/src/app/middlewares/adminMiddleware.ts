@@ -1,39 +1,31 @@
-import { Response, NextFunction } from 'express';
-import { userInterface } from './userInterface';
+import { NextFunction, Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 import { appError } from '../errors/appError';
+import { IAdminPayload } from '../modules/admin/adminInterface';
 
-export const adminMiddleware = async (
-  req: userInterface, 
-  res: Response, 
-  next: NextFunction
+export const adminAuthMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
 ) => {
-  
-  
-  
-  
   try {
-    
-    // Check if user exists in request (set by authMiddleware)
-    if (!req.user) {
-      throw new appError('Authentication required', 401);
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      next(new appError('No token provided', 401));
+      return;
     }
 
-    // Check if user is admin
-    if (req.user.role !== 'admin') {
-      throw new appError('Admin access required. You do not have sufficient permissions.', 403);
-    }
+    const token = authHeader.split(' ')[1];
 
-    // Check if user is active
-    if (req.user.status !== 'active') {
-      throw new appError('Account is not active', 403);
-    }
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET as string,
+    ) as IAdminPayload;
 
+    (req as any).admin = decoded;
     next();
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
-      success: false,
-      statusCode: error.statusCode || 500,
-      message: error.message || 'Admin authorization failed'
-    });
+  } catch (error) {
+    next(new appError('Invalid or expired token', 401));
   }
 };

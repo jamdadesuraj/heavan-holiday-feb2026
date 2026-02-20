@@ -1,19 +1,17 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const servicesApi = createApi({
   reducerPath: "servicesApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/services",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Services"],
   endpoints: (builder) => ({
     getAllMain: builder.query({
-      query: () => "/",
+      query: () => "/services/",
       providesTags: ["Services"],
     }),
     createServices: builder.mutation({
       query: (data: FormData) => ({
-        url: "/",
+        url: "/services/",
         method: "POST",
         body: data,
       }),
@@ -28,7 +26,7 @@ export const servicesApi = createApi({
         id: string;
         data: { title?: string; subtitle?: string };
       }) => ({
-        url: `/${id}/fields`,
+        url: `/services/${id}/fields`,
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -48,7 +46,7 @@ export const servicesApi = createApi({
         itemIndex: number;
         data: FormData;
       }) => ({
-        url: `/${id}/items/${itemIndex}`,
+        url: `/services/${id}/items/${itemIndex}`,
         method: "PATCH",
         body: data,
       }),
@@ -57,7 +55,7 @@ export const servicesApi = createApi({
     // Update entire items array
     updateMainItemsArray: builder.mutation({
       query: ({ id, data }: { id: string; data: FormData }) => ({
-        url: `/${id}/items`,
+        url: `/services/${id}/items`,
         method: "PATCH",
         body: data,
       }),
@@ -65,7 +63,7 @@ export const servicesApi = createApi({
     }),
     deleteMain: builder.mutation({
       query: (id: string) => ({
-        url: `/${id}`,
+        url: `/services/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Services"],

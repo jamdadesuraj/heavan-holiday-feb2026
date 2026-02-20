@@ -1,15 +1,13 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const enquiryApi = createApi({
   reducerPath: "enquiryApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/enquiry",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Enquiry"],
   endpoints: (builder) => ({
     createEnquiry: builder.mutation({
       query: (body) => ({
-        url: "/",
+        url: "/enquiry/",
         method: "POST",
         body,
       }),
@@ -17,7 +15,7 @@ export const enquiryApi = createApi({
     }),
 
     getAllEnquiries: builder.query({
-      query: () => "/",
+      query: () => "/enquiry/",
       providesTags: (result) =>
         result?.data
           ? [
@@ -32,7 +30,7 @@ export const enquiryApi = createApi({
 
     updateEnquiry: builder.mutation({
       query: ({ id, data }) => ({
-        url: `/${id}`,
+        url: `/enquiry/${id}`,
         method: "PUT",
         body: data,
       }),
@@ -44,7 +42,7 @@ export const enquiryApi = createApi({
 
     deleteEnquiry: builder.mutation({
       query: (id) => ({
-        url: `/${id}`,
+        url: `/enquiry/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: (result, error, id) => [

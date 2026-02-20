@@ -1,17 +1,15 @@
 // features/holidaySection/holidaySectionApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const holidaySectionApi = createApi({
   reducerPath: "holidaySectionApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/travel-deal-heading",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["HolidaySection"],
   endpoints: (builder) => ({
     // ================= GET HOLIDAY SECTION =================
     getHolidaySection: builder.query<any, void>({
       query: () => ({
-        url: "/holiday-section",
+        url: "/travel-deal-heading/holiday-section",
         method: "GET",
       }),
       providesTags: ["HolidaySection"],
@@ -20,7 +18,7 @@ export const holidaySectionApi = createApi({
     // ================= UPDATE MAIN FIELDS =================
     updateMainFields: builder.mutation<any, any>({
       query: (data) => ({
-        url: "/holiday-section/main-fields",
+        url: "/travel-deal-heading/holiday-section/main-fields",
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: data,
@@ -31,7 +29,7 @@ export const holidaySectionApi = createApi({
     // ================= ADD FEATURE =================
     addFeature: builder.mutation<any, any>({
       query: (data) => ({
-        url: "/holiday-section/feature",
+        url: "/travel-deal-heading/holiday-section/feature",
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: data,
@@ -45,7 +43,7 @@ export const holidaySectionApi = createApi({
       { id: string; title: string; description: string }
     >({
       query: ({ id, ...data }) => ({
-        url: `/holiday-section/feature/${id}`,
+        url: `/travel-deal-heading/holiday-section/feature/${id}`,
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: data,
@@ -56,7 +54,7 @@ export const holidaySectionApi = createApi({
     // ================= DELETE FEATURE =================
     deleteFeature: builder.mutation<any, string>({
       query: (id) => ({
-        url: `/holiday-section/feature/${id}`,
+        url: `/travel-deal-heading/holiday-section/feature/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["HolidaySection"],
@@ -65,7 +63,7 @@ export const holidaySectionApi = createApi({
     // ================= LEGACY: UPDATE HOLIDAY SECTION (for backward compatibility) =================
     updateHolidaySection: builder.mutation<any, any>({
       query: (data) => ({
-        url: "/holiday-section",
+        url: "/travel-deal-heading/holiday-section",
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: data,

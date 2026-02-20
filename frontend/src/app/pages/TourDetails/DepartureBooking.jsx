@@ -35,7 +35,7 @@ const DepartureBooking = ({ tourData, onDepartureSelect }) => {
 
   const departureDate = firstDeparture?.date
     ? formatDate(firstDeparture.date)
-    : "28 Nov 2025";
+    : "";
 
   // Calculate end date based on days
   const calculateEndDate = (startDate, days) => {
@@ -57,10 +57,6 @@ const DepartureBooking = ({ tourData, onDepartureSelect }) => {
     tourData?.baseFullPackagePrice ||
     30000;
   const formattedPrice = `₹${basePrice.toLocaleString("en-IN")}`;
-
-  // Calculate EMI
-  const emiAmount = Math.ceil(basePrice / 12);
-  const formattedEmi = `₹${emiAmount.toLocaleString("en-IN")}/month`;
 
   const handleDepartureSelect = (departure) => {
     console.log("Departure selected:", departure);

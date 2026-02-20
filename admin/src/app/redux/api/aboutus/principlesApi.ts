@@ -1,24 +1,21 @@
 // principleApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const principleApi = createApi({
   reducerPath: "principleApi",
-  baseQuery: fetchBaseQuery({
-    // Base URL points to the mounted router
-    baseUrl: "http://localhost:8080/v1/api/principles/",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Principle"],
   endpoints: (builder) => ({
     // GET /v1/api/principles/
     getPrinciple: builder.query({
-      query: () => "/", // matches your router.get('/')
+      query: () => "/principles/", // matches your router.get('/')
       providesTags: ["Principle"],
     }),
 
     // PUT /v1/api/principles/
     updateMainFields: builder.mutation({
       query: (data) => ({
-        url: "/", // matches router.put('/')
+        url: "/principles/", // matches router.put('/')
         method: "PUT",
         body: data,
       }),
@@ -28,7 +25,7 @@ export const principleApi = createApi({
     // POST /v1/api/principles/details
     addDetail: builder.mutation({
       query: (data) => ({
-        url: "details",
+        url: "/principles/details",
         method: "POST",
         body: data,
       }),
@@ -38,7 +35,7 @@ export const principleApi = createApi({
     // PUT /v1/api/principles/details/:id
     updateDetail: builder.mutation({
       query: ({ id, ...data }) => ({
-        url: `details/${id}`,
+        url: `/principles/details/${id}`,
         method: "PUT",
         body: data,
       }),
@@ -48,7 +45,7 @@ export const principleApi = createApi({
     // DELETE /v1/api/principles/details/:id
     deleteDetail: builder.mutation({
       query: (id) => ({
-        url: `details/${id}`,
+        url: `/=/principles/details/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Principle"],

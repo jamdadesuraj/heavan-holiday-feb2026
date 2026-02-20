@@ -1,25 +1,19 @@
 // features/gallery/galleryApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const toursGalleryApi = createApi({
   reducerPath: "toursGalleryApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/tours-gallery",
-    prepareHeaders: (headers) => {
-      // Don't set Content-Type for FormData - browser will set it automatically
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Gallery", "Images"],
   endpoints: (builder) => ({
     getGallery: builder.query<any, void>({
-      query: () => "/gallery",
+      query: () => "/tours-gallery/gallery",
       providesTags: ["Gallery"],
     }),
 
     createGallery: builder.mutation<any, any>({
       query: (body) => ({
-        url: "/gallery",
+        url: "/tours-gallery/gallery",
         method: "POST",
         body,
       }),
@@ -28,7 +22,7 @@ export const toursGalleryApi = createApi({
 
     updateGallery: builder.mutation<any, any>({
       query: (body) => ({
-        url: "/gallery",
+        url: "/tours-gallery/gallery",
         method: "PATCH",
         body,
       }),
@@ -36,14 +30,14 @@ export const toursGalleryApi = createApi({
     }),
 
     getImages: builder.query<any, void>({
-      query: () => "/gallery/images",
+      query: () => "/tours-gallery/gallery/images",
       providesTags: ["Images"],
     }),
 
     // NEW: Upload image with file (Cloudinary)
     uploadImage: builder.mutation<any, FormData>({
       query: (formData) => ({
-        url: "/gallery/images/upload",
+        url: "/tours-gallery/gallery/images/upload",
         method: "POST",
         body: formData,
       }),
@@ -53,7 +47,7 @@ export const toursGalleryApi = createApi({
     // Keep for URL-based images (without file upload)
     addImage: builder.mutation<any, any>({
       query: (body) => ({
-        url: "/gallery/images",
+        url: "/tours-gallery/gallery/images",
         method: "POST",
         body,
       }),
@@ -66,7 +60,7 @@ export const toursGalleryApi = createApi({
       { imageId: string; formData: FormData }
     >({
       query: ({ imageId, formData }) => ({
-        url: `/gallery/images/${imageId}/upload`,
+        url: `/tours-gallery/gallery/images/${imageId}/upload`,
         method: "PATCH",
         body: formData,
       }),
@@ -76,7 +70,7 @@ export const toursGalleryApi = createApi({
     // Update image without file (metadata only)
     updateImage: builder.mutation<any, { imageId: string; body: any }>({
       query: ({ imageId, body }) => ({
-        url: `/gallery/images/${imageId}`,
+        url: `/tours-gallery/gallery/images/${imageId}`,
         method: "PATCH",
         body,
       }),
@@ -85,7 +79,7 @@ export const toursGalleryApi = createApi({
 
     deleteImage: builder.mutation<any, string>({
       query: (imageId) => ({
-        url: `/gallery/images/${imageId}`,
+        url: `/tours-gallery/gallery/images/${imageId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Images", "Gallery"],

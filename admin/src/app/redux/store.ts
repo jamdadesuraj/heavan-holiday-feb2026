@@ -28,7 +28,7 @@ import { howWeHireApi } from "./api/careers/hiringApi";
 import { empoweringApi } from "./api/careers/empowering-womenApi";
 import { excitedToWorkApi } from "./api/careers/excitedToWorkApi";
 import { faqApi } from "./api/faq/faqApi";
-import { tabCardsApi } from "./api/tabcards/tabcardsApi";
+
 import { contactFeaturesApi } from "./api/contactCity/contactInfoBoxApi";
 import { travelDealBannerApi } from "./api/travel-deals/main-bannerAPi";
 import { holidaySectionApi } from "./api/travel-deals/travelDealsHeaderApi";
@@ -51,6 +51,7 @@ import { includesApi } from "./api/tourManager/includes";
 import { bookingApi } from "./api/bookingsApi/bookingApi";
 import { brandsSectionApi } from "./api/corporate-travel/brandsApi";
 import { settingsApi } from "./api/settings/settingsApi";
+import { adminApi } from "./api/adminApi/authApi";
 export const store = configureStore({
   reducer: {
     [aboutUsApi.reducerPath]: aboutUsApi.reducer,
@@ -84,7 +85,7 @@ export const store = configureStore({
     [empoweringApi.reducerPath]: empoweringApi.reducer,
     [excitedToWorkApi.reducerPath]: excitedToWorkApi.reducer,
     [faqApi.reducerPath]: faqApi.reducer,
-    [tabCardsApi.reducerPath]: tabCardsApi.reducer,
+
     [contactFeaturesApi.reducerPath]: contactFeaturesApi.reducer,
     [travelDealBannerApi.reducerPath]: travelDealBannerApi.reducer,
     [holidaySectionApi.reducerPath]: holidaySectionApi.reducer,
@@ -107,6 +108,7 @@ export const store = configureStore({
     [bookingApi.reducerPath]: bookingApi.reducer,
     [brandsSectionApi.reducerPath]: brandsSectionApi.reducer,
     [settingsApi.reducerPath]: settingsApi.reducer,
+    [adminApi.reducerPath]: adminApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -141,7 +143,7 @@ export const store = configureStore({
       .concat(empoweringApi.middleware)
       .concat(excitedToWorkApi.middleware)
       .concat(faqApi.middleware)
-      .concat(tabCardsApi.middleware)
+
       .concat(contactFeaturesApi.middleware)
       .concat(travelDealBannerApi.middleware)
       .concat(holidaySectionApi.middleware)
@@ -163,7 +165,8 @@ export const store = configureStore({
       .concat(includesApi.middleware)
       .concat(bookingApi.middleware)
       .concat(brandsSectionApi.middleware)
-      .concat(settingsApi.middleware),
+      .concat(settingsApi.middleware)
+      .concat(adminApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

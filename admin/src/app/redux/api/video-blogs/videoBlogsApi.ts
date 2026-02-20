@@ -1,24 +1,22 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const videoBlogApi = createApi({
   reducerPath: "videoBlogApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/video-blogs",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["VideoBlogs", "Categories"],
   endpoints: (builder) => ({
     // ========== VIDEO BLOG ENDPOINTS ==========
 
     // Get all video blogs
     getAllVideoBlogs: builder.query({
-      query: () => "/",
+      query: () => "/video-blogs/",
       providesTags: ["VideoBlogs"],
     }),
 
     // Create video blog
     createVideoBlog: builder.mutation({
       query: (data) => ({
-        url: "/",
+        url: "/video-blogs/",
         method: "POST",
         body: data,
       }),
@@ -28,7 +26,7 @@ export const videoBlogApi = createApi({
     // Update video blog
     updateVideoBlog: builder.mutation({
       query: ({ id, ...data }) => ({
-        url: `/${id}`,
+        url: `/video-blogs/${id}`,
         method: "PUT",
         body: data,
       }),
@@ -38,7 +36,7 @@ export const videoBlogApi = createApi({
     // Delete video blog
     deleteVideoBlog: builder.mutation({
       query: (id) => ({
-        url: `/${id}`,
+        url: `/video-blogs/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["VideoBlogs"],
@@ -48,14 +46,14 @@ export const videoBlogApi = createApi({
 
     // Get all categories
     getAllCategories: builder.query({
-      query: () => "/categories",
+      query: () => "/video-blogs/categories",
       providesTags: ["Categories"],
     }),
 
     // Add category
     addCategory: builder.mutation({
       query: (data) => ({
-        url: "/categories",
+        url: "/video-blogs/categories",
         method: "POST",
         body: data,
       }),
@@ -65,7 +63,7 @@ export const videoBlogApi = createApi({
     // Update category
     updateCategory: builder.mutation({
       query: ({ categoryId, ...data }) => ({
-        url: `/categories/${categoryId}`,
+        url: `/video-blogs/categories/${categoryId}`,
         method: "PUT",
         body: data,
       }),
@@ -75,7 +73,7 @@ export const videoBlogApi = createApi({
     // Delete category
     deleteCategory: builder.mutation({
       query: (categoryId) => ({
-        url: `/categories/${categoryId}`,
+        url: `/video-blogs/categories/${categoryId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Categories"],

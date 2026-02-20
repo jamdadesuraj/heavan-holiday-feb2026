@@ -1,13 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const trendingDestinationsApi = createApi({
   reducerPath: "trendingDestinationsApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/trending-destinations",
-    prepareHeaders: (headers) => {
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["TrendingDestinations", "Destination"],
   endpoints: (builder) => ({
     getTrendingDestinations: builder.query({
@@ -15,14 +10,14 @@ export const trendingDestinationsApi = createApi({
         const queryParams = new URLSearchParams();
         if (params?.category) queryParams.append("category", params.category);
         if (params?.status) queryParams.append("status", params.status);
-        return `/?${queryParams.toString()}`;
+        return `/trending-destinations/?${queryParams.toString()}`;
       },
       providesTags: ["TrendingDestinations"],
     }),
 
     updateTitle: builder.mutation({
       query: (body) => ({
-        url: "/title",
+        url: "/trending-destinations/title",
         method: "PUT",
         body,
       }),
@@ -42,7 +37,7 @@ export const trendingDestinationsApi = createApi({
         formData.append("order", data.order.toString());
 
         return {
-          url: "/destinations",
+          url: "/trending-destinations/destinations",
           method: "POST",
           body: formData,
         };
@@ -67,7 +62,7 @@ export const trendingDestinationsApi = createApi({
           formData.append("order", data.order.toString());
 
         return {
-          url: `/destinations/${id}`,
+          url: `/trending-destinations/destinations/${id}`,
           method: "PUT",
           body: formData,
         };
@@ -80,7 +75,7 @@ export const trendingDestinationsApi = createApi({
 
     deleteDestination: builder.mutation({
       query: (id) => ({
-        url: `/destinations/${id}`,
+        url: `/trending-destinations/destinations/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["TrendingDestinations"],

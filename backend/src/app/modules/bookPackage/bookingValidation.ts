@@ -43,6 +43,7 @@ const travelerSchema = z.object({
     .optional(),
 
   phone: z.string().optional(),
+  passportImage: z.string().optional(),
 });
 
 // ========== SELECTED DEPARTURE ==========
@@ -123,6 +124,9 @@ const pricingSchema = z.object({
     .number()
     .min(0, { message: 'Price per person cannot be negative' })
     .optional(),
+  baseAmount: z.coerce.number().min(0).optional(),
+  gstPercentage: z.coerce.number().min(0).default(5),
+  gstAmount: z.coerce.number().min(0).optional(),
 });
 
 // ========== PAYMENT ==========

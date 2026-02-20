@@ -46,8 +46,19 @@ export const createBooking = async (
 ) => {
   try {
     const { firebaseUid } = req.user!;
+    if (typeof req.body.selectedDeparture === 'string') {
+      req.body.selectedDeparture = JSON.parse(req.body.selectedDeparture);
+    }
+    if (typeof req.body.travelers === 'string') {
+      req.body.travelers = JSON.parse(req.body.travelers);
+    }
+    if (typeof req.body.travelerCount === 'string') {
+      req.body.travelerCount = JSON.parse(req.body.travelerCount);
+    }
+    if (typeof req.body.pricing === 'string') {
+      req.body.pricing = JSON.parse(req.body.pricing);
+    }
 
-    // Validate request body
     const validatedData = createBookingSchema.parse(req.body);
 
     // Find user
@@ -80,6 +91,7 @@ export const createBooking = async (
     if (new Date(departure.date) < today) {
       return next(new appError('Cannot book past departure dates', 400));
     }
+
     const departureDate = new Date(departure.date);
     departureDate.setHours(0, 0, 0, 0);
 
@@ -111,6 +123,7 @@ export const createBooking = async (
     if (departure.status === 'Sold Out' || departure.status === 'Cancelled') {
       return next(new appError(`This departure is ${departure.status}`, 400));
     }
+
     const existingBooking = await Booking.findOne({
       user: user._id,
       tourPackage: validatedData.tourPackage,
@@ -126,19 +139,52 @@ export const createBooking = async (
     const balancePaymentDueDate = new Date(departure.date);
     balancePaymentDueDate.setDate(balancePaymentDueDate.getDate() - 15);
 
-    // Create booking
+    const pricePerPerson = departure.joiningPrice;
+
+    if (!pricePerPerson) {
+      return next(new appError('Price not found for this departure', 400));
+    }
+
+    const baseAmount = pricePerPerson * validatedData.travelerCount.total;
+    const gstPercentage = 5;
+    const gstAmount = Math.round(baseAmount * (gstPercentage / 100));
+    const totalWithGst = baseAmount + gstAmount;
+
+    // Advance = 50% of base + only 2.5% GST
+    const advanceGst = Math.round(baseAmount * 0.025);
+    const advanceWithGst = Math.round(baseAmount * 0.5) + advanceGst;
+
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+    const travelersWithPassport = validatedData.travelers.map(
+      (traveler, index) => {
+        const file = files?.[`passportImage_${index}`]?.[0];
+        return {
+          ...traveler,
+          passportImage: file ? file.path : undefined,
+        };
+      },
+    );
+
     const booking = await Booking.create({
       bookingId,
       user: user._id,
       tourPackage: tourPackage._id,
       selectedDeparture: validatedData.selectedDeparture,
-      travelers: validatedData.travelers,
+      travelers: travelersWithPassport,
       travelerCount: validatedData.travelerCount,
-      pricing: validatedData.pricing,
+      pricing: {
+        baseAmount,
+        gstPercentage,
+        gstAmount,
+        totalAmount: totalWithGst,
+        advanceAmount: advanceWithGst,
+        pendingAmount: totalWithGst,
+        pricePerPerson: validatedData.pricing.pricePerPerson,
+        paidAmount: 0,
+      },
       balancePaymentDueDate,
       bookingStatus: 'Pending',
       paymentStatus: 'Pending',
-      // payments: [],
     });
 
     // Update available seats
@@ -175,6 +221,13 @@ export const createBooking = async (
       data: {
         booking: populatedBooking,
         nextStep: 'payment',
+        pricingBreakdown: {
+          baseAmount,
+          gstPercentage,
+          gstAmount,
+          totalAmount: totalWithGst,
+          advanceAmount: advanceWithGst,
+        },
       },
     });
     return;
@@ -486,13 +539,6 @@ export const cancelBooking = async (
     const remainingRefund = refundAmount - alreadyRefunded;
 
     if (hasPayment) {
-      const alreadyRefunded = booking.refunds
-        .filter((r) => r.status !== 'Rejected')
-        .reduce((sum, r) => sum + r.amount, 0);
-
-      // Calculate remaining amount to refund
-      const remainingRefund = refundAmount - alreadyRefunded;
-
       // Only create refund if there's amount remaining
       if (remainingRefund > 0) {
         const successfulPayment = booking.payments.find(
@@ -725,15 +771,16 @@ export const updateBookingTravelers = async (
 
     // Only recalculate if total traveler count changed
     if (newTotal !== oldTotal) {
-      // Get price per person from the booking (stored during creation)
       const pricePerPerson = booking.pricing.pricePerPerson;
 
       if (!pricePerPerson) {
         return next(new appError('Price per person not found in booking', 400));
       }
 
-      // Calculate new total amount (same price for everyone)
-      newTotalAmount = newTotal * pricePerPerson;
+      // Calculate new total amount with GST
+      const newBaseAmount = newTotal * pricePerPerson;
+      const newGstAmount = Math.round(newBaseAmount * 0.05);
+      newTotalAmount = newBaseAmount + newGstAmount;
 
       pricingChanged = true;
     }

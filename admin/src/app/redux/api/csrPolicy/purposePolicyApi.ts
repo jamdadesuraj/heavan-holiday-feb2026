@@ -1,26 +1,20 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const purposePolicyApi = createApi({
   reducerPath: "purposePolicyApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/csr-purpose-policy",
-    prepareHeaders: (headers) => {
-      // Don't set Content-Type for FormData - browser will set it automatically
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["PurposePolicy"],
   endpoints: (builder) => ({
     // Get Purpose Policy
     getPurposePolicy: builder.query({
-      query: () => "/",
+      query: () => "/csr-purpose-policy/",
       providesTags: ["PurposePolicy"],
     }),
 
     // Update Main Fields
     updateMainFields: builder.mutation({
       query: (data) => ({
-        url: "/main-fields",
+        url: "/csr-purpose-policy/main-fields",
         method: "PUT",
         body: data,
       }),
@@ -30,7 +24,7 @@ export const purposePolicyApi = createApi({
     // Add Card
     addCard: builder.mutation({
       query: (formData) => ({
-        url: "/card",
+        url: "/csr-purpose-policy/card",
         method: "POST",
         body: formData,
         // FormData will automatically set correct Content-Type with boundary
@@ -41,7 +35,7 @@ export const purposePolicyApi = createApi({
     // Update Card
     updateCard: builder.mutation({
       query: (formData) => ({
-        url: "/card",
+        url: "/csr-purpose-policy/card",
         method: "PUT",
         body: formData,
       }),
@@ -51,7 +45,7 @@ export const purposePolicyApi = createApi({
     // Delete Card
     deleteCard: builder.mutation({
       query: (id) => ({
-        url: "/card",
+        url: "/csr-purpose-policy/card",
         method: "DELETE",
         body: { id },
       }),

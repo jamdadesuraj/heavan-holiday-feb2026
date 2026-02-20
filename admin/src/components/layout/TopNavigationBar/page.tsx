@@ -8,7 +8,7 @@ import ThemeModeToggle from "./components/ThemeModeToggle";
 import ProfileDropdown from "./components/ProfileDropdown";
 import { Suspense } from "react";
 import LeftSideBarToggle from "./components/LeftSideBarToggle";
-import PagesDropdown from "./components/PagesDropdown";
+
 import HorizontalToggle from "./components/HorizontalToggle";
 
 const TopNavigationBar = () => {
@@ -18,12 +18,8 @@ const TopNavigationBar = () => {
         <div className="d-flex align-items-center gap-2">
           <LogoBox />
           <LeftSideBarToggle />
-          {/* <button className="topnav-toggle-button px-2" data-bs-toggle="collapse" data-bs-target="#topnav-menu-content">
-            <IconifyIcon icon='tabler:menu-deep' className="fs-22" />
-          </button> */}
-          <HorizontalToggle />
 
-          {/* <PagesDropdown /> */}
+          <HorizontalToggle />
         </div>
         <div className="d-flex align-items-center gap-2">
           <div className="topbar-item d-flex d-xl-none">

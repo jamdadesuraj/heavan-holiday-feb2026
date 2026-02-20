@@ -1,20 +1,18 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const becomePartnerFormApi = createApi({
   reducerPath: "becomePartnerFormApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/become-partner-form",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Form"],
   endpoints: (builder) => ({
     getAllForms: builder.query({
-      query: () => "/",
+      query: () => "/become-partner-form/",
       providesTags: ["Form"],
     }),
 
     updateFormStatus: builder.mutation({
       query: ({ id, status }) => ({
-        url: `/${id}/status`,
+        url: `/become-partner-form/${id}/status`,
         method: "PATCH",
         body: { status },
       }),
@@ -22,7 +20,7 @@ export const becomePartnerFormApi = createApi({
     }),
     deleteForm: builder.mutation({
       query: (id) => ({
-        url: `/${id}`,
+        url: `/become-partner-form/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Form"],

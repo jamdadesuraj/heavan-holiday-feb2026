@@ -6,7 +6,7 @@ import {
   updateInclude,
   deleteInclude,
 } from './toursIncludedController';
-
+import { adminAuthMiddleware } from '../../middlewares/adminMiddleware';
 import { upload } from '../../config/cloudinary';
 
 const router = express.Router();
@@ -15,12 +15,12 @@ const router = express.Router();
 router.get('/', getAllIncludes);
 
 // CREATE new include (with image upload)
-router.post('/', upload.single('image'), createInclude);
+router.post('/', adminAuthMiddleware, upload.single('image'), createInclude);
 
 // UPDATE include by ID (with optional image upload)
-router.put('/:id', upload.single('image'), updateInclude);
+router.put('/:id', adminAuthMiddleware, upload.single('image'), updateInclude);
 
 // DELETE include by ID
-router.delete('/:id', deleteInclude);
+router.delete('/:id', adminAuthMiddleware, deleteInclude);
 
 export const IncludedRouter = router;

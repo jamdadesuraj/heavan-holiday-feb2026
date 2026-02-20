@@ -1,17 +1,29 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from "next/server";
 
-export function middleware(request: NextRequest) {
-  const response = NextResponse.next()
+export function middleware(req: NextRequest) {
+  const token = req.cookies.get("adminToken")?.value;
+  const isAuthPage = req.nextUrl.pathname.startsWith("/auth");
+  const isRoot = req.nextUrl.pathname === "/";
 
-  if (request.nextUrl.pathname == '/') {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+  if (isRoot && token) {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
   }
-  return response
+
+  if (isRoot && !token) {
+    return NextResponse.redirect(new URL("/auth/login", req.url));
+  }
+
+  if (!token && !isAuthPage) {
+    return NextResponse.redirect(new URL("/auth/login", req.url));
+  }
+
+  if (token && isAuthPage) {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
+
+  return NextResponse.next();
 }
 
-// See "Matching Paths" below to learn more
 export const config = {
-  matcher: '/',
-}
-
-export { default } from 'next-auth/middleware'
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+};

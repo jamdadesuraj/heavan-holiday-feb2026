@@ -1,23 +1,21 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const brandsSectionApi = createApi({
   reducerPath: "brandsSectionApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/brands",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["BrandsSection", "Brand", "Industry"],
   endpoints: (builder) => ({
     // Brands Section
     getBrandsSection: builder.query<any, void>({
       query: () => ({
-        url: "/section",
+        url: "/brands/section",
         method: "GET",
       }),
       providesTags: ["BrandsSection"],
     }),
     getActiveBrandsSection: builder.query<any, void>({
       query: () => ({
-        url: "/section/active",
+        url: "/brands/section/active",
         method: "GET",
       }),
       providesTags: ["BrandsSection"],
@@ -27,7 +25,7 @@ export const brandsSectionApi = createApi({
       { heading?: string; isActive?: boolean }
     >({
       query: (data) => ({
-        url: "/section",
+        url: "/brands/section",
         method: "PATCH",
         body: data,
       }),
@@ -39,7 +37,7 @@ export const brandsSectionApi = createApi({
       { name: string; industry: string; isActive: boolean }
     >({
       query: (data) => ({
-        url: "/brands",
+        url: "/brands/brands",
         method: "POST",
         body: data,
       }),
@@ -51,7 +49,7 @@ export const brandsSectionApi = createApi({
       { id: string; name?: string; industry?: string; isActive?: boolean }
     >({
       query: ({ id, ...data }) => ({
-        url: `/brands/${id}`,
+        url: `/brands/brands/${id}`,
         method: "PATCH",
         body: data,
       }),
@@ -59,14 +57,14 @@ export const brandsSectionApi = createApi({
     }),
     getAllBrands: builder.query<any, void>({
       query: () => ({
-        url: "/brands",
+        url: "/brands/brands",
         method: "GET",
       }),
       providesTags: ["Brand"],
     }),
     getBrandById: builder.query<any, { id: string }>({
       query: ({ id }) => ({
-        url: `/brands/${id}`,
+        url: `/brands/brands/${id}`,
         method: "GET",
       }),
       providesTags: ["Brand"],
@@ -74,7 +72,7 @@ export const brandsSectionApi = createApi({
 
     deleteBrand: builder.mutation<any, { id: string }>({
       query: ({ id }) => ({
-        url: `/brands/${id}`,
+        url: `/brands/brands/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Brand", "BrandsSection"],
@@ -83,7 +81,7 @@ export const brandsSectionApi = createApi({
     // Industries
     createIndustry: builder.mutation<any, FormData>({
       query: (formData) => ({
-        url: "/industries",
+        url: "/brands/industries",
         method: "POST",
         body: formData,
       }),
@@ -91,21 +89,21 @@ export const brandsSectionApi = createApi({
     }),
     getAllIndustries: builder.query<any, void>({
       query: () => ({
-        url: "/industries",
+        url: "/brands/industries",
         method: "GET",
       }),
       providesTags: ["Industry"],
     }),
     getIndustryById: builder.query<any, { id: string }>({
       query: ({ id }) => ({
-        url: `/industries/${id}`,
+        url: `/brands/industries/${id}`,
         method: "GET",
       }),
       providesTags: ["Industry"],
     }),
     updateIndustry: builder.mutation<any, { id: string; formData: FormData }>({
       query: ({ id, formData }) => ({
-        url: `/industries/${id}`,
+        url: `/brands/industries/${id}`,
         method: "PATCH",
         body: formData,
       }),
@@ -113,7 +111,7 @@ export const brandsSectionApi = createApi({
     }),
     deleteIndustry: builder.mutation<any, { id: string }>({
       query: ({ id }) => ({
-        url: `/industries/${id}`,
+        url: `/brands/industries/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Industry", "BrandsSection"],

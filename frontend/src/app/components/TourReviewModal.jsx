@@ -4,36 +4,6 @@ import { X, Star } from "lucide-react";
 import { useGetCounterQuery } from "../../../store/counterApi/counterApi";
 import { useGetTourReviewQuery } from "../../../store/reviewsApi/reviewsApi";
 import { useGetGalleryQuery } from "../../../store/galleryApi/galleryApi";
-const reviews = [
-  {
-    id: 1,
-    rating: 5,
-    tag: "Seniors’ Special",
-    title: "Seniors' Special Sri Lanka",
-    text: `"Each and every department was on toes to support and result oriented. No complaints or regards. Thanks Heaven Holiday for memorable tour."`,
-    author: "Ashish",
-    date: "Sep, 2025",
-    guides: ["Amit Kene", "Siddharth Kore"],
-  },
-  {
-    id: 2,
-    tag: "Family",
-    title: "Mathura Vrindavan Gokul Govardhan",
-    text: `"I went to Mathura, Vrindavan with my family, had a great experience. Tour Manager Prakash Sir is a very suitable person."`,
-    author: "Dhananjay",
-    date: "Sep, 2025",
-    guides: ["Prakash Patange", "Shubham Vekhande"],
-  },
-];
-
-const gallery = [
-  "/assets/img/tour-review/1.avif",
-  "/assets/img/tour-review/2.avif",
-  "/assets/img/tour-review/3.avif",
-  "/assets/img/tour-review/4.webp",
-  "/assets/img/tour-review/5.avif",
-  "/assets/img/tour-review/7.avif",
-];
 
 const TourReviewModal = () => {
   const [isOpen, setIsOpen] = useState(false);

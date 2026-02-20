@@ -6,17 +6,17 @@ import {
   updateReview,
   deleteReview,
 } from './reviewsController';
-
+import { adminAuthMiddleware } from '../../middlewares/adminMiddleware';
 const router = Router();
 
 router.get('/', getTourReview);
 
-router.put('/update-main', updateMainFields);
+router.put('/update-main', adminAuthMiddleware, updateMainFields);
 
-router.post('/review/add', addReview);
+router.post('/review/add', adminAuthMiddleware, addReview);
 
-router.put('/review/update/:id', updateReview);
+router.put('/review/update/:id', adminAuthMiddleware, updateReview);
 
-router.delete('/review/delete/:id', deleteReview);
+router.delete('/review/delete/:id', adminAuthMiddleware, deleteReview);
 
 export const reviewsRouter = router;

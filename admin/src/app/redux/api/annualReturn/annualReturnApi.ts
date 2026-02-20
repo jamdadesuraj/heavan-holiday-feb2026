@@ -1,17 +1,15 @@
 // features/annualReturn/annualReturnApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const annualReturnApi = createApi({
   reducerPath: "annualReturnApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/annual-return",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["AnnualReturn"],
   endpoints: (builder) => ({
     // ================= GET ANNUAL RETURN =================
     getAnnualReturn: builder.query<any, void>({
       query: () => ({
-        url: "/annual-return",
+        url: "/annual-return/annual-return",
         method: "GET",
       }),
       providesTags: ["AnnualReturn"],
@@ -20,7 +18,7 @@ export const annualReturnApi = createApi({
     // ================= UPDATE MAIN STATUS =================
     updateMainStatus: builder.mutation<any, any>({
       query: (data) => ({
-        url: "/annual-return/status",
+        url: "/annual-return/annual-return/status",
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: data,
@@ -31,7 +29,7 @@ export const annualReturnApi = createApi({
     // ================= ADD ITEM =================
     addItem: builder.mutation<any, FormData>({
       query: (formData) => ({
-        url: "/annual-return/item",
+        url: "/annual-return/annual-return/item",
         method: "POST",
         body: formData,
       }),
@@ -41,7 +39,7 @@ export const annualReturnApi = createApi({
     // ================= UPDATE ITEM =================
     updateItem: builder.mutation<any, { id: string; formData: FormData }>({
       query: ({ id, formData }) => ({
-        url: `/annual-return/item/${id}`,
+        url: `/annual-return/annual-return/item/${id}`,
         method: "PUT",
         body: formData,
       }),
@@ -51,7 +49,7 @@ export const annualReturnApi = createApi({
     // ================= DELETE ITEM =================
     deleteItem: builder.mutation<any, string>({
       query: (id) => ({
-        url: `/annual-return/item/${id}`,
+        url: `/annual-return/annual-return/item/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["AnnualReturn"],

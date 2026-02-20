@@ -1,22 +1,20 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const managementApi = createApi({
   reducerPath: "managementApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/csr-management",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Management"],
   endpoints: (builder) => ({
     // Get Management
     getManagement: builder.query({
-      query: () => "/management",
+      query: () => "csr-management/management",
       providesTags: ["Management"],
     }),
 
     // Update Main Fields
     updateMainFields: builder.mutation({
       query: (data) => ({
-        url: "/management/main-fields",
+        url: "csr-management/management/main-fields",
         method: "PATCH",
         body: data,
       }),
@@ -26,7 +24,7 @@ export const managementApi = createApi({
     // Add Card
     addCard: builder.mutation({
       query: (formData) => ({
-        url: "/management/card",
+        url: "csr-management/management/card",
         method: "POST",
         body: formData,
       }),
@@ -36,7 +34,7 @@ export const managementApi = createApi({
     // Update Card
     updateCard: builder.mutation({
       query: (formData) => ({
-        url: "/management/card",
+        url: "csr-management/management/card",
         method: "PATCH",
         body: formData,
       }),
@@ -46,7 +44,7 @@ export const managementApi = createApi({
     // Delete Card
     deleteCard: builder.mutation({
       query: (id) => ({
-        url: "/management/card",
+        url: "csr-management/management/card",
         method: "DELETE",
         body: { id },
       }),

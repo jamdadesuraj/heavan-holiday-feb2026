@@ -6,19 +6,29 @@ import {
   updateDestination,
   deleteDestination,
 } from './destinationsController';
-
+import { adminAuthMiddleware } from '../../middlewares/adminMiddleware';
 import { upload } from '../../config/cloudinary';
 
 const router = Router();
 
-router.put('/title', updateTitle);
+router.put('/title', adminAuthMiddleware, updateTitle);
 
 router.get('/', getTrendingDestinations);
 
-router.post('/destinations', upload.single('image'), createDestination);
+router.post(
+  '/destinations',
+  adminAuthMiddleware,
+  upload.single('image'),
+  createDestination,
+);
 
-router.put('/destinations/:id', upload.single('image'), updateDestination);
+router.put(
+  '/destinations/:id',
+  adminAuthMiddleware,
+  upload.single('image'),
+  updateDestination,
+);
 
-router.delete('/destinations/:id', deleteDestination);
+router.delete('/destinations/:id', adminAuthMiddleware, deleteDestination);
 
 export const trendingDestinationsRouter = router;

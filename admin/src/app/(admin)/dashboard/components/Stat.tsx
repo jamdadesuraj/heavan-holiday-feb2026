@@ -1,13 +1,24 @@
-import IconifyIcon from '@/components/wrappers/IconifyIcon'
-import React from 'react'
-import { statData, StatType } from '../data'
-import { Card, CardBody, Col, Row } from 'react-bootstrap'
-
-const StatCard = ({change,count,icon,otherIcon,title,variant}:StatType) => {
+"use client";
+import IconifyIcon from "@/components/wrappers/IconifyIcon";
+import React from "react";
+import { StatType } from "../data";
+import { Card, CardBody, Col, Row } from "react-bootstrap";
+import { useGetTourPackageCardsQuery } from "@/app/redux/api/tourManager/tourPackageApi";
+import { useGetAllEnquiriesQuery } from "@/app/redux/api/enquiry/enquiryApi";
+import { useGetAllBookingsQuery } from "@/app/redux/api/bookingsApi/bookingApi";
+import { useGetTeamsQuery } from "@/app/redux/api/team/teamApi";
+import { useGetAllOfficesQuery } from "@/app/redux/api/contactOffice/contactOfficeApi";
+import { useGetAllJobApplicationsQuery } from "@/app/redux/api/jobApplications/jobApplicationsApi";
+const StatCard = ({ count, icon, otherIcon, title }: StatType) => {
   return (
     <Card className="overflow-hidden">
       <CardBody>
-        <h5 className="text-muted fs-13 text-uppercase" title="Number of Orders">{title}</h5>
+        <h5
+          className="text-muted fs-13 text-uppercase"
+          title="Number of Orders"
+        >
+          {title}
+        </h5>
         <div className="d-flex align-items-center gap-2 my-2 py-1">
           <div className="user-img fs-42 flex-shrink-0">
             <span className="avatar-title text-bg-primary rounded-circle fs-22">
@@ -15,29 +26,115 @@ const StatCard = ({change,count,icon,otherIcon,title,variant}:StatType) => {
             </span>
           </div>
           <h3 className="mb-0 fw-bold">{count}</h3>
-          <IconifyIcon icon={otherIcon} className="ms-auto display-1 position-absolute opacity-25 text-muted widget-icon" />
+          <IconifyIcon
+            icon={otherIcon}
+            className="ms-auto display-1 position-absolute opacity-25 text-muted widget-icon"
+          />
         </div>
-        <p className="mb-0 text-muted">
-          <span className={`text-${variant} me-2`}>{change}% {variant=='danger' ? <IconifyIcon icon='tabler:caret-down-filled' /> : <IconifyIcon icon='tabler:caret-up-filled' />} </span>
-          <span className="text-nowrap">Since last month</span>
-        </p>
       </CardBody>
     </Card>
-  )
-}
+  );
+};
 
 const Stat = () => {
+  const {
+    data: tourCardsData,
+    isLoading: isTourCardsLoading,
+    error: isTourCardsError,
+  } = useGetTourPackageCardsQuery(undefined);
+  const {
+    data: enquiryData,
+    isLoading: isEnquiryLoading,
+    error: isEnquiryError,
+  } = useGetAllEnquiriesQuery(undefined);
+  const {
+    data: bookingsData,
+    isLoading: isBookingLoading,
+    error: isBookingError,
+  } = useGetAllBookingsQuery(undefined);
+  const {
+    data: teamData,
+    isLoading: isTeamLoading,
+    error: isTeamError,
+  } = useGetTeamsQuery(undefined);
+  const {
+    data: office,
+    isLoading: isofficeLoading,
+    error: isofficeError,
+  } = useGetAllOfficesQuery(undefined);
+  const {
+    data: applications,
+    isLoading: isapplicationsLoading,
+    error: isapplicationsError,
+  } = useGetAllJobApplicationsQuery(undefined);
+  if (
+    isTourCardsLoading ||
+    isEnquiryLoading ||
+    isBookingLoading ||
+    isTeamLoading ||
+    isofficeLoading ||
+    isapplicationsLoading
+  ) {
+    return <p>loading</p>;
+  }
+  if (
+    isTourCardsError ||
+    isEnquiryError ||
+    isBookingError ||
+    isTeamError ||
+    isofficeError ||
+    isapplicationsError
+  ) {
+    return <p>error</p>;
+  }
+  const statData: StatType[] = [
+    {
+      title: "Total Bookings",
+      icon: "solar:ticket-bold-duotone",
+      otherIcon: "solar:calendar-bold-duotone",
+      count: bookingsData?.data?.bookings.length || "1000",
+    },
+    {
+      title: "Total Packages",
+      icon: "solar:suitcase-bold-duotone",
+      otherIcon: "solar:box-bold-duotone",
+      count: tourCardsData?.data?.length || "1000",
+    },
+    {
+      title: "Total Enquiries",
+      icon: "solar:chat-round-dots-bold-duotone",
+      otherIcon: "solar:letter-bold-duotone",
+      count: enquiryData?.data?.length || "1000",
+    },
+    {
+      title: "Total Team",
+      icon: "solar:users-group-rounded-bold-duotone",
+      otherIcon: "solar:user-bold-duotone",
+      count: teamData?.data?.length || "1000",
+    },
+    {
+      title: "Total Offices",
+      icon: "solar:buildings-bold-duotone",
+      otherIcon: "solar:map-point-bold-duotone",
+      count: office?.data?.length || "1000",
+    },
+    {
+      title: "Total Job Applications",
+      icon: "solar:document-text-bold-duotone",
+      otherIcon: "solar:map-point-bold-duotone",
+      count: applications?.data?.length || "1000",
+    },
+  ];
+
   return (
     <Row className="row-cols-xxl-4 row-cols-md-2 row-cols-1">
-      {
-        statData.map((item, idx) => (
-          <Col key={idx}>
-            <StatCard {...item}/>
-          </Col>
-        ))
-      }
+      {statData.map((item, idx) => (
+        <Col key={idx}>
+          <StatCard {...item} />
+        </Col>
+      ))}
     </Row>
-  )
-}
+  );
+};
 
-export default Stat
+export default Stat;

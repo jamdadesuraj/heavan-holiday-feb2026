@@ -8,7 +8,7 @@ import {
   removeImageFromBook,
 } from './booksController';
 import { upload } from '../../config/cloudinary';
-
+import { adminAuthMiddleware } from '../../middlewares/adminMiddleware';
 const router = express.Router();
 
 // GET all books
@@ -16,6 +16,7 @@ router.get('/', getAllBooks);
 
 router.post(
   '/',
+  adminAuthMiddleware,
   upload.fields([{ name: 'coverImg', maxCount: 1 }, { name: 'images' }]),
   createBook,
 );
@@ -24,16 +25,22 @@ router.post(
 
 router.put(
   '/:id',
+  adminAuthMiddleware,
   upload.fields([{ name: 'coverImg', maxCount: 1 }, { name: 'images' }]),
   updateBook,
 );
 
 // DELETE book
-router.delete('/:id', deleteBook);
+router.delete('/:id', adminAuthMiddleware, deleteBook);
 
-router.post('/:id/add-images', upload.array('images'), addImagesToBook);
+router.post(
+  '/:id/add-images',
+  adminAuthMiddleware,
+  upload.array('images'),
+  addImagesToBook,
+);
 
 // REMOVE single image from book
-router.delete('/:id/remove-image', removeImageFromBook);
+router.delete('/:id/remove-image', adminAuthMiddleware, removeImageFromBook);
 
 export const booksRouter = router;

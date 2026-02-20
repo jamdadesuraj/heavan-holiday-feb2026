@@ -7,17 +7,27 @@ import {
   updateCard,
   deleteCard,
 } from './philosophyController';
-
+import { adminAuthMiddleware } from '../../middlewares/adminMiddleware';
 const router = express.Router();
 
 router.get('/management', getManagement);
 
-router.patch('/management/main-fields', updateMainFields);
+router.patch('/management/main-fields', adminAuthMiddleware, updateMainFields);
 
-router.post('/management/card', upload.single('image'), addCard);
+router.post(
+  '/management/card',
+  adminAuthMiddleware,
+  upload.single('image'),
+  addCard,
+);
 
-router.patch('/management/card', upload.single('image'), updateCard);
+router.patch(
+  '/management/card',
+  adminAuthMiddleware,
+  upload.single('image'),
+  updateCard,
+);
 
-router.delete('/management/card', deleteCard);
+router.delete('/management/card', adminAuthMiddleware, deleteCard);
 
 export const philosophyRouter = router;

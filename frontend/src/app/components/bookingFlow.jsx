@@ -11,6 +11,7 @@ import EmiModal from "../pages/TourDetails/EmiModal";
 import { useCreateBookingMutation } from "store/bookingApi/bookingApi";
 import DepartureSelector from "../pages/TourDetails/DepartureSelector";
 const BookingFlow = ({ tourData }) => {
+  const [passportImages, setPassportImages] = useState({});
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState(null);
   const [travellerCount, setTravellerCount] = useState({
@@ -106,27 +107,38 @@ const BookingFlow = ({ tourData }) => {
 
   const handleBookingConfirm = async () => {
     try {
-      // Prepare booking data
-      const bookingPayload = {
-        tourPackage: tourData._id,
-        selectedDeparture: {
+      const formData = new FormData();
+
+      // append simple fields
+      formData.append("tourPackage", tourData._id);
+      formData.append(
+        "selectedDeparture",
+        JSON.stringify({
           departureId: selectedDate?._id || firstDeparture?._id,
           departureCity: departureCity,
           departureDate: selectedDate?.date || firstDeparture?.date,
           packageType: selectedDate?.packageType || "Joining Package",
-        },
-        travelers: travellers,
-        travelerCount: travellerCount,
-        pricing: {
+        }),
+      );
+      formData.append("travelers", JSON.stringify(travellers));
+      formData.append("travelerCount", JSON.stringify(travellerCount));
+      formData.append(
+        "pricing",
+        JSON.stringify({
           totalAmount: totalPrice,
           advanceAmount: advanceAmount,
           paidAmount: 0,
           pendingAmount: totalPrice,
           pricePerPerson: basePrice,
-        },
-      };
+        }),
+      );
 
-      const response = await createBooking(bookingPayload).unwrap();
+      // append passport images
+      Object.entries(passportImages).forEach(([key, file]) => {
+        formData.append(key, file);
+      });
+
+      const response = await createBooking(formData).unwrap();
       setBookingData(response.data.booking);
       setCurrentStep(5);
     } catch (error) {
@@ -246,6 +258,8 @@ const BookingFlow = ({ tourData }) => {
                 travellerCount={travellerCount}
                 onSubmit={handleTravellersSubmit}
                 onBack={() => setCurrentStep(2)}
+                passportImages={passportImages}
+                setPassportImages={setPassportImages}
               />
             )}
 

@@ -1,13 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const tourManagerApi = createApi({
   reducerPath: "tourManagerApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/",
-    prepareHeaders: (headers, { getState }) => {
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["TourManager"],
   endpoints: (builder) => ({
     getTourManager: builder.query({

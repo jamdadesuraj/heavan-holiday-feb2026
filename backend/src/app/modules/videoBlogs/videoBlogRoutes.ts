@@ -9,7 +9,7 @@ import {
   updateCategory,
   deleteCategory,
 } from './videoBlogController';
-
+import { adminAuthMiddleware } from '../../middlewares/adminMiddleware';
 const router = Router();
 
 // ========== VIDEO BLOG ROUTES ==========
@@ -18,13 +18,13 @@ const router = Router();
 router.get('/', getAllVideoBlogs);
 
 // Create video blog
-router.post('/', createVideoBlog);
+router.post('/', adminAuthMiddleware, createVideoBlog);
 
 // Update video blog by ID
-router.put('/:id', updateVideoBlog);
+router.put('/:id', adminAuthMiddleware, updateVideoBlog);
 
 // Delete video blog by ID
-router.delete('/:id', deleteVideoBlog);
+router.delete('/:id', adminAuthMiddleware, deleteVideoBlog);
 
 // ========== CATEGORY ROUTES ==========
 
@@ -32,12 +32,12 @@ router.delete('/:id', deleteVideoBlog);
 router.get('/categories', getAllCategories);
 
 // Add category
-router.post('/categories', addCategory);
+router.post('/categories', adminAuthMiddleware, addCategory);
 
 // Update category by categoryId
-router.put('/categories/:categoryId', updateCategory);
+router.put('/categories/:categoryId', adminAuthMiddleware, updateCategory);
 
 // Delete category by categoryId
-router.delete('/categories/:categoryId', deleteCategory);
+router.delete('/categories/:categoryId', adminAuthMiddleware, deleteCategory);
 
 export const videoBlogRouter = router;

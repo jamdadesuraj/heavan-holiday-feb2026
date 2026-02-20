@@ -61,6 +61,10 @@ const TravelerSchema = new Schema<ITraveler>(
       type: String,
       trim: true,
     },
+    passportImage: {
+      type: String,
+      trim: true,
+    },
   },
   { _id: true },
 );
@@ -160,6 +164,9 @@ const PricingSchema = new Schema<IPricing>(
       type: Number,
       min: 0,
     },
+    baseAmount: { type: Number, min: 0 },
+    gstPercentage: { type: Number, default: 5 },
+    gstAmount: { type: Number, min: 0 },
   },
   { _id: false },
 );

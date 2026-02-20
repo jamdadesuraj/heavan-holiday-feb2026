@@ -4,16 +4,16 @@ import {
   updateContactDetails,
   patchContactDetails,
 } from './contactUsController';
-
+import { adminAuthMiddleware } from '../../middlewares/adminMiddleware';
 const router = Router();
 
 // GET contact details
 router.get('/', getContactDetails);
 
 // PUT -> full update / create
-router.put('/', updateContactDetails);
+router.put('/', adminAuthMiddleware, updateContactDetails);
 
 // PATCH -> partial update
-router.patch('/', patchContactDetails);
+router.patch('/', adminAuthMiddleware, patchContactDetails);
 
 export const contactRouter = router;

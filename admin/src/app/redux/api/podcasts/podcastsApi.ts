@@ -1,17 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const podcastsApi = createApi({
   reducerPath: "podcastsApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/podcasts",
-    prepareHeaders: (headers) => {
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Podcasts", "Episodes"],
   endpoints: (builder) => ({
     getPodcasts: builder.query({
-      query: () => "/",
+      query: () => "/podcasts/",
       providesTags: ["Podcasts"],
     }),
 
@@ -26,7 +21,7 @@ export const podcastsApi = createApi({
         formData.append("status", data.status);
 
         return {
-          url: "/",
+          url: "/podcasts/",
           method: "POST",
           body: formData,
         };
@@ -47,7 +42,7 @@ export const podcastsApi = createApi({
           formData.append("order", data.order.toString());
 
         return {
-          url: `/${id}`,
+          url: `/podcasts/${id}`,
           method: "PUT",
           body: formData,
         };
@@ -57,14 +52,14 @@ export const podcastsApi = createApi({
 
     deletePodcast: builder.mutation({
       query: (id) => ({
-        url: `/${id}`,
+        url: `/podcasts/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Podcasts"],
     }),
 
     getEpisodes: builder.query({
-      query: (podcastId) => `/${podcastId}/episodes`,
+      query: (podcastId) => `/podcasts/${podcastId}/episodes`,
       providesTags: ["Episodes"],
     }),
 
@@ -81,7 +76,7 @@ export const podcastsApi = createApi({
           formData.append("order", data.order.toString());
 
         return {
-          url: `/${podcastId}/episodes`,
+          url: `/podcasts/${podcastId}/episodes`,
           method: "POST",
           body: formData,
         };
@@ -91,7 +86,7 @@ export const podcastsApi = createApi({
 
     updateEpisode: builder.mutation({
       query: ({ podcastId, episodeId, ...data }) => ({
-        url: `/${podcastId}/episodes/${episodeId}`,
+        url: `/podcasts/${podcastId}/episodes/${episodeId}`,
         method: "PUT",
         body: data,
       }),
@@ -100,7 +95,7 @@ export const podcastsApi = createApi({
 
     deleteEpisode: builder.mutation({
       query: ({ podcastId, episodeId }) => ({
-        url: `/${podcastId}/episodes/${episodeId}`,
+        url: `/podcasts/${podcastId}/episodes/${episodeId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Episodes", "Podcasts"],

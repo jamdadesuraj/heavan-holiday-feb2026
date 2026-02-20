@@ -1,19 +1,17 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const privacyPolicyApi = createApi({
   reducerPath: "privacyPolicyApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/privacy-policy",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["PrivacyPolicy"],
   endpoints: (builder) => ({
     getPrivacyPolicy: builder.query({
-      query: () => "/",
+      query: () => "/privacy-policy/",
       providesTags: ["PrivacyPolicy"],
     }),
     updatePrivacyPolicy: builder.mutation({
       query: (content) => ({
-        url: "/",
+        url: "/privacy-policy/",
         method: "PUT",
         body: { content },
       }),

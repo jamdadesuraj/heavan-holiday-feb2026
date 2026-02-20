@@ -1,15 +1,10 @@
 // features/booking/bookingApi.ts
 
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const bookingApi = createApi({
   reducerPath: "bookingApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: `http://localhost:8080/v1/api/booking`,
-    prepareHeaders: (headers) => {
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Booking", "BookingList", "Refunds"],
   endpoints: (builder) => ({
     // Get all bookings
@@ -20,7 +15,7 @@ export const bookingApi = createApi({
         if (status) urlParams.append("status", status);
         urlParams.append("page", page.toString());
         urlParams.append("limit", limit.toString());
-        return `/admin/all?${urlParams.toString()}`;
+        return `/booking/admin/all?${urlParams.toString()}`;
       },
       providesTags: ["BookingList"],
     }),
@@ -28,7 +23,7 @@ export const bookingApi = createApi({
     // Delete booking
     deleteBooking: builder.mutation<any, string>({
       query: (bookingId) => ({
-        url: `/admin/${bookingId}`,
+        url: `/booking/admin/${bookingId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["BookingList", "Refunds"],
@@ -42,7 +37,7 @@ export const bookingApi = createApi({
         if (status) urlParams.append("status", status);
         urlParams.append("page", page.toString());
         urlParams.append("limit", limit.toString());
-        return `/admin/refunds/pending?${urlParams.toString()}`;
+        return `/booking/admin/refunds/pending?${urlParams.toString()}`;
       },
       providesTags: ["Refunds"],
     }),
@@ -50,7 +45,7 @@ export const bookingApi = createApi({
     // Update refund status
     updateRefundStatus: builder.mutation<any, any>({
       query: ({ bookingId, refundId, ...body }) => ({
-        url: `/admin/refunds/${bookingId}/${refundId}/status`,
+        url: `/booking/admin/refunds/${bookingId}/${refundId}/status`,
         method: "PATCH",
         body,
       }),

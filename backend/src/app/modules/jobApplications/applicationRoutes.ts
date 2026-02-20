@@ -6,15 +6,15 @@ import {
   deleteJobApplication,
 } from './applicationControllers';
 import { upload } from '../../config/cloudinary';
-
+import { adminAuthMiddleware } from '../../middlewares/adminMiddleware';
 const router = Router();
 
 router.post('/', upload.single('resume'), createJobApplication);
 
-router.get('/', getAllJobApplications);
+router.get('/', adminAuthMiddleware, getAllJobApplications);
 
-router.patch('/:id/status', updateApplicationStatus);
+router.patch('/:id/status', adminAuthMiddleware, updateApplicationStatus);
 
-router.delete('/:id', deleteJobApplication);
+router.delete('/:id', adminAuthMiddleware, deleteJobApplication);
 
 export const JobApplicationRouter = router;

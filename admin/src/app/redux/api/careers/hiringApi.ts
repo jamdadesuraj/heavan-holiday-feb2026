@@ -1,23 +1,21 @@
 // app/redux/api/howWeHireApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const howWeHireApi = createApi({
   reducerPath: "howWeHireApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/hiring-process",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["HowWeHire"],
   endpoints: (builder) => ({
     // GET HowWeHire document
     getHowWeHire: builder.query({
-      query: () => "/",
+      query: () => "/hiring-process/",
       providesTags: ["HowWeHire"],
     }),
 
     // UPDATE heading / introText / subText
     updateHowWeHireInfo: builder.mutation({
       query: (data) => ({
-        url: "/info",
+        url: "/hiring-process/info",
         method: "PUT",
         body: data,
       }),
@@ -27,7 +25,7 @@ export const howWeHireApi = createApi({
     // ADD a step
     addHowWeHireStep: builder.mutation({
       query: (formData) => ({
-        url: "/step",
+        url: "/hiring-process/step",
         method: "POST",
         body: formData, // should be FormData if uploading images
       }),
@@ -37,7 +35,7 @@ export const howWeHireApi = createApi({
     // UPDATE a step
     updateHowWeHireStep: builder.mutation({
       query: (formData) => ({
-        url: "/step",
+        url: "/hiring-process/step",
         method: "PUT",
         body: formData, // should be FormData if uploading images
       }),
@@ -47,7 +45,7 @@ export const howWeHireApi = createApi({
     // DELETE a step
     deleteHowWeHireStep: builder.mutation({
       query: (data) => ({
-        url: "/step",
+        url: "/hiring-process/step",
         method: "DELETE",
         body: data,
       }),

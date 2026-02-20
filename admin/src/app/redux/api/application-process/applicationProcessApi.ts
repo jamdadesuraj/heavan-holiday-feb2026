@@ -1,19 +1,17 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const applicationApi = createApi({
   reducerPath: "applicationApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/application-process",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Application"],
   endpoints: (builder) => ({
     getAllApplications: builder.query({
-      query: () => "/",
+      query: () => "/application-process/",
       providesTags: ["Application"],
     }),
     createApplication: builder.mutation({
       query: (formData) => ({
-        url: "/",
+        url: "/application-process/",
         method: "POST",
         body: formData,
       }),
@@ -21,7 +19,7 @@ export const applicationApi = createApi({
     }),
     updateApplication: builder.mutation({
       query: ({ id, formData }) => ({
-        url: `/${id}`,
+        url: `/application-process/${id}`,
         method: "PUT",
         body: formData,
       }),
@@ -29,7 +27,7 @@ export const applicationApi = createApi({
     }),
     deleteApplication: builder.mutation({
       query: (id) => ({
-        url: `/${id}`,
+        url: `/application-process/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Application"],

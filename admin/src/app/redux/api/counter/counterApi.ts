@@ -1,9 +1,9 @@
 // services/counterApi.ts - WITHOUT INTERFACES
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const counterApi = createApi({
   reducerPath: "counterApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8080/v1/api" }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Counter"],
   endpoints: (builder) => ({
     getCounter: builder.query({

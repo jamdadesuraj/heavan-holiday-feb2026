@@ -1,6 +1,3 @@
-import logoDark from "@/assets/images/logo-dark.png";
-import logoSm from "@/assets/images/logo-sm.png";
-import logo from "@/assets/images/logo.png";
 import Image from "next/image";
 import { useGetSettingsQuery } from "@/app/redux/api/settings/settingsApi";
 const LogoBox = () => {
@@ -17,7 +14,7 @@ const LogoBox = () => {
         <span className="logo-lg">
           <Image
             width={109}
-            height={22}
+            height={32}
             src={data?.data?.companyLogo}
             alt="logo"
           />

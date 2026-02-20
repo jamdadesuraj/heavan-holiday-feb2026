@@ -1,20 +1,18 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { baseQueryWithAuth } from "../../baseQuery";
 export const footerInfoApi = createApi({
   reducerPath: "footerInfoApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/footer-info",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["FooterInfo"],
   endpoints: (builder) => ({
     getFooterInfo: builder.query({
-      query: () => "/",
+      query: () => "/footer-info/",
       providesTags: ["FooterInfo"],
     }),
 
     updateFooterInfo: builder.mutation({
       query: (body) => ({
-        url: "/",
+        url: "/footer-info/",
         method: "PUT",
         body,
       }),
