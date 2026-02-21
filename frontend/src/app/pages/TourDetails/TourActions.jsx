@@ -8,11 +8,15 @@ import { useRouter } from "next/navigation";
 import { useAddToWishlistMutation } from "store/authApi/authApi";
 import { auth } from "@/app/config/firebase";
 import toast from "react-hot-toast";
+import { useShareTourByEmailMutation } from "store/toursManagement/toursPackagesApi";
 
 const TourActions = ({ packageId, tourTitle: tourTitleProp }) => {
   const router = useRouter();
   const [activeModal, setActiveModal] = useState(null);
   const [addToWishlist] = useAddToWishlistMutation();
+  const [emailInput, setEmailInput] = useState("");
+  const [shareTourByEmail, { isLoading: isSending }] =
+    useShareTourByEmailMutation();
 
   const closeModal = () => setActiveModal(null);
 
@@ -43,12 +47,33 @@ const TourActions = ({ packageId, tourTitle: tourTitleProp }) => {
 
   const handleInstagramShare = async () => {
     if (navigator.share) {
-      // Mobile: opens native share sheet where user can pick Instagram
       await navigator.share({ title: tourTitle, url: shareUrl });
     } else {
-      // Desktop: copy link
       navigator.clipboard.writeText(shareUrl);
       alert("Link copied! Open Instagram and paste it in your story or bio.");
+    }
+  };
+
+  const handleSendEmail = async () => {
+    if (!emailInput) {
+      toast.error("Please enter an email address");
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailInput)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+    try {
+      await shareTourByEmail({
+        tourId: packageId,
+        recipientEmail: emailInput,
+      }).unwrap();
+      toast.success("Tour brochure sent successfully!");
+      setEmailInput("");
+      closeModal();
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to send email");
     }
   };
 
@@ -102,6 +127,7 @@ const TourActions = ({ packageId, tourTitle: tourTitleProp }) => {
         >
           <Mail className="w-4 h-4" /> Email
         </button>
+
         <button
           onClick={() => setActiveModal("share")}
           className="flex items-center gap-1 cursor-pointer"
@@ -171,21 +197,17 @@ const TourActions = ({ packageId, tourTitle: tourTitleProp }) => {
                 <X className="w-3 h-3" />
               </button>
               <h2 className="text-lg font-semibold mb-2">
-                You're mailing the itinerary & price details for tour date 28
-                Nov 2025.
+                You're mailing the itinerary & price details.
               </h2>
               <p className="text-sm text-gray-600 mb-4">
-                Please go back to calendar if you wish to change the date or
-                click on Send Email.
+                A complete PDF brochure will be sent to the email address below.
               </p>
               <input
-                type="text"
-                placeholder="Name"
-                className="w-full border border-gray-400 p-3 text-xs rounded-xl mb-3"
-              />
-              <input
                 type="email"
-                placeholder="Email ID"
+                placeholder="Recipient Email ID"
+                value={emailInput}
+                onChange={(e) => setEmailInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSendEmail()}
                 className="w-full border border-gray-400 p-3 text-xs rounded-xl mb-3"
               />
               <div className="flex gap-3 justify-end">
@@ -195,10 +217,19 @@ const TourActions = ({ packageId, tourTitle: tourTitleProp }) => {
                 >
                   Cancel
                 </button>
-                <button className="bg-red-700 px-4 py-2 rounded font-semibold hover:bg-yellow-500 text-xs cursor-pointer">
-                  Send Email
+                <button
+                  onClick={handleSendEmail}
+                  disabled={isSending || !emailInput}
+                  className="bg-red-700 px-4 py-2 rounded font-semibold hover:bg-yellow-500 text-xs cursor-pointer text-white disabled:bg-gray-400 disabled:cursor-not-allowed"
+                >
+                  {isSending ? "Sending..." : "Send Email"}
                 </button>
               </div>
+              {isSending && (
+                <p className="text-xs text-gray-400 mt-2 text-center">
+                  Generating PDF and sending... please wait
+                </p>
+              )}
             </div>
           </div>
         </div>

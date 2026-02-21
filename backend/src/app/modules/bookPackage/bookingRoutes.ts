@@ -73,7 +73,23 @@ router.post('/:bookingId/verify-payment', authenticate, verifyPayment);
 router.post('/:bookingId/payment-failure', authenticate, handlePaymentFailure);
 router.post('/:bookingId/payment', authenticate, addPayment);
 
-router.patch('/:bookingId/travelers', authenticate, updateBookingTravelers);
+router.patch(
+  '/:bookingId/travelers',
+  authenticate,
+  upload.fields([
+    { name: 'passportImage_0', maxCount: 1 },
+    { name: 'passportImage_1', maxCount: 1 },
+    { name: 'passportImage_2', maxCount: 1 },
+    { name: 'passportImage_3', maxCount: 1 },
+    { name: 'passportImage_4', maxCount: 1 },
+    { name: 'passportImage_5', maxCount: 1 },
+    { name: 'passportImage_6', maxCount: 1 },
+    { name: 'passportImage_7', maxCount: 1 },
+    { name: 'passportImage_8', maxCount: 1 },
+    { name: 'passportImage_9', maxCount: 1 },
+  ]),
+  updateBookingTravelers,
+);
 router.patch('/:bookingId/cancel', authenticate, cancelBooking);
 
 export const bookingRouter = router;

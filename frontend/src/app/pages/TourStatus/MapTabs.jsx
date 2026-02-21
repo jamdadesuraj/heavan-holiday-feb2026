@@ -3,57 +3,52 @@ import { useGetContactDetailsQuery } from "store/aboutUsApi/contactApi";
 import React, { useState } from "react";
 import { FaSmile, FaPlane, FaStar, FaUserTie } from "react-icons/fa";
 import { useGetCounterQuery } from "../../../../store/counterApi/counterApi";
-import { useGetTourPackageQuery } from "store/toursManagement/toursPackagesApi";
-const states = [
-  "Andhra Pradesh",
-  "Arunachal Pradesh",
-  "Assam",
-  "Bihar",
-  "Chhattisgarh",
-  "Goa",
-  "Gujarat",
-  "Haryana",
-  "Himachal Pradesh",
-  "Jharkhand",
-  "Karnataka",
-  "Kerala",
-  "Madhya Pradesh",
-  "Maharashtra",
-  "Manipur",
-  "Meghalaya",
-  "Mizoram",
-  "Nagaland",
-  "Odisha",
-  "Punjab",
-  "Rajasthan",
-  "Sikkim",
-  "Tamil Nadu",
-  "Telangana",
-  "Tripura",
-  "Uttar Pradesh",
-  "Uttarakhand",
-  "West Bengal",
-  "Delhi",
-  "Jammu & Kashmir",
-  "Ladakh",
-  "Puducherry",
-  "Chandigarh",
-  "Dadra & Nagar Haveli",
-  "Daman & Diu",
-  "Lakshadweep",
-  "Andaman & Nicobar Islands",
-];
+
+// const states = [
+//   "Andhra Pradesh",
+//   "Arunachal Pradesh",
+//   "Assam",
+//   "Bihar",
+//   "Chhattisgarh",
+//   "Goa",
+//   "Gujarat",
+//   "Haryana",
+//   "Himachal Pradesh",
+//   "Jharkhand",
+//   "Karnataka",
+//   "Kerala",
+//   "Madhya Pradesh",
+//   "Maharashtra",
+//   "Manipur",
+//   "Meghalaya",
+//   "Mizoram",
+//   "Nagaland",
+//   "Odisha",
+//   "Punjab",
+//   "Rajasthan",
+//   "Sikkim",
+//   "Tamil Nadu",
+//   "Telangana",
+//   "Tripura",
+//   "Uttar Pradesh",
+//   "Uttarakhand",
+//   "West Bengal",
+//   "Delhi",
+//   "Jammu & Kashmir",
+//   "Ladakh",
+//   "Puducherry",
+//   "Chandigarh",
+//   "Dadra & Nagar Haveli",
+//   "Daman & Diu",
+//   "Lakshadweep",
+//   "Andaman & Nicobar Islands",
+// ];
 
 const MapTabs = () => {
   const [selection, setSelection] = useState("All destinations");
   const { data, isLoading, error } = useGetContactDetailsQuery();
-  const {
-    data: packages,
-    isLoading: packageLoading,
-    error: packageError,
-  } = useGetTourPackageQuery();
 
-  const dropdownOptions = ["All destinations", "India", ...states];
+  // const dropdownOptions = ["All destinations", "India", ...states];
 
   const {
     data: counter,
@@ -107,7 +102,7 @@ const MapTabs = () => {
         {/* Right Side - Stats */}
         <div className="lg:col-span-1 flex flex-col gap-4">
           {/* Dropdown */}
-          <div className="bg-white rounded-lg shadow-md p-3">
+          {/* <div className="bg-white rounded-lg shadow-md p-3">
             <select
               className="w-full border border-gray-300 rounded px-3 py-2 text-gray-700 focus:ring focus:ring-blue-200"
               value={selection}
@@ -117,7 +112,7 @@ const MapTabs = () => {
                 <option key={option}>{option}</option>
               ))}
             </select>
-          </div>
+          </div> */}
 
           {/* Stats Cards */}
           <div className="bg-white rounded-lg shadow-md p-4 flex items-center gap-4">

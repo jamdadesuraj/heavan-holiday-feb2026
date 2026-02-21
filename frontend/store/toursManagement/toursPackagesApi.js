@@ -45,7 +45,18 @@ export const tourPackageApi = createApi({
       },
       providesTags: ["Category"],
     }),
+    shareTourByEmail: builder.mutation({
+      query: ({ tourId, recipientEmail }) => ({
+        url: "/share-email",
+        method: "POST",
+        body: { tourId, recipientEmail },
+      }),
+    }),
   }),
 });
 
-export const { useGetTourPackageQuery, useGetCategoriesQuery } = tourPackageApi;
+export const {
+  useGetTourPackageQuery,
+  useGetCategoriesQuery,
+  useShareTourByEmailMutation,
+} = tourPackageApi;

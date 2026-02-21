@@ -4,6 +4,8 @@ import { Search } from "lucide-react";
 import Image from "next/image";
 import Breadcrumb from "@/app/components/Breadcum";
 import { useGetCounterQuery } from "store/counterApi/counterApi";
+import { useGetTourReviewQuery } from "store/reviewsApi/reviewsApi";
+import { useState, useMemo } from "react";
 const ReviewsAndTestimonial = () => {
   const { data, isLoading, error } = useGetCounterQuery();
   const responce = data?.data;
@@ -11,6 +13,23 @@ const ReviewsAndTestimonial = () => {
     { label: "Home", href: "/" },
     { label: "Reviews And Testimonials", href: null },
   ];
+  const { data: reviewsData } = useGetTourReviewQuery();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const allReviews =
+    reviewsData?.data?.reviews?.filter((r) => r.status === "active") || [];
+
+  const filteredReviews = useMemo(() => {
+    if (!searchQuery.trim()) return allReviews;
+    const q = searchQuery.toLowerCase();
+    return allReviews.filter(
+      (review) =>
+        review.title?.toLowerCase().includes(q) ||
+        review.tag?.toLowerCase().includes(q) ||
+        review.author?.toLowerCase().includes(q) ||
+        review.text?.toLowerCase().includes(q),
+    );
+  }, [searchQuery, allReviews]);
 
   return (
     <>
@@ -36,6 +55,8 @@ const ReviewsAndTestimonial = () => {
             <div className="bg-white rounded-full flex items-center overflow-hidden shadow w-full max-w-lg">
               <input
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search reviews for a tour or destination"
                 className="flex-1 px-4 py-3 text-gray-700 text-sm focus:outline-none"
               />

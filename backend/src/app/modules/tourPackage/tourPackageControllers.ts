@@ -20,6 +20,143 @@ import { appError } from '../../errors/appError';
 import { cloudinary } from '../../config/cloudinary';
 import { ZodError } from 'zod';
 
+import { AuthRequest } from '../../middlewares/firebaseAuth';
+import { generateTourPdf } from '../../utils/generateTourPdf';
+import { transporter } from '../../config/mailer';
+import { ContactUs } from '../contactUs/contactUsModel';
+import { GeneralSettings } from '../general-settings/general-settings.model';
+export const shareTourByEmail = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { tourId, recipientEmail } = req.body;
+
+    // Validate inputs
+    if (!tourId || !recipientEmail) {
+      return next(
+        new appError('Tour ID and recipient email are required', 400),
+      );
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(recipientEmail)) {
+      return next(new appError('Invalid email address', 400));
+    }
+
+    // Fetch tour, contact details and general settings in parallel
+    const [tour, contactDetails, settings] = await Promise.all([
+      TourPackageCard.findById(tourId).populate(
+        'tourIncludes',
+        'title image status',
+      ),
+      ContactUs.findOne(),
+      GeneralSettings.findOne(),
+    ]);
+
+    if (!tour) {
+      return next(new appError('Tour not found', 404));
+    }
+
+    // Extract dynamic values with fallbacks
+    const phone = contactDetails?.callUs?.phoneNumbers?.[0] || '18003135555';
+    const email =
+      contactDetails?.writeToUs?.emails?.[0] || 'travel@heavenholiday.com';
+    const companyName = settings?.companyName || 'Heaven Holiday';
+    const companyLogo = settings?.companyLogo || '';
+    const copyrightText =
+      settings?.copyrightText || '© 2026 Heaven Holiday. All rights reserved.';
+
+    // Generate PDF buffer from HTML template
+    console.log(`Generating PDF for tour: ${tour.title}`);
+    const pdfBuffer = await generateTourPdf(tour, contactDetails, settings);
+    console.log(`PDF generated successfully, size: ${pdfBuffer.length} bytes`);
+
+    // Create safe filename
+    const safeTitle = tour.title.replace(/[^a-zA-Z0-9]/g, '_');
+    const filename = `${safeTitle}_HeavenHoliday.pdf`;
+
+    // Send email with PDF attached
+    await transporter.sendMail({
+      from: `"${companyName}" <${process.env.EMAIL_USER}>`,
+      to: recipientEmail,
+      subject: `Tour Brochure: ${tour.title} - ${companyName}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background: #2b4fa2; padding: 20px; text-align: center;">
+            ${
+              companyLogo
+                ? `<img src="${companyLogo}" alt="${companyName}" style="width:80px; height:80px; object-fit:contain; margin-bottom:8px;" /><br/>`
+                : ''
+            }
+            <h1 style="color: white; margin: 0;">${companyName}</h1>
+            <p style="color: #f4c400; margin: 5px 0;">Travel. Explore. Celebrate Life.</p>
+          </div>
+          
+          <div style="padding: 30px; background: #ffffff;">
+            <h2 style="color: #2b4fa2;">${tour.title}</h2>
+            <p style="color: #666;">${tour.subtitle || ''}</p>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+              <tr>
+                <td style="padding: 8px; background: #f5f5f5;"><strong>Duration</strong></td>
+                <td style="padding: 8px;">${tour.days} Days / ${tour.nights} Nights</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; background: #f5f5f5;"><strong>Tour Type</strong></td>
+                <td style="padding: 8px;">${tour.tourType || 'Group Tour'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; background: #f5f5f5;"><strong>Starting Price</strong></td>
+                <td style="padding: 8px; color: #2b4fa2; font-weight: bold;">
+                  &#8377;${tour.baseJoiningPrice?.toLocaleString('en-IN')}* per person
+                </td>
+              </tr>
+            </table>
+            
+            <p style="background: #fff8e1; padding: 15px; border-left: 4px solid #f4c400;">
+              Please find the <strong>complete tour brochure</strong> attached as a PDF. 
+              It includes the full itinerary, departure dates, accommodation details, 
+              inclusions, exclusions, and pricing information.
+            </p>
+            
+            <div style="text-align: center; margin-top: 30px;">
+              <a href="tel:${phone}" 
+                 style="background: #2b4fa2; color: white; padding: 12px 25px; 
+                        text-decoration: none; border-radius: 4px; font-weight: bold;">
+                Call Us: ${phone}
+              </a>
+            </div>
+          </div>
+          
+          <div style="background: #f5f5f5; padding: 15px; text-align: center; font-size: 12px; color: #666;">
+            <p>&#9993; ${email} | &#128222; ${phone}</p>
+            <p>${copyrightText}</p>
+          </div>
+        </div>
+      `,
+      attachments: [
+        {
+          filename,
+          content: pdfBuffer,
+          contentType: 'application/pdf',
+        },
+      ],
+    });
+
+    res.json({
+      success: true,
+      statusCode: 200,
+      message: `Tour brochure sent successfully to ${recipientEmail}`,
+    });
+    return;
+  } catch (error) {
+    console.error('Share tour email error:', error);
+    next(error);
+  }
+};
 const parseJSON = <T>(value: string | T): T => {
   if (typeof value === 'string') {
     try {

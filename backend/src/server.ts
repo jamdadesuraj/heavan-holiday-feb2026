@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import app from './app';
 import config from './app/config';
-
+import { verifyMailer } from './app/config/mailer';
 // For Vercel deployment, we need to handle database connection differently
 let isConnected = false;
 
@@ -19,6 +19,7 @@ async function connectDB() {
     throw err;
   }
 }
+verifyMailer();
 
 // For local development
 if (process.env.NODE_ENV !== 'production') {

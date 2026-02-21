@@ -258,6 +258,7 @@ export const updateBookingTravelersSchema = z
             .optional(),
 
           phone: z.string().optional(),
+          passportImage: z.string().optional(),
         }),
       )
       .min(1, { message: 'At least one traveler is required' })

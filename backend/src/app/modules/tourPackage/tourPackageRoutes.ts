@@ -8,8 +8,10 @@ import {
   getTourPackageCards,
   updateTourPackageCard,
   deleteTourPackageCard,
+  shareTourByEmail,
 } from './tourPackageControllers';
 import { upload } from '../../config/cloudinary';
+import { authenticate } from '../../middlewares/firebaseAuth';
 import { adminAuthMiddleware } from '../../middlewares/adminMiddleware';
 const router = Router();
 
@@ -43,4 +45,6 @@ router.put(
 );
 router.delete('/tour-package-cards/:cardId', deleteTourPackageCard);
 
+// Add this line with your other routes
+router.post('/share-email', shareTourByEmail);
 export const tourPackageRouter = router;

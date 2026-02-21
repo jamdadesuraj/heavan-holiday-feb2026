@@ -36,7 +36,10 @@ import Upgrades from "./Upgrades";
 import RightMap from "./RightMap";
 import TourReview from "@/app/components/TourReview";
 import { useParams } from "next/navigation";
-import { useGetTourPackageQuery } from "store/toursManagement/toursPackagesApi";
+import {
+  useGetTourPackageQuery,
+  useShareTourByEmailMutation,
+} from "store/toursManagement/toursPackagesApi";
 import BookingStepperModal from "@/app/components/bookingModals";
 import { useState } from "react";
 import { useGetTourReviewQuery } from "store/reviewsApi/reviewsApi";
@@ -490,7 +493,7 @@ const TourDetails = () => {
             </div>
 
             {/* Bottom Actions */}
-            <TourActions packageId={tourData._id} />
+            <TourActions packageId={tourData._id} tourTitle={tourData.title} />
           </div>
         </div>
       </section>

@@ -636,6 +636,9 @@ export const updateBookingTravelers = async (
   try {
     const { firebaseUid } = req.user!;
     const { bookingId } = req.params;
+    if (typeof req.body.travelers === 'string') {
+      req.body.travelers = JSON.parse(req.body.travelers);
+    }
 
     // Validate request body
     const validatedData = updateBookingTravelersSchema.parse(req.body);
@@ -808,13 +811,20 @@ export const updateBookingTravelers = async (
     // ========== UPDATE BOOKING ==========
 
     // Convert date strings to Date objects
-    const processedTravelers = validatedData.travelers.map((traveler) => ({
-      ...traveler,
-      dateOfBirth:
-        typeof traveler.dateOfBirth === 'string'
-          ? new Date(traveler.dateOfBirth)
-          : traveler.dateOfBirth,
-    }));
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+    const processedTravelers = validatedData.travelers.map(
+      (traveler, index) => {
+        const file = files?.[`passportImage_${index}`]?.[0];
+        return {
+          ...traveler,
+          dateOfBirth:
+            typeof traveler.dateOfBirth === 'string'
+              ? new Date(traveler.dateOfBirth)
+              : traveler.dateOfBirth,
+          passportImage: file ? file.path : traveler.passportImage,
+        };
+      },
+    );
 
     // Update travelers
     booking.travelers = processedTravelers;

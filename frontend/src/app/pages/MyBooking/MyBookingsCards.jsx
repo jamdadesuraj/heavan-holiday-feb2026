@@ -28,6 +28,7 @@ const EditBookingModal = ({ isOpen, onClose, booking }) => {
     useUpdateBookingTravelersMutation();
 
   const [openTravelerForms, setOpenTravelerForms] = useState([]);
+  const [passportImages, setPassportImages] = useState({});
   const [formData, setFormData] = useState({
     travelers: [],
   });
@@ -49,10 +50,12 @@ const EditBookingModal = ({ isOpen, onClose, booking }) => {
         isLeadTraveler: traveler.isLeadTraveler,
         email: traveler.email || "",
         phone: traveler.phone || "",
+        passportImage: traveler.passportImage || "",
       }));
 
       setFormData({ travelers });
       setOpenTravelerForms([]);
+      setPassportImages({});
       setErrors({});
       reset();
     }
@@ -272,21 +275,34 @@ const EditBookingModal = ({ isOpen, onClose, booking }) => {
     }
 
     try {
-      await updateBookingTravelers({
-        bookingId: booking.bookingId,
-        travelers: formData.travelers.map((t) => ({
-          type: t.type,
-          title: t.title,
-          firstName: t.firstName,
-          lastName: t.lastName,
-          dateOfBirth: t.dateOfBirth,
-          age: parseInt(t.age),
-          gender: t.gender,
-          isLeadTraveler: t.isLeadTraveler,
-          email: t.email || undefined,
-          phone: t.phone || undefined,
-        })),
-      }).unwrap();
+      // BUILD FormData instead of plain JSON
+      const fd = new FormData();
+      fd.append("bookingId", booking.bookingId);
+      fd.append(
+        "travelers",
+        JSON.stringify(
+          formData.travelers.map((t) => ({
+            type: t.type,
+            title: t.title,
+            firstName: t.firstName,
+            lastName: t.lastName,
+            dateOfBirth: t.dateOfBirth,
+            age: parseInt(t.age),
+            gender: t.gender,
+            isLeadTraveler: t.isLeadTraveler,
+            email: t.email || undefined,
+            phone: t.phone || undefined,
+            passportImage: t.passportImage || undefined,
+          })),
+        ),
+      );
+
+      // Append passport images
+      Object.entries(passportImages).forEach(([key, file]) => {
+        fd.append(key, file);
+      });
+
+      await updateBookingTravelers(fd).unwrap();
 
       onClose();
       toast.success("Booking updated successfully!");
@@ -636,7 +652,66 @@ const EditBookingModal = ({ isOpen, onClose, booking }) => {
                                 </p>
                               )}
                             </div>
+                            {/* Passport Image - ADD THIS BLOCK */}
+                            <div>
+                              <label className="block text-sm font-medium mb-1">
+                                Passport Photo
+                              </label>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => {
+                                  if (e.target.files?.[0]) {
+                                    setPassportImages((prev) => ({
+                                      ...prev,
+                                      [`passportImage_${index}`]:
+                                        e.target.files[0],
+                                    }));
+                                  }
+                                }}
+                                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                              />
+                              {/* New uploaded image preview */}
+                              {passportImages[`passportImage_${index}`] && (
+                                <div className="mt-2">
+                                  <img
+                                    src={URL.createObjectURL(
+                                      passportImages[`passportImage_${index}`],
+                                    )}
+                                    alt="Passport preview"
+                                    className="w-24 h-24 object-cover rounded border border-green-300"
+                                  />
+                                  <p className="text-xs text-green-600 mt-1">
+                                    ✓{" "}
+                                    {
+                                      passportImages[`passportImage_${index}`]
+                                        .name
+                                    }
+                                  </p>
+                                </div>
+                              )}
 
+                              {/* Existing passport image from database */}
+                              {booking?.travelers?.[index]?.passportImage &&
+                                !passportImages[`passportImage_${index}`] && (
+                                  <div className="mt-2">
+                                    <img
+                                      src={
+                                        booking.travelers[index].passportImage
+                                      }
+                                      alt="Existing passport"
+                                      className="w-24 h-24 object-cover rounded border border-blue-300"
+                                    />
+                                  </div>
+                                )}
+                              {/* Show existing passport if available */}
+                              {booking?.travelers?.[index]?.passportImage &&
+                                !passportImages[`passportImage_${index}`] && (
+                                  <p className="text-xs text-blue-600 mt-1">
+                                    ✓ Existing passport on file
+                                  </p>
+                                )}
+                            </div>
                             {traveler.isLeadTraveler && (
                               <>
                                 <div>
@@ -1066,7 +1141,7 @@ const MyBookingsCards = () => {
         );
       case "completed":
         return Bookings.filter(
-          (booking) => booking.bookingStatus === "Completed",
+          (booking) => booking.paymentStatus === "Fully Paid",
         );
       case "cancelled":
         return Bookings.filter(

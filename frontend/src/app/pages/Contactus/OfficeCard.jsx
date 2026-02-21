@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Phone, MapPin, Share2, X } from "lucide-react";
-import { FaSms, FaWhatsapp } from "react-icons/fa";
+import { FaWhatsapp } from "react-icons/fa";
 import Link from "next/link";
 import CitySection from "./CitySection";
 import { useGetAllOfficesQuery } from "../../../../store/contact-office/contactOfficeApi";
@@ -10,7 +10,6 @@ import PhoneInput from "react-phone-input-2";
 
 const OfficeCard = () => {
   const [selectedOffice, setSelectedOffice] = useState(null);
-  const [phone, setPhone] = useState("");
   const [consent, setConsent] = useState(false);
   const { data, isLoading, error } = useGetAllOfficesQuery();
   const [countryCode, setCountryCode] = useState("91");
@@ -68,8 +67,8 @@ const OfficeCard = () => {
       </section>
     );
   }
-  const responce = data.data;
 
+  const responce = data.data;
   const offices = responce || [];
   const activeOffices = offices.filter((item) => {
     return item.status == "active";
@@ -105,7 +104,11 @@ const OfficeCard = () => {
                 <MapPin size={16} className="text-gray-600" />
               </Link>
               <button
-                onClick={() => setSelectedOffice(office)}
+                onClick={() => {
+                  setSelectedOffice(office);
+                  setMobile("");
+                  setConsent(false);
+                }}
                 className="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full hover:bg-gray-200 cursor-pointer"
               >
                 <Share2 size={16} className="text-gray-600" />
@@ -152,7 +155,7 @@ const OfficeCard = () => {
         </div>
       ))}
 
-      {/* 🔹 Share Modal */}
+      {/* Share Modal - WhatsApp Only */}
       {selectedOffice && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-lg p-6 w-80 relative">
@@ -161,7 +164,7 @@ const OfficeCard = () => {
               className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 cursor-pointer bg-gray-300 rounded-full p-2 text-xs"
               onClick={() => {
                 setSelectedOffice(null);
-                setPhone("");
+                setMobile("");
                 setConsent(false);
               }}
             >
@@ -174,7 +177,6 @@ const OfficeCard = () => {
             </h3>
 
             {/* Phone Input */}
-            {/* UPDATED: react-phone-input-2 */}
             <PhoneInput
               country={"in"}
               value={countryCode + mobile}
@@ -199,48 +201,31 @@ const OfficeCard = () => {
                 onChange={() => setConsent(!consent)}
                 className="w-4 h-4"
               />
-              I agree to receiving content on SMS/WhatsApp
+              I agree to receiving content on WhatsApp
             </label>
 
-            {/* Action Buttons */}
-            <div className="flex gap-3 mt-4">
+            {/* WhatsApp Button */}
+            <div className="mt-4">
               <button
-                disabled={!consent}
+                disabled={!consent || !mobile}
                 onClick={() => {
-                  if (consent && phone) {
+                  if (consent && mobile) {
+                    const fullPhone = `${countryCode}${mobile}`;
                     const message = `Office: ${selectedOffice.city}\nAddress: ${selectedOffice.address.replace(/<[^>]*>/g, "")}\nPhone: ${selectedOffice.phone}\nEmail: ${selectedOffice.email}`;
                     window.open(
-                      `https://wa.me/${phone}?text=${encodeURIComponent(message)}`,
+                      `https://wa.me/${fullPhone}?text=${encodeURIComponent(message)}`,
                       "_blank",
                     );
                   }
                 }}
-                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium ${
-                  consent
+                className={`w-full flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium ${
+                  consent && mobile
                     ? "bg-green-500 text-white hover:bg-green-600"
                     : "bg-gray-200 text-gray-400 cursor-not-allowed"
                 }`}
               >
                 <FaWhatsapp size={16} />
-                WhatsApp
-              </button>
-
-              <button
-                disabled={!consent}
-                onClick={() => {
-                  if (consent && phone) {
-                    const message = `Office: ${selectedOffice.city}\nAddress: ${selectedOffice.address.replace(/<[^>]*>/g, "")}\nPhone: ${selectedOffice.phone}\nEmail: ${selectedOffice.email}`;
-                    window.location.href = `sms:${phone}?body=${encodeURIComponent(message)}`;
-                  }
-                }}
-                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium ${
-                  consent
-                    ? "bg-red-700 text-white hover:bg-yellow-500"
-                    : "bg-gray-200 text-gray-400 cursor-not-allowed"
-                }`}
-              >
-                <FaSms size={16} />
-                SMS
+                Share on WhatsApp
               </button>
             </div>
           </div>

@@ -115,17 +115,24 @@ export const bookingApi = createApi({
     }),
 
     updateBookingTravelers: builder.mutation({
-      query: ({ bookingId, travelers }) => ({
-        url: `/${bookingId}/travelers`,
-        method: "PATCH",
-        body: { travelers },
-      }),
-      invalidatesTags: (result, error, { bookingId }) => [
-        { type: "Booking", id: bookingId },
-        { type: "Booking", id: `${bookingId}-summary` },
-        "BookingList",
-        "AllBookings",
-      ],
+      query: (formData) => {
+        const bookingId = formData.get("bookingId");
+        return {
+          url: `/${bookingId}/travelers`,
+          method: "PATCH",
+          body: formData,
+          formData: true,
+        };
+      },
+      invalidatesTags: (result, error, formData) => {
+        const bookingId = formData.get("bookingId");
+        return [
+          { type: "Booking", id: bookingId },
+          { type: "Booking", id: `${bookingId}-summary` },
+          "BookingList",
+          "AllBookings",
+        ];
+      },
     }),
 
     cancelBooking: builder.mutation({
