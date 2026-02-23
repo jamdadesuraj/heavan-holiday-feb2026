@@ -59,7 +59,6 @@ const Faq = () => {
   if (contactDetailsError) {
     return <p>error</p>;
   }
-  console.log(contactDetails);
 
   return (
     <>

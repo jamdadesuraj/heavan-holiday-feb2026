@@ -14,7 +14,7 @@ const Upgrades = () => {
   if (contactError) {
     return <p>error</p>;
   }
-  console.log("contact", contact);
+
   return (
     <section className="py-10 lg:px-0 px-4" id="upgrades">
       <div className="max-w-6xl mx-auto">

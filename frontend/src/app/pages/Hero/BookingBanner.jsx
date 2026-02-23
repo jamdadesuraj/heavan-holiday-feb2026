@@ -42,8 +42,6 @@ const BookingBanner = () => {
     return <p>error</p>;
   }
 
-  console.log("package", data);
-
   // Map API data to slides format
   const slides =
     data?.data

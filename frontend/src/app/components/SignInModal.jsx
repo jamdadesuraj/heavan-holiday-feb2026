@@ -56,11 +56,9 @@ const SignInModal = ({ isOpen, onClose }) => {
 
         // Verify OTP with Firebase
         const result = await confirmResult.confirm(otp);
-        console.log("Firebase user verified:", result.user);
 
         // Get Firebase ID token
         const idToken = await result.user.getIdToken();
-        console.log("ID Token obtained");
 
         // Call backend to register/login
         const response = await verifyPhoneAndRegister({
@@ -97,8 +95,6 @@ const SignInModal = ({ isOpen, onClose }) => {
           lastName: userData.lastName,
           email: userData.email,
         }).unwrap();
-
-        console.log("Profile completed:", response);
 
         alert("Account created successfully! Welcome to Heaven Holiday.");
 

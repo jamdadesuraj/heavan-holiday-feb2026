@@ -68,7 +68,6 @@ const TrandingDestination = () => {
     );
   }
   const responce = data.data;
-  console.log("responce", responce);
 
   // Filter by active status AND selected category
   const filteredDestinations = responce?.destinations.filter(

@@ -21,7 +21,7 @@ const DiscoverWorldSlide = () => {
     isLoading: bannerLoading,
     error: bannerError,
   } = useGetOfferBannerQuery();
-  console.log("banner", banner);
+
   const activeBanners = banner?.data[0].banners.filter((item) => {
     return item.status === "active";
   });

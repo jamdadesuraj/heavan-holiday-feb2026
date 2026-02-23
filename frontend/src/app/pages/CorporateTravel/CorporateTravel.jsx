@@ -40,7 +40,7 @@ const CorporateTravel = () => {
   const banners = banner?.data[0]?.banners?.filter((item) => {
     return item.status == "active";
   });
-  console.log("banners active", banners);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));

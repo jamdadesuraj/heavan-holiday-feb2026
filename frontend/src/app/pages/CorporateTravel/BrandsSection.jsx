@@ -29,7 +29,7 @@ const BrandsSection = () => {
   if (brandsError) {
     return <p>error</p>;
   }
-  console.log("brands", brandSection);
+
   const industries = brandSection?.data?.brands.filter((item) => {
     return item.isActive == true;
   });
@@ -37,8 +37,7 @@ const BrandsSection = () => {
   const industry = brandSection?.data?.industries.filter((item) => {
     return item.isActive == true;
   });
-  console.log("brands", industry);
-  console.log("industries", industries);
+
   return (
     <>
       {/* ===== Heading ===== */}

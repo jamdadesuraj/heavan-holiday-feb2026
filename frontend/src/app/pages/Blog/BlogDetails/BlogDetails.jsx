@@ -32,7 +32,6 @@ export default function BlogDetails() {
     isLoading: profileLoading,
     error: profileError,
   } = useGetProfileQuery();
-  console.log("profile", profile);
 
   const [addComment, { isLoading: isCreating }] = useAddCommentMutation();
 

@@ -74,7 +74,7 @@ const TourDetails = () => {
     reviews?.data?.reviews.filter((item) => {
       return item.status === "active";
     }) || [];
-  console.log("length", Activereviews.length);
+
   const packages = tourPackage?.data?.filter((item) => {
     return item._id === packageId;
   });
@@ -188,8 +188,6 @@ const TourDetails = () => {
     tourData.baseJoiningPrice || tourData.baseFullPackagePrice || 0;
   const emiAmount = Math.ceil(basePrice / 12);
   const handleDepartureSelect = (departure) => {
-    console.log("Departure selected from tour details:", departure);
-
     // Store the selected departure
     setPreSelectedDeparture(departure);
 

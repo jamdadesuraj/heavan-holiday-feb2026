@@ -55,7 +55,7 @@ const DekhoApnaDesh = () => {
     reviews?.data?.reviews.filter((item) => {
       return item.status === "active";
     }) || [];
-  console.log("length", Activereviews.length);
+
   // Load wishlist from user data
   React.useEffect(() => {
     if (wishlist?.data?.wishlist) {

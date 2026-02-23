@@ -126,24 +126,16 @@ const ContactCitiesPage = () => {
         formData.append("icon", icon);
       }
 
-      console.log("Submitting:", {
-        isEditMode,
-        editingCityId,
-        name,
-        status,
-        hasIcon: !!icon,
-      });
-
       if (isEditMode && editingCityId) {
         const result = await updateCity({
           id: editingCityId,
           data: formData,
         }).unwrap();
-        console.log("Update result:", result);
+
         showAlert("City updated successfully!", "success");
       } else {
         const result = await createCity(formData).unwrap();
-        console.log("Create result:", result);
+
         showAlert("City added successfully!", "success");
       }
       handleCloseModal();

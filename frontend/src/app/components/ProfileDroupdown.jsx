@@ -31,8 +31,6 @@ const ProfileDrawer = ({ user }) => {
       localStorage.removeItem("authToken");
       localStorage.removeItem("user");
 
-      console.log("User logged out successfully");
-
       // Close drawer
       setOpen(false);
 

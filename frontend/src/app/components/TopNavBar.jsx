@@ -28,11 +28,9 @@ const TopNavBar = () => {
         setUser(firebaseUser);
         const token = await firebaseUser.getIdToken();
         localStorage.setItem("authToken", token);
-        console.log("User logged in:", firebaseUser.phoneNumber);
       } else {
         setUser(null);
         localStorage.removeItem("authToken");
-        console.log("User logged out");
       }
       setLoading(false);
     });
@@ -55,8 +53,6 @@ const TopNavBar = () => {
   if (error) {
     return <p>error</p>;
   }
-
-  console.log("settings", data);
 
   return (
     <header className="w-full bg-[#0d1b29] text-white relative">

@@ -143,15 +143,6 @@ export const updateHowWeHireStep = async (
     const { stepId, title, description, status } = req.body;
     const newImageFile = req.file;
 
-    console.log('Update Step Request:', {
-      stepId,
-      title,
-      description,
-      status,
-      hasNewImage: !!newImageFile,
-      newImagePath: newImageFile?.path,
-    });
-
     // Validate stepId
     if (!stepId) {
       return res.status(400).json({
@@ -188,12 +179,6 @@ export const updateHowWeHireStep = async (
     // ✅ Use new image path if uploaded, otherwise keep existing image
     const imageUrl = newImageFile?.path || existingStep.img;
 
-    console.log('Image handling:', {
-      existingImage: existingStep.img,
-      newImage: newImageFile?.path,
-      finalImage: imageUrl,
-    });
-
     // ✅ Validate with the correct image URL (string)
     const validatedStep = HowWeHireStepSchema.parse({
       title: title || existingStep.title,
@@ -222,11 +207,6 @@ export const updateHowWeHireStep = async (
         message: 'Failed to update step',
       });
     }
-
-    console.log('Update successful:', {
-      stepId,
-      updatedImage: validatedStep.img,
-    });
 
     res.status(200).json({
       success: true,

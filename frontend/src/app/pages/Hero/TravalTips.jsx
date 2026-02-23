@@ -35,8 +35,6 @@ const TravalTips = () => {
     return <p>error</p>;
   }
 
-  console.log("blogs", data);
-
   // Filter only published blogs and map to the required format
   const activeBlogs =
     data?.data

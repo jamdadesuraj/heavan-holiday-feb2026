@@ -105,8 +105,6 @@ const PodcastAllList = () => {
     return <p>Podcast not found</p>;
   }
 
-  console.log(podcastDetail);
-
   // Fix: Access episodesList correctly from podcastDetail object
   const filteredEpisodes = podcastDetail?.episodesList?.filter((ep) =>
     ep.title.toLowerCase().includes(search.toLowerCase()),

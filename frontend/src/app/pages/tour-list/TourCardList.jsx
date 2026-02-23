@@ -277,8 +277,6 @@ const TourCardList = ({ filteredPackages = [] }) => {
           return item.category.name === categoryName;
         }) || [];
 
-  console.log("tourPackages", tourPackages);
-
   // Calculate index range
   const indexOfLast = currentPage * toursPerPage;
   const indexOfFirst = indexOfLast - toursPerPage;

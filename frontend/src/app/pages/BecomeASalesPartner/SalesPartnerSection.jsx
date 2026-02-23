@@ -33,7 +33,6 @@ const SalesPartnerSection = () => {
     return <p>error</p>;
   }
   const responce = data.data;
-  console.log(responce);
 
   return (
     <section className="grid md:grid-cols-2">

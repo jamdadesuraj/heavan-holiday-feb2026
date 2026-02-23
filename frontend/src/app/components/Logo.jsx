@@ -5,7 +5,7 @@ import React from "react";
 import { useGetSettingsQuery } from "store/settings/settingsApi";
 const Logo = () => {
   const { data, isLoading, error } = useGetSettingsQuery();
-  console.log(data);
+
   if (isLoading) {
     return <p>error</p>;
   }

@@ -67,7 +67,7 @@ const TourPackagesCards = () => {
 
   const packages = data?.data || [];
   const activePackages = packages.filter((pkg) => pkg.status === "Active");
-  console.log("contact", contact);
+
   return (
     <section className="w-full relative py-10 bg-gray-50 z-0">
       <div className="max-w-6xl mx-auto px-4">

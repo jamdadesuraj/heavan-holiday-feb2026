@@ -43,26 +43,19 @@ export const authApi = createApi({
 
       async onQueryStarted(arg, { queryFulfilled }) {
         try {
-          // ✅ Wait for backend response
           const { data } = await queryFulfilled;
 
-          console.log("Backend response:", data);
-
-          // 🔥 STEP 1: Save MongoDB User ID (IMPORTANT)
           const mongoUserId = data?.data?.user?._id;
 
           if (mongoUserId) {
             localStorage.setItem("userId", mongoUserId);
-            console.log("MongoDB userId saved:", mongoUserId);
           } else {
             console.error("MongoDB userId not found in backend response");
           }
 
-          // 🔥 STEP 2: Save Firebase Auth Token (for auth)
           if (auth.currentUser) {
             const token = await auth.currentUser.getIdToken(true);
             localStorage.setItem("authToken", token);
-            console.log("Auth token saved");
           }
         } catch (error) {
           console.error("Error in verifyPhoneAndRegister:", error);
@@ -189,8 +182,6 @@ export const authApi = createApi({
           // Clear token from localStorage
           localStorage.removeItem("authToken");
           localStorage.removeItem("user");
-
-          console.log("User logged out, token cleared");
 
           return { data: { success: true } };
         } catch (error) {

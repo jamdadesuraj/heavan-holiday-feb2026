@@ -27,7 +27,7 @@ const ProfileDropdown = () => {
     isLoading: adminLoading,
     error: adminError,
   } = useGetAdminQuery(undefined);
-  console.log("admin", admin);
+
   const [showChangePassword, setShowChangePassword] = useState<boolean>(false);
   const [toast, setToast] = useState<ToastState | null>(null);
   const router = useRouter();

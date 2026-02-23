@@ -6,7 +6,6 @@ import { useGetTourManagerQuery } from "../../../../store/toursManagement/tourMa
 const TourManager = () => {
   const { data, isLoading, error } = useGetTourManagerQuery();
 
-  console.log(data);
   if (isLoading) {
     return (
       <section className="py-12 bg-white">

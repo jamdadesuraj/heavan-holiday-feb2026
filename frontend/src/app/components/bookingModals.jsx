@@ -178,8 +178,6 @@ const BookingStepperModal = ({
   };
   useEffect(() => {
     if (isOpen && preSelectedDeparture) {
-      console.log("Pre-filling departure:", preSelectedDeparture);
-
       setFormData((prev) => ({
         ...prev,
         selectedDeparture: {

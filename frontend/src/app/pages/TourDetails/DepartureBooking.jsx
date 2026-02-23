@@ -59,7 +59,6 @@ const DepartureBooking = ({ tourData, onDepartureSelect }) => {
   const formattedPrice = `₹${basePrice.toLocaleString("en-IN")}`;
 
   const handleDepartureSelect = (departure) => {
-    console.log("Departure selected:", departure);
     setSelectedDate(departure);
     setPreSelectedDeparture(departure);
 

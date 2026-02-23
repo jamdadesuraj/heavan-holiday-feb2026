@@ -33,9 +33,6 @@ const VisaInfo = () => {
     return item.status == "active";
   });
 
-  console.log("offices", activeOffice);
-  console.log("contactDetails", contactDetails);
-
   return (
     <div className="bg-gray-50 min-h-screen py-10 px-6">
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">

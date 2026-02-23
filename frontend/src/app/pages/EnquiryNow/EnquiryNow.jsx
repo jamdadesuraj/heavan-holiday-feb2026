@@ -53,7 +53,7 @@ const EnquiryNow = () => {
   if (contactDetailsError) {
     return <p>error</p>;
   }
-  console.log("details", contactDetails);
+
   return (
     <>
       <Breadcrumb

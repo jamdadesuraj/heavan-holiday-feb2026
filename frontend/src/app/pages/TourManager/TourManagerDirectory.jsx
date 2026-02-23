@@ -12,8 +12,6 @@ const TourManagerDirectory = () => {
   const [selectedLetter, setSelectedLetter] = useState(""); // 🔹 Selected alphabet
   const { data, isLoading, isError } = useGetTourManagerDirectoryQuery();
 
-  console.log("tourmanager:", data);
-
   if (isLoading) {
     return (
       <section className="relative bg-gray-100 animate-pulse">

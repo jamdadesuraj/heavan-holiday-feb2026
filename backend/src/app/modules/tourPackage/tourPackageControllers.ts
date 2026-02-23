@@ -69,10 +69,7 @@ export const shareTourByEmail = async (
     const copyrightText =
       settings?.copyrightText || '© 2026 Heaven Holiday. All rights reserved.';
 
-    // Generate PDF buffer from HTML template
-    console.log(`Generating PDF for tour: ${tour.title}`);
     const pdfBuffer = await generateTourPdf(tour, contactDetails, settings);
-    console.log(`PDF generated successfully, size: ${pdfBuffer.length} bytes`);
 
     // Create safe filename
     const safeTitle = tour.title.replace(/[^a-zA-Z0-9]/g, '_');

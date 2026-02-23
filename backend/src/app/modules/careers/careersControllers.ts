@@ -51,10 +51,6 @@ export const updateCareers = async (
   next: NextFunction,
 ) => {
   try {
-    console.log('=== UPDATE CAREERS CALLED ===');
-    console.log('Request body:', req.body);
-    console.log('Request files:', req.files);
-
     const { title, description, buttonText, buttonLink } = req.body;
 
     // Extract files from upload.fields()
@@ -112,8 +108,6 @@ export const updateCareers = async (
       upsert: true, // Create if doesn't exist
       runValidators: true,
     });
-
-    console.log('Updated careers:', updatedCareers);
 
     res.status(200).json({
       success: true,
