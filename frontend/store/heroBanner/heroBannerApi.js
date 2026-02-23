@@ -3,13 +3,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const heroBannerApi = createApi({
   reducerPath: "heroBannerApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/hero-banner",
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   }),
   tagTypes: ["HeroBanner"],
   endpoints: (builder) => ({
     getHeroBanner: builder.query({
       query: () => ({
-        url: "",
+        url: "/hero-banner",
         method: "GET",
       }),
       providesTags: ["HeroBanner"],

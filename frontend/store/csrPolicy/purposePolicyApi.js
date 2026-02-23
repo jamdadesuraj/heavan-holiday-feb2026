@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const purposePolicyApi = createApi({
   reducerPath: "purposePolicyApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/csr-purpose-policy",
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
     prepareHeaders: (headers) => {
       // Don't set Content-Type for FormData - browser will set it automatically
       return headers;
@@ -13,7 +13,7 @@ export const purposePolicyApi = createApi({
   endpoints: (builder) => ({
     // Get Purpose Policy
     getPurposePolicy: builder.query({
-      query: () => "/",
+      query: () => "/csr-purpose-policy",
       providesTags: ["PurposePolicy"],
     }),
   }),

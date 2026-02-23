@@ -23,7 +23,7 @@ import { offerBannerApi } from "./offer-banner/offer-bannerApi";
 import { trendingDestinationsApi } from "./toursManagement/trendingDestinationsAPi";
 import { feedbackApi } from "./reviewsFeedback/reviewsApi";
 import { careersApi } from "./careers/careersHeaderApi";
-import { tabCardsApi } from "./tabCards/tabcardApi";
+
 import { podcastsApi } from "./podcasts/podcastApi";
 import { contactFeaturesApi } from "./contact-office/contactInfoBoxApi";
 import { departmentApi, jobsApi, locationApi } from "./careers/jobOpeningApi";
@@ -72,14 +72,12 @@ export const store = configureStore({
     [contactOfficeApi.reducerPath]: contactOfficeApi.reducer,
     [cityApi.reducerPath]: cityApi.reducer,
     [toursGalleryApi.reducerPath]: toursGalleryApi.reducer,
-
     [tourManagerApi.reducerPath]: tourManagerApi.reducer,
     [tourPackageApi.reducerPath]: tourPackageApi.reducer,
     [offerBannerApi.reducerPath]: offerBannerApi.reducer,
     [trendingDestinationsApi.reducerPath]: trendingDestinationsApi.reducer,
     [feedbackApi.reducerPath]: feedbackApi.reducer,
     [careersApi.reducerPath]: careersApi.reducer,
-    [tabCardsApi.reducerPath]: tabCardsApi.reducer,
     [podcastsApi.reducerPath]: podcastsApi.reducer,
     [tourManagerDirectoryApi.reducerPath]: tourManagerDirectoryApi.reducer,
     [contactFeaturesApi.reducerPath]: contactFeaturesApi.reducer,
@@ -139,7 +137,6 @@ export const store = configureStore({
       .concat(trendingDestinationsApi.middleware)
       .concat(feedbackApi.middleware)
       .concat(careersApi.middleware)
-      .concat(tabCardsApi.middleware)
       .concat(podcastsApi.middleware)
       .concat(contactFeaturesApi.middleware)
       .concat(locationApi.middleware)

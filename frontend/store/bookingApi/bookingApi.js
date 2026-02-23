@@ -5,7 +5,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const bookingApi = createApi({
   reducerPath: "bookingApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: `http://localhost:8080/v1/api/booking`,
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("authToken");
       if (token) {
@@ -19,7 +19,7 @@ export const bookingApi = createApi({
     // Create a new booking
     createBooking: builder.mutation({
       query: (bookingData) => ({
-        url: "/",
+        url: "/booking",
         method: "POST",
         body: bookingData,
         formData: true,
@@ -34,7 +34,7 @@ export const bookingApi = createApi({
         if (status) params.append("status", status);
         params.append("page", page.toString());
         params.append("limit", limit.toString());
-        return `/?${params.toString()}`;
+        return `/booking/?${params.toString()}`;
       },
       providesTags: ["BookingList"],
     }),
@@ -46,14 +46,14 @@ export const bookingApi = createApi({
         if (status) params.append("status", status);
         params.append("page", page.toString());
         params.append("limit", limit.toString());
-        return `/admin/all?${params.toString()}`;
+        return `/booking/admin/all?${params.toString()}`;
       },
       providesTags: ["AllBookings"],
     }),
 
     // Get booking by ID
     getBookingById: builder.query({
-      query: (bookingId) => `/${bookingId}`,
+      query: (bookingId) => `/booking/${bookingId}`,
       providesTags: (result, error, bookingId) => [
         { type: "Booking", id: bookingId },
       ],
@@ -61,7 +61,7 @@ export const bookingApi = createApi({
 
     // Get booking summary
     getBookingSummary: builder.query({
-      query: (bookingId) => `/${bookingId}/summary`,
+      query: (bookingId) => `/booking/${bookingId}/summary`,
       providesTags: (result, error, bookingId) => [
         { type: "Booking", id: `${bookingId}-summary` },
       ],
@@ -70,7 +70,7 @@ export const bookingApi = createApi({
     // Add payment to booking (existing - for manual payments)
     addPayment: builder.mutation({
       query: ({ bookingId, paymentData }) => ({
-        url: `/${bookingId}/payment`,
+        url: `/booking/${bookingId}/payment`,
         method: "POST",
         body: paymentData,
       }),
@@ -83,7 +83,7 @@ export const bookingApi = createApi({
 
     createPaymentOrder: builder.mutation({
       query: ({ bookingId, amount }) => ({
-        url: `/${bookingId}/create-payment-order`,
+        url: `/booking/${bookingId}/create-payment-order`,
         method: "POST",
         body: { amount },
       }),
@@ -91,7 +91,7 @@ export const bookingApi = createApi({
 
     verifyPayment: builder.mutation({
       query: ({ bookingId, paymentData }) => ({
-        url: `/${bookingId}/verify-payment`,
+        url: `/booking/${bookingId}/verify-payment`,
         method: "POST",
         body: paymentData,
       }),
@@ -105,7 +105,7 @@ export const bookingApi = createApi({
 
     handlePaymentFailure: builder.mutation({
       query: ({ bookingId, failureData }) => ({
-        url: `/${bookingId}/payment-failure`,
+        url: `/booking/${bookingId}/payment-failure`,
         method: "POST",
         body: failureData,
       }),
@@ -118,7 +118,7 @@ export const bookingApi = createApi({
       query: (formData) => {
         const bookingId = formData.get("bookingId");
         return {
-          url: `/${bookingId}/travelers`,
+          url: `/booking/${bookingId}/travelers`,
           method: "PATCH",
           body: formData,
           formData: true,
@@ -137,7 +137,7 @@ export const bookingApi = createApi({
 
     cancelBooking: builder.mutation({
       query: ({ bookingId, reason, cancellationComments }) => ({
-        url: `/${bookingId}/cancel`,
+        url: `/booking/${bookingId}/cancel`,
         method: "PATCH",
         body: { reason, cancellationComments },
       }),

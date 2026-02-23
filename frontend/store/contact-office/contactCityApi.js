@@ -3,12 +3,12 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const cityApi = createApi({
   reducerPath: "cityApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/contact-city",
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   }),
   tagTypes: ["City"],
   endpoints: (builder) => ({
     getAllCities: builder.query({
-      query: () => "/",
+      query: () => "/contact-city",
     }),
   }),
 });

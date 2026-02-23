@@ -3,7 +3,7 @@ import { auth } from "@/app/config/firebase";
 
 // Base query with token handling from localStorage + Firebase fallback
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:8080/v1/api/register",
+  baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   prepareHeaders: async (headers) => {
     // Try to get token from localStorage first
     let token = localStorage.getItem("authToken");
@@ -36,7 +36,7 @@ export const authApi = createApi({
     // Step 1: Verify Phone & Register/Login
     verifyPhoneAndRegister: builder.mutation({
       query: (data) => ({
-        url: "/verify-phone",
+        url: "/register/verify-phone",
         method: "POST",
         body: data,
       }),
@@ -68,7 +68,7 @@ export const authApi = createApi({
     // Step 2: Complete Basic Info
     completeBasicInfo: builder.mutation({
       query: (data) => ({
-        url: "/complete-profile",
+        url: "register/complete-profile",
         method: "POST",
         body: data, // { firstName, lastName, email }
       }),
@@ -90,7 +90,7 @@ export const authApi = createApi({
 
     // Get User Profile
     getProfile: builder.query({
-      query: () => "/profile",
+      query: () => "/register/profile",
       providesTags: ["Profile", "Wishlist"],
     }),
 
@@ -114,7 +114,7 @@ export const authApi = createApi({
         }
 
         return {
-          url: "/profile",
+          url: "/register/profile",
           method: "PATCH",
           body: formData,
         };
@@ -125,7 +125,7 @@ export const authApi = createApi({
     // Update Address
     updateAddress: builder.mutation({
       query: (data) => ({
-        url: "/address",
+        url: "/register/address",
         method: "PATCH",
         body: data,
       }),
@@ -139,7 +139,7 @@ export const authApi = createApi({
         formData.append("profileImage", file);
 
         return {
-          url: "/profile-image",
+          url: "/register/profile-image",
           method: "POST",
           body: formData,
         };
@@ -164,7 +164,7 @@ export const authApi = createApi({
         }
 
         return {
-          url: "/upload-document",
+          url: "/register/upload-document",
           method: "POST",
           body: formData,
         };
@@ -194,7 +194,7 @@ export const authApi = createApi({
     // Add Tour Package to Wishlist
     addToWishlist: builder.mutation({
       query: ({ packageId }) => ({
-        url: "/wishlist",
+        url: "/register/wishlist",
         method: "POST",
         body: { packageId }, // Only send packageId, backend gets Firebase UID from token
       }),
@@ -205,7 +205,7 @@ export const authApi = createApi({
     // Remove Tour Package from Wishlist
     removeFromWishlist: builder.mutation({
       query: ({ packageId }) => ({
-        url: `/wishlist/${packageId}`,
+        url: `/register/wishlist/${packageId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Wishlist", "Profile"],

@@ -4,14 +4,14 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const careersApi = createApi({
   reducerPath: "careersApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/careers-header",
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   }),
   tagTypes: ["Careers"],
   endpoints: (builder) => ({
     // Get careers info
     getCareers: builder.query({
       query: () => ({
-        url: "/",
+        url: "/careers-header",
         method: "GET",
       }),
       providesTags: ["Careers"],

@@ -4,14 +4,14 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const visaInfoApi = createApi({
   reducerPath: "visaInfoApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/visa-info",
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   }),
   tagTypes: ["VisaInfo"],
   endpoints: (builder) => ({
     // ================= GET VISA INFO =================
     getVisaInfo: builder.query({
       query: () => ({
-        url: "/visa-info",
+        url: "/visa-info/visa-info",
         method: "GET",
       }),
       providesTags: ["VisaInfo"],

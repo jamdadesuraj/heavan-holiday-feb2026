@@ -3,13 +3,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const preambleApi = createApi({
   reducerPath: "preambleApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/csr-preamble",
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   }),
   tagTypes: ["Preamble"],
   endpoints: (builder) => ({
     // Get Preamble
     getPreamble: builder.query({
-      query: () => "/preamble",
+      query: () => "/csr-preamble/preamble",
       providesTags: ["Preamble"],
     }),
   }),

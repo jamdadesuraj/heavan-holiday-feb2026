@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const trendingDestinationsApi = createApi({
   reducerPath: "trendingDestinationsApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/trending-destinations",
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
     prepareHeaders: (headers) => {
       return headers;
     },
@@ -11,7 +11,7 @@ export const trendingDestinationsApi = createApi({
   tagTypes: ["TrendingDestinations", "Destination"],
   endpoints: (builder) => ({
     getTrendingDestinations: builder.query({
-      query: () => "/",
+      query: () => "/trending-destinations",
       providesTags: ["TrendingDestinations"],
     }),
   }),

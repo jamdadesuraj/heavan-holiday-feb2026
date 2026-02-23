@@ -3,12 +3,12 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const contactOfficeApi = createApi({
   reducerPath: "contactOfficeApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/contact-office",
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   }),
   tagTypes: ["Office"],
   endpoints: (builder) => ({
     getAllOffices: builder.query({
-      query: () => "/",
+      query: () => "/contact-office",
       providesTags: (result) =>
         result
           ? [
@@ -21,11 +21,11 @@ export const contactOfficeApi = createApi({
           : [{ type: "Office", id: "LIST" }],
     }),
     getOfficeById: builder.query({
-      query: (id) => `/${id}`,
+      query: (id) => `/contact-office/${id}`,
       providesTags: (result, error, id) => [{ type: "Office", id }],
     }),
     checkOfficeStatus: builder.query({
-      query: (id) => `/${id}/status`,
+      query: (id) => `/contact-office/${id}/status`,
     }),
   }),
 });

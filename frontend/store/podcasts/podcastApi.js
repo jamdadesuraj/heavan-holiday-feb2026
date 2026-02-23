@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const podcastsApi = createApi({
   reducerPath: "podcastsApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/podcasts",
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
     prepareHeaders: (headers) => {
       return headers;
     },
@@ -11,7 +11,7 @@ export const podcastsApi = createApi({
   tagTypes: ["Podcasts", "Episodes"],
   endpoints: (builder) => ({
     getPodcasts: builder.query({
-      query: () => "/",
+      query: () => "/podcasts",
       providesTags: ["Podcasts"],
     }),
   }),

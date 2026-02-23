@@ -3,13 +3,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const managementApi = createApi({
   reducerPath: "managementApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/csr-management",
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   }),
   tagTypes: ["Management"],
   endpoints: (builder) => ({
     // Get Management
     getManagement: builder.query({
-      query: () => "/management",
+      query: () => "/csr-management/management",
       providesTags: ["Management"],
     }),
   }),

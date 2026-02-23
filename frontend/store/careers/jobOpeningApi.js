@@ -1,16 +1,21 @@
 // features/department/departmentApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+const baseQuery = fetchBaseQuery({
+  baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
+});
+
+// -------------------- Department API --------------------
 export const departmentApi = createApi({
   reducerPath: "departmentApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/careers-department",
-  }),
+  baseQuery,
   tagTypes: ["Department"],
   endpoints: (builder) => ({
     getDepartments: builder.query({
       query: (isActive) =>
-        isActive !== undefined ? `/?isActive=${isActive}` : "/department",
+        isActive !== undefined
+          ? `/careers-department/?isActive=${isActive}`
+          : `/careers-department/department`,
       providesTags: ["Department"],
     }),
   }),
@@ -18,16 +23,17 @@ export const departmentApi = createApi({
 
 export const { useGetDepartmentsQuery } = departmentApi;
 
+// -------------------- Location API --------------------
 export const locationApi = createApi({
   reducerPath: "locationApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/careers-location",
-  }),
+  baseQuery,
   tagTypes: ["Location"],
   endpoints: (builder) => ({
     getLocations: builder.query({
       query: (isActive) =>
-        isActive !== undefined ? `/?isActive=${isActive}` : "/location",
+        isActive !== undefined
+          ? `/careers-location/?isActive=${isActive}`
+          : `/careers-location/location`,
       providesTags: ["Location"],
     }),
   }),
@@ -35,15 +41,14 @@ export const locationApi = createApi({
 
 export const { useGetLocationsQuery } = locationApi;
 
+// -------------------- Jobs API --------------------
 export const jobsApi = createApi({
   reducerPath: "jobsApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/careers-jobs",
-  }),
+  baseQuery,
   tagTypes: ["Jobs"],
   endpoints: (builder) => ({
     getJobPage: builder.query({
-      query: () => "/job/page",
+      query: () => `/careers-jobs/job/page`,
       providesTags: ["Jobs"],
     }),
   }),

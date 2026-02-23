@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const toursGalleryApi = createApi({
   reducerPath: "toursGalleryApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/tours-gallery",
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
     prepareHeaders: (headers) => {
       return headers;
     },
@@ -12,7 +12,7 @@ export const toursGalleryApi = createApi({
   tagTypes: ["Gallery", "Images"],
   endpoints: (builder) => ({
     getGallery: builder.query({
-      query: () => "/gallery",
+      query: () => "/tours-gallery/gallery",
       providesTags: ["Gallery"],
     }),
   }),

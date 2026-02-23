@@ -3,13 +3,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const enquiryApi = createApi({
   reducerPath: "enquiryApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/enquiry",
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   }),
   tagTypes: ["Enquiry"],
   endpoints: (builder) => ({
     createEnquiry: builder.mutation({
       query: (body) => ({
-        url: "/",
+        url: "/enquiry",
         method: "POST",
         body,
       }),

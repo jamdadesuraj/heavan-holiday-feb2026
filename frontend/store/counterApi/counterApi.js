@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const counterApi = createApi({
   reducerPath: "counterApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/",
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   }),
   endpoints: (builder) => ({
     getCounter: builder.query({

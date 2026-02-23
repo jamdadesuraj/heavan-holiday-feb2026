@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const tourPackageApi = createApi({
   reducerPath: "tourPackageApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/tour-package",
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   }),
   tagTypes: ["TourPackage", "Category"],
 
@@ -20,7 +20,7 @@ export const tourPackageApi = createApi({
           });
         }
 
-        return `/tour-package-cards${
+        return `/tour-package/tour-package-cards${
           queryParams.toString() ? `?${queryParams.toString()}` : ""
         }`;
       },
@@ -39,7 +39,7 @@ export const tourPackageApi = createApi({
           });
         }
 
-        return `/categories${
+        return `/tour-package/categories${
           queryParams.toString() ? `?${queryParams.toString()}` : ""
         }`;
       },
@@ -47,7 +47,7 @@ export const tourPackageApi = createApi({
     }),
     shareTourByEmail: builder.mutation({
       query: ({ tourId, recipientEmail }) => ({
-        url: "/share-email",
+        url: "/tour-package/share-email",
         method: "POST",
         body: { tourId, recipientEmail },
       }),

@@ -6,15 +6,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import { useGetBrandsSectionQuery } from "store/corporate-travel/corporate-travelApi";
-const brands = [
-  "/assets/img/corporate-travel/1.svg",
-  "/assets/img/corporate-travel/2.svg",
-  "/assets/img/corporate-travel/3.svg",
-  "/assets/img/corporate-travel/4.svg",
-  "/assets/img/corporate-travel/5.svg",
-  "/assets/img/corporate-travel/6.svg",
-  "/assets/img/corporate-travel/7.svg",
-];
 
 const BrandsSection = () => {
   const [showModal, setShowModal] = useState(false);
@@ -122,13 +113,13 @@ const BrandsSection = () => {
             </h3>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-              {brands.map((logo, i) => (
+              {industry.map((logo, i) => (
                 <div
                   key={i}
                   className="flex items-center justify-center border border-gray-100 rounded-lg p-4 hover:shadow-md transition-all"
                 >
                   <Image
-                    src={logo}
+                    src={logo.image}
                     alt={`Brand ${i + 1}`}
                     width={120}
                     height={70}

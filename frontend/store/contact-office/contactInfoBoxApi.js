@@ -4,13 +4,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const contactFeaturesApi = createApi({
   reducerPath: "contactFeaturesApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/contact-info-box",
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   }),
   tagTypes: ["ContactFeatures"],
   endpoints: (builder) => ({
     // Get contact features
     getContactFeatures: builder.query({
-      query: () => "/",
+      query: () => "/contact-info-box",
       providesTags: ["ContactFeatures"],
     }),
   }),

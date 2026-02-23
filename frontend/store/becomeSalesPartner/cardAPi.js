@@ -3,12 +3,12 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const cardApi = createApi({
   reducerPath: "cardApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/become-partner",
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   }),
   tagTypes: ["Card"],
   endpoints: (builder) => ({
     getAllCards: builder.query({
-      query: () => "/",
+      query: () => "/become-partner",
       providesTags: ["Card"],
     }),
   }),

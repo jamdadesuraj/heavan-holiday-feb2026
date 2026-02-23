@@ -4,13 +4,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const csrfaqApi = createApi({
   reducerPath: "csrfaqApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api/csr-faq",
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   }),
   tagTypes: ["FAQ"],
   endpoints: (builder) => ({
     // Get all FAQs
     getAllFAQs: builder.query({
-      query: () => "/",
+      query: () => "/csr-faq",
       providesTags: ["FAQ"],
     }),
   }),
