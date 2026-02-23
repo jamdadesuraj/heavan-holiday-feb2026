@@ -21,3 +21,14 @@ export const changePasswordValidation = z
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   });
+
+export const updateEmailValidation = z.object({
+  newEmail: z
+    .string('New email is required')
+    .email('Invalid email format')
+    .toLowerCase()
+    .trim(),
+  currentPassword: z
+    .string('Current password is required')
+    .min(6, 'Password must be at least 6 characters'),
+});

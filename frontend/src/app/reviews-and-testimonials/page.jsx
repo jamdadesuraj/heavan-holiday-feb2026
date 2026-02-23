@@ -1,6 +1,5 @@
 import React from "react";
-import ReviewsAndTestimonial from "@/app/pages/ReviewsAndTestimonial/ReviewsAndTestimonial";
-import ReviewsAndTestimonialTab from "@/app/pages/ReviewsAndTestimonial/ReviewsAndTestimonialTab";
+import ReviewsAndTestimonialClient from "./ReviewsAndTestimonialClient";
 import ReviewsFeedback from "@/app/pages/ReviewsAndTestimonial/ReviewsFeedback";
 import TrandingDestination from "@/app/pages/ReviewsAndTestimonial/TrandingDestination";
 import DiscoverWorld from "@/app/pages/Hero/DiscoverWorld";
@@ -15,8 +14,7 @@ export const metadata = {
 const ReviewsAndTestimonialspage = () => {
   return (
     <>
-      <ReviewsAndTestimonial />
-      <ReviewsAndTestimonialTab />
+      <ReviewsAndTestimonialClient />
       <ReviewsFeedback />
       <TrandingDestination />
       <DiscoverWorld />

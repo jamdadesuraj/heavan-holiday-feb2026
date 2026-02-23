@@ -6,7 +6,7 @@ import Breadcrumb from "@/app/components/Breadcum";
 import { useGetCounterQuery } from "store/counterApi/counterApi";
 import { useGetTourReviewQuery } from "store/reviewsApi/reviewsApi";
 import { useState, useMemo } from "react";
-const ReviewsAndTestimonial = () => {
+const ReviewsAndTestimonial = ({ searchQuery, setSearchQuery }) => {
   const { data, isLoading, error } = useGetCounterQuery();
   const responce = data?.data;
   const breadcrumbItems = [
@@ -14,7 +14,6 @@ const ReviewsAndTestimonial = () => {
     { label: "Reviews And Testimonials", href: null },
   ];
   const { data: reviewsData } = useGetTourReviewQuery();
-  const [searchQuery, setSearchQuery] = useState("");
 
   const allReviews =
     reviewsData?.data?.reviews?.filter((r) => r.status === "active") || [];
@@ -42,7 +41,6 @@ const ReviewsAndTestimonial = () => {
             <h1 className="text-2xl md:text-3xl font-bold mb-4">
               Heaven Holiday Reviews & Testimonials
             </h1>
-
             {/* Stats */}
             <p className="text-lg md:text-xl mb-6">
               <span className="font-bold">{responce?.guests}</span>{" "}
@@ -50,8 +48,7 @@ const ReviewsAndTestimonial = () => {
               <span className="font-bold">{responce?.toursCompleted}</span>{" "}
               <span className="text-gray-200">tours</span>
             </p>
-
-            {/* Search Box */}
+            Search Box
             <div className="bg-white rounded-full flex items-center overflow-hidden shadow w-full max-w-lg">
               <input
                 type="text"
@@ -70,7 +67,7 @@ const ReviewsAndTestimonial = () => {
           <div className="flex-1 flex justify-center md:justify-end">
             <div className="w-56 h-56 md:w-72 md:h-72 rounded-full overflow-hidden">
               <Image
-                src="/assets/img/testimonials/1.svg" // replace with your image
+                src="/assets/img/testimonials/1.svg"
                 alt="Happy Family"
                 width={400}
                 height={400}

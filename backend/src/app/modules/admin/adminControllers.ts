@@ -4,6 +4,7 @@ import { Admin } from './adminModel';
 import {
   adminLoginValidation,
   changePasswordValidation,
+  updateEmailValidation,
 } from './aminValidation';
 import { appError } from '../../errors/appError';
 
@@ -134,7 +135,6 @@ export const changePassword = async (
   }
 };
 
-// ── POST /admin/create ────────────────────────────────────────────────────────
 export const createAdmin = async (
   req: Request,
   res: Response,
@@ -157,6 +157,53 @@ export const createAdmin = async (
       success: true,
       statusCode: 201,
       message: 'Admin created successfully',
+      data: {
+        id: admin._id,
+        username: admin.username,
+        email: admin.email,
+      },
+    });
+    return;
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const validatedData = updateEmailValidation.parse(req.body);
+
+    const admin = await Admin.findById((req as any).admin.id);
+    if (!admin) {
+      next(new appError('Admin not found', 404));
+      return;
+    }
+
+    // Verify current password before allowing email change
+    const isMatch = await admin.comparePassword(validatedData.currentPassword);
+    if (!isMatch) {
+      next(new appError('Current password is incorrect', 401));
+      return;
+    }
+
+    // Check if new email is already taken
+    const emailExists = await Admin.findOne({ email: validatedData.newEmail });
+    if (emailExists) {
+      next(new appError('Email already in use', 400));
+      return;
+    }
+
+    admin.email = validatedData.newEmail;
+    await admin.save();
+
+    res.json({
+      success: true,
+      statusCode: 200,
+      message: 'Email updated successfully',
       data: {
         id: admin._id,
         username: admin.username,

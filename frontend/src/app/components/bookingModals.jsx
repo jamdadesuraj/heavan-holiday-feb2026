@@ -36,6 +36,7 @@ const BookingStepperModal = ({
   const [openTravelerForms, setOpenTravelerForms] = useState([]);
   const [paymentType, setPaymentType] = useState("advance");
   const [passportImages, setPassportImages] = useState({});
+  const [passportPreviews, setPassportPreviews] = useState({});
   const [formData, setFormData] = useState({
     selectedDeparture: null,
     packageType: "Joining Package",
@@ -1076,23 +1077,40 @@ const BookingStepperModal = ({
                                   accept="image/*"
                                   onChange={(e) => {
                                     if (e.target.files?.[0]) {
+                                      const file = e.target.files[0];
                                       setPassportImages((prev) => ({
                                         ...prev,
+                                        [`passportImage_${index}`]: file,
+                                      }));
+
+                                      setPassportPreviews((prev) => ({
+                                        ...prev,
                                         [`passportImage_${index}`]:
-                                          e.target.files[0],
+                                          URL.createObjectURL(file),
                                       }));
                                     }
                                   }}
                                   className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
                                 />
-                                {passportImages[`passportImage_${index}`] && (
-                                  <p className="text-xs text-green-600 mt-1">
-                                    ✓{" "}
-                                    {
-                                      passportImages[`passportImage_${index}`]
-                                        .name
-                                    }
-                                  </p>
+                                {passportPreviews[`passportImage_${index}`] && (
+                                  <div className="mt-2 flex items-center gap-3">
+                                    <img
+                                      src={
+                                        passportPreviews[
+                                          `passportImage_${index}`
+                                        ]
+                                      }
+                                      alt="Passport Preview"
+                                      className="w-20 h-20 object-cover rounded border border-gray-300"
+                                    />
+                                    <p className="text-xs text-green-600">
+                                      ✓{" "}
+                                      {
+                                        passportImages[`passportImage_${index}`]
+                                          ?.name
+                                      }
+                                    </p>
+                                  </div>
                                 )}
                               </div>
                               {traveler.isLeadTraveler && (
